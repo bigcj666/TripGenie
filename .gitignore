@@ -1,9 +1,5 @@
 # 途灵 TripGenie
 
-## 子目录
-mobile/
-server/
-
 ## Python
 __pycache__/
 *.py[cod]
