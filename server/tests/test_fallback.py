@@ -56,30 +56,40 @@ def test_mixed_engine_any_mock_wins(monkeypatch):
 
 
 def test_mock_cost_tracks_budget():
-    """mock 成本应随预算缩放：偏差 ≤20%（否则触发 over_budget 告警）。"""
+    """mock 成本应随预算缩放：偏差 ≤20%（否则触发 over_budget 告警）；明细与汇总一致。"""
     for budget, people in [(1500, 3), (800, 2), (5000, 4)]:
         trip = generate_mock_trip("杭州", 3, budget, people, ["亲子"], TravelStyle.COMPACT)
         drift = abs(trip.cost_breakdown.total - budget) / budget
         assert drift <= 0.2, f"budget={budget} drift={drift:.0%}"
+        item_tickets = sum(it.cost_estimate for d in trip.itinerary for it in d.items) * people
+        assert abs(item_tickets - trip.cost_breakdown.tickets) <= 1.0, "明细门票与汇总不一致"
 
 
 def test_mock_preferences_reflected():
-    """偏好标签应出现在行程文本中（否则偏好命中告警）。"""
+    """偏好标签应出现在行程文本中（织入失效则本用例失败）。"""
     trip = generate_mock_trip("杭州", 3, 1500, 3, ["美食", "亲子"], TravelStyle.COMPACT)
     text = " ".join(f"{it.title} {it.description} {it.tips}" for d in trip.itinerary for it in d.items)
-    assert "美食" in text or any(it.type == "meal" for d in trip.itinerary for it in d.items)
+    assert "美食" in text
+    assert "亲子" in text
 
 
 def test_style_warnings_rules():
-    """风格规则服务层校验：不合规出告警，mock 输出本身应合规。"""
+    """风格规则服务层校验：不合规出告警，mock 输出本身应合规（三风格均无 style_rule 告警）。"""
     relaxed = generate_mock_trip("杭州", 2, 1200, 2, [], TravelStyle.RELAXED)
     assert all(it.duration_min >= 90 for d in relaxed.itinerary for it in d.items)
     assert all(len(d.items) <= 4 for d in relaxed.itinerary)
-    assert not [w for w in _style_warnings(relaxed) if "relaxed" in w]
+    assert not _style_warnings(relaxed)
 
     compact = generate_mock_trip("杭州", 2, 1200, 2, [], TravelStyle.COMPACT)
     assert all(len(d.items) >= 5 for d in compact.itinerary)
-    assert not [w for w in _style_warnings(compact) if "compact" in w]
+    assert not _style_warnings(compact)
+
+    economy = generate_mock_trip("杭州", 3, 1500, 3, ["美食"], TravelStyle.ECONOMY)
+    cats = [economy.cost_breakdown.transport, economy.cost_breakdown.food,
+            economy.cost_breakdown.tickets, economy.cost_breakdown.hotel,
+            economy.cost_breakdown.other]
+    assert economy.cost_breakdown.tickets <= min(cats), "economy 门票应为最低占比"
+    assert not _style_warnings(economy)
 
 
 def test_over_budget_token(monkeypatch):

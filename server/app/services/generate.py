@@ -47,17 +47,18 @@ def _style_warnings(trip: Trip) -> list[str]:
         if any(it.duration_min < 90 for it in items):
             warnings.append("style_rule relaxed：建议单点停留 ≥90 分钟")
     if trip.style == TravelStyle.ECONOMY:
-        tickets_share = trip.cost_breakdown.tickets / max(total_or_one(trip), 1)
-        if tickets_share > 0.25:
-            warnings.append("style_rule economy：门票占比建议 ≤25%")
+        cats = {
+            "transport": trip.cost_breakdown.transport,
+            "food": trip.cost_breakdown.food,
+            "tickets": trip.cost_breakdown.tickets,
+            "hotel": trip.cost_breakdown.hotel,
+            "other": trip.cost_breakdown.other,
+        }
+        if cats["tickets"] > min(cats.values()):
+            warnings.append("style_rule economy：门票类花费应为各项中最低")
         if not any(it.cost_estimate == 0 for it in items):
             warnings.append("style_rule economy：建议包含免费/低价备选")
     return warnings
-
-
-def total_or_one(trip: Trip) -> float:
-    total = trip.cost_breakdown.total
-    return total if total > 0 else 1.0
 
 
 def generate_trips(request: GenerateRequest, settings: Settings | None = None) -> GenerateResponse:

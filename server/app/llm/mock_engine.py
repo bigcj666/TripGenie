@@ -76,7 +76,7 @@ _STYLE_CONFIG: dict[TravelStyle, dict] = {
         "min_items": 4,
         "duration_scale": 1.0,
         "ticket_scale": 0.35,
-        "cost_shares": (0.30, 0.38, 0.14, 0.18),
+        "cost_shares": (0.26, 0.32, 0.22, 0.20),  # 门票另计且占比最低（≤10% 预算）
     },
 }
 
@@ -249,10 +249,18 @@ def generate_mock_trip(
             items.append(item)
         itinerary.append(DayPlan(day=d, theme=themes[(d - 1) % len(themes)], items=items))
 
-    tickets_total = round(sum(it.cost_estimate for day in itinerary for it in day.items) * people, 1)
-    # 成本随预算缩放：门票先占，剩余按风格比例拆分，使估算总额落在预算 ±10% 内
-    if tickets_total > budget_total * 0.5:
-        tickets_total = round(budget_total * 0.35, 1)
+    raw_tickets_pp = sum(it.cost_estimate for day in itinerary for it in day.items)
+    raw_total = raw_tickets_pp * people
+    # 成本随预算缩放：先按风格上限缩放【条目明细】（保证明细与汇总一致），再拆分剩余
+    cap_ratio = 0.10 if style == TravelStyle.ECONOMY else 0.40
+    cap = budget_total * cap_ratio
+    if raw_total > cap and raw_total > 0:
+        factor = cap / raw_total
+        for day in itinerary:
+            for it in day.items:
+                it.cost_estimate = round(it.cost_estimate * factor, 1)
+        raw_tickets_pp = sum(it.cost_estimate for day in itinerary for it in day.items)
+    tickets_total = round(raw_tickets_pp * people, 1)
     remaining = max(budget_total * 0.95 - tickets_total, budget_total * 0.2)
     hotel_share, food_share, transport_share, other_share = cfg["cost_shares"]
     hotel_total = round(remaining * hotel_share, 1)

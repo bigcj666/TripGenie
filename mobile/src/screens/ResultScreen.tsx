@@ -76,8 +76,8 @@ export function ResultScreen({
 
           {data?.warnings && data.warnings.length > 0 ? (
             <View style={styles.warnBox}>
-              {data.warnings.slice(0, 3).map((w) => (
-                <Text key={w} style={styles.warnText}>
+              {data.warnings.slice(0, 3).map((w, i) => (
+                <Text key={`${i}-${w.slice(0, 12)}`} style={styles.warnText}>
                   {w}
                 </Text>
               ))}

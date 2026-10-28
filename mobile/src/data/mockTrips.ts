@@ -49,7 +49,7 @@ const POI_POOL: Record<string, PoiSeed[]> = {
 const STYLE_CFG: Record<TravelStyle, { count: number; label: string; shares: [number, number, number, number] }> = {
   compact: { count: 5, label: '紧凑', shares: [0.35, 0.35, 0.18, 0.12] },
   relaxed: { count: 3, label: '松弛', shares: [0.42, 0.32, 0.16, 0.1] },
-  economy: { count: 4, label: '省钱', shares: [0.3, 0.38, 0.14, 0.18] },
+  economy: { count: 4, label: '省钱', shares: [0.26, 0.32, 0.22, 0.2] },
 };
 
 function pickPois(city: string, preferences: string[], count: number): PoiSeed[] {
@@ -107,15 +107,16 @@ function buildTrip(req: GenerateRequest, style: TravelStyle): Trip {
   const cfg = STYLE_CFG[style];
   const themes = ['经典必游', '深度漫游', '美食与夜色', '亲子时光', '人文历史', '自然休闲'];
   const itinerary = [];
-  let cursor = 0;
   for (let day = 1; day <= req.days; day += 1) {
-    const seeds = pickPois(req.city, req.preferences, cfg.count);
+    // 按天轮换取样，避免多日条目完全重复
+    const seeds = pickPois(req.city, req.preferences, cfg.count * 2).slice(
+      (day - 1) % cfg.count,
+      ((day - 1) % cfg.count) + cfg.count,
+    );
     const items: ItineraryItem[] = [];
     let start = 9 * 60;
     for (let i = 0; i < cfg.count; i += 1) {
-      const seed = seeds[cursor % seeds.length];
-      cursor += 1;
-      const built = buildItem(seed, start, style, i === cfg.count - 1, req.preferences);
+      const built = buildItem(seeds[i % seeds.length], start, style, i === cfg.count - 1, req.preferences);
       items.push(built.item);
       start = built.nextStart;
     }
@@ -123,10 +124,18 @@ function buildTrip(req: GenerateRequest, style: TravelStyle): Trip {
   }
 
   const allItems = itinerary.flatMap((d) => d.items);
-  let tickets = Math.round(allItems.reduce((s, it) => s + it.cost_estimate, 0) * req.people * 10) / 10;
-  if (tickets > req.budget_total * 0.5) {
-    tickets = Math.round(req.budget_total * 0.35 * 10) / 10;
+  // 门票按风格上限缩放【条目明细】，保证明细与汇总一致
+  let rawTickets = allItems.reduce((s, it) => s + it.cost_estimate, 0) * req.people;
+  const capRatio = style === 'economy' ? 0.1 : 0.4;
+  const cap = req.budget_total * capRatio;
+  if (rawTickets > cap && rawTickets > 0) {
+    const factor = cap / rawTickets;
+    for (const it of allItems) {
+      it.cost_estimate = Math.round(it.cost_estimate * factor * 10) / 10;
+    }
+    rawTickets = allItems.reduce((s, it) => s + it.cost_estimate, 0) * req.people;
   }
+  const tickets = Math.round(rawTickets * 10) / 10;
   const remaining = Math.max(req.budget_total * 0.95 - tickets, req.budget_total * 0.2);
   const [hs, fs, ts, os] = cfg.shares;
   const cost_breakdown: CostBreakdown = {
