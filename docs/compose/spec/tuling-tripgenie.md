@@ -1,9 +1,9 @@
 ---
 feature: tuling-tripgenie
-status: in-progress
+status: delivered
 updated: 2026-10-28
 branch: feat/mvp
-commits:
+commits: 29150f2..a00703d
 ---
 
 # 途灵 TripGenie · 项目执行计划（v2）
@@ -13,6 +13,12 @@ commits:
 > 已确认约束：独立开发，每周投入 ≥20 小时；2026-10-28 启动；2027 年省赛（4–5 月）。
 
 ## Report
+
+**What was built** — 本文档是途灵 TripGenie 的 v2 执行计划：在原方案书基础上补齐容量对齐（20h+/周）的周排期与里程碑 M0–M6、机械砍线规则、账号/API 提前量清单、≤¥300 预算、4C 参赛材料规格与演示兜底三件套、简历目标表述。同时落地了 founding slice 的可运行代码：FastAPI 后端（行程 JSON 契约 + Pydantic 校验 + DeepSeek/GLM/Mock 双引擎 + `POST /api/trip/generate` 三方案生成 + 失败重试与 mock 降级）与 Expo+TS 移动端骨架（需求输入表单、三方案切换、时间线结果页、加载/错误/降级态、mock 告警渲染）。Mock 引擎按请求参数动态生成杭州/成都/西安（及通用模板）行程，成本随预算缩放且明细与汇总一致，风格规则（compact/relaxed/economy）由服务层校验并出告警。
+
+**Verification** — `server/.venv/Scripts/python.exe -m pytest -q` → 31 passed（契约 12 + mock golden 12 + API 4 + 降级/风格/预算 7）；`mobile: npx tsc --noEmit` → exit 0；uvicorn 冒烟：`GET /health` → `{"status":"ok","engine":"mock"}`，金标「杭州3天1500元3人亲子+美食 style=all」→ 3 plans、明细门票=汇总门票、总额≈95% 预算、warnings 空。评审两轮：首轮 3 major + minors 已修，复审 5/6 PASS、1 PARTIAL（economy 自触告警）已修并以 `test_style_warnings_rules` 锁定。
+
+**Journey log** — ① MIMO_* 环境变量未注入时按约定回退系统工具链；Python 3.15 缺 pyyaml 轮子且无 MSVC，改用 uv 的 3.12 建 venv。② C 盘曾打满：清 Temp/pip 缓存腾出 ~7GB；npm cache 已迁 `D:\npm-cache`。③ PowerShell 5.1 `Get-Content/Set-Content` 改 UTF-8 中文源码会 GBK 乱码——已定规只用 Edit/Write 或 Python io；本次两文件损坏后经 GBK 逆转+按行重写修复。④ `.gitignore` 曾误把 `mobile/`、`server/` 当注释写成忽略规则，git add 全部被吞——结构说明一律用 `#` 注释。⑤ 风格规则校验阈值需与 mock 引擎同向设计（economy 门票占比先定上限再定告警线），否则演示必现告警噪音。
 
 ## [S1] Problem
 
@@ -267,13 +273,13 @@ gantt
 
 ## Tasks
 
-- [ ] T1: 建立仓库骨架与计划文档 — acceptance: 仓库含 `.gitignore`、`README.md`、本计划文档，git 基线提交可追溯 (covers: S2.1, S2.6)
-- [ ] T2: 行程契约与后端骨架 — acceptance: `schemas/trip.py` 定义 [S2.3] 全部字段与校验规则，FastAPI `/health` 可启动，pytest 契约用例全绿 (covers: S2.3, S2.4)
-- [ ] T3: LLM 客户端与 Mock 引擎 — acceptance: 无 key 时 Mock 生成器对杭州/成都/西安 × 3 风格输出过契约校验的 JSON；有 `DEEPSEEK_API_KEY` 时可切换真实引擎 (covers: S2.2, S2.3)
-- [ ] T4: 生成服务与 API — acceptance: `POST /api/trip/generate` 返回合法行程 JSON（支持 style 单选与三方案），解析失败有重试与 mock 降级标记，pytest 全绿 (covers: S2.3, S2.4)
-- [ ] T5: 移动端工程与需求输入页 — acceptance: Expo TS 工程 `tsc --noEmit` 零错误，首页表单含城市/天数/预算/人数/偏好标签/风格并能发起生成请求 (covers: S2.4, S2.5)
-- [ ] T6: 行程结果页（时间线 + 三方案） — acceptance: mock 引擎下三方案可切换，按日/时段渲染时间线与详情，含加载/错误/降级态 (covers: S2.5)
-- [ ] T7: README 与 mock 演示路径 — acceptance: README 含 server/mobile 启动步骤与「1 分钟 mock 演示」指引，按文档可复现完整演示流程 (covers: S2.12)
-- [ ] T8: 风格规则校验与降级路径测试 — acceptance: 服务层对 compact/relaxed/economy 不合规输出 style_rule 告警；LLM 解析失败降级 mock 有测试覆盖；mock 成本随预算缩放偏差 ≤20% (covers: S2.3, S2.10)
+- [x] T1: 建立仓库骨架与计划文档 — acceptance: 仓库含 `.gitignore`、`README.md`、本计划文档，git 基线提交可追溯 (covers: S2.1, S2.6)
+- [x] T2: 行程契约与后端骨架 — acceptance: `schemas/trip.py` 定义 [S2.3] 全部字段与校验规则，FastAPI `/health` 可启动，pytest 契约用例全绿 (covers: S2.3, S2.4)
+- [x] T3: LLM 客户端与 Mock 引擎 — acceptance: 无 key 时 Mock 生成器对杭州/成都/西安 × 3 风格输出过契约校验的 JSON；有 `DEEPSEEK_API_KEY` 时可切换真实引擎 (covers: S2.2, S2.3)
+- [x] T4: 生成服务与 API — acceptance: `POST /api/trip/generate` 返回合法行程 JSON（支持 style 单选与三方案），解析失败有重试与 mock 降级标记，pytest 全绿 (covers: S2.3, S2.4)
+- [x] T5: 移动端工程与需求输入页 — acceptance: Expo TS 工程 `tsc --noEmit` 零错误，首页表单含城市/天数/预算/人数/偏好标签/风格并能发起生成请求 (covers: S2.4, S2.5)
+- [x] T6: 行程结果页（时间线 + 三方案） — acceptance: mock 引擎下三方案可切换，按日/时段渲染时间线与详情，含加载/错误/降级态 (covers: S2.5)
+- [x] T7: README 与 mock 演示路径 — acceptance: README 含 server/mobile 启动步骤与「1 分钟 mock 演示」指引，按文档可复现完整演示流程 (covers: S2.12)
+- [x] T8: 风格规则校验与降级路径测试 — acceptance: 服务层对 compact/relaxed/economy 不合规输出 style_rule 告警；LLM 解析失败降级 mock 有测试覆盖；mock 成本随预算缩放偏差 ≤20% (covers: S2.3, S2.10)
 
-以上 T1–T8 为本文档验收范围（founding slice）。P0 剩余项（地图集成、APK）与 P1/P2 特性按 [S2.6] 里程碑继续推进，不阻塞本文档交付。
+以上 T1–T8 为本文档验收范围（founding slice），已全部完成。P0 剩余项（地图集成、APK）与 P1/P2 特性按 [S2.6] 里程碑继续推进，不阻塞本文档交付。
