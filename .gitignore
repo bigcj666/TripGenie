@@ -1,0 +1,44 @@
+# 途灵 TripGenie
+
+## 子目录
+mobile/
+server/
+
+## Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+## Node
+node_modules/
+.expo/
+dist/
+web-build/
+*.log
+npm-debug.log*
+
+## 环境与密钥
+.env
+.env.*
+!.env.example
+
+## 构建产物
+android/
+ios/
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+## IDE / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+## 工作树
+.worktrees/
