@@ -1,6 +1,6 @@
 ---
 feature: tuling-tripgenie
-status: designed
+status: in-progress
 updated: 2026-10-28
 branch: feat/mvp
 commits:

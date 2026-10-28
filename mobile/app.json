@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "途灵 TripGenie",
+    "slug": "tuling-tripgenie",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0F766E"
+    },
+    "android": {
+      "package": "com.tuling.tripgenie",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F766E"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.tuling.tripgenie"
+    }
+  }
+}
