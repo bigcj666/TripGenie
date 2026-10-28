@@ -7,11 +7,9 @@ import logging
 from ..config import Settings
 from ..llm.client import make_generator
 from ..llm.mock_engine import generate_mock_trip
-from ..schemas.trip import GenerateRequest, GenerateResponse, Trip, TravelStyle
+from ..schemas.trip import GenerateRequest, GenerateResponse, TravelStyle, Trip
 
 logger = logging.getLogger(__name__)
-
-_PREF_TAGS = ["美食", "自然", "人文", "亲子", "购物", "网红打卡"]
 
 
 def _quality_warnings(trip: Trip) -> list[str]:
@@ -20,8 +18,9 @@ def _quality_warnings(trip: Trip) -> list[str]:
     if trip.budget_total > 0:
         drift = abs(total - trip.budget_total) / trip.budget_total
         if drift > 0.2:
+            token = "over_budget " if total > trip.budget_total else "under_budget "
             warnings.append(
-                f"预算偏差 {drift:.0%}：估算合计 {total:.0f} 元 vs 预算 {trip.budget_total:.0f} 元"
+                f"{token}预算偏差 {drift:.0%}：估算合计 {total:.0f} 元 vs 预算 {trip.budget_total:.0f} 元"
             )
     if trip.preferences:
         text = " ".join(
@@ -35,21 +34,55 @@ def _quality_warnings(trip: Trip) -> list[str]:
     return warnings
 
 
+def _style_warnings(trip: Trip) -> list[str]:
+    """[S2.3] 风格规则的服务层校验（不拦截输出，出告警供前端提示）。"""
+    warnings: list[str] = []
+    per_day = [len(day.items) for day in trip.itinerary]
+    items = [it for day in trip.itinerary for it in day.items]
+    if trip.style == TravelStyle.COMPACT and min(per_day) < 5:
+        warnings.append("style_rule compact：建议每日 ≥5 项安排")
+    if trip.style == TravelStyle.RELAXED:
+        if max(per_day) > 4:
+            warnings.append("style_rule relaxed：建议每日 ≤4 项安排")
+        if any(it.duration_min < 90 for it in items):
+            warnings.append("style_rule relaxed：建议单点停留 ≥90 分钟")
+    if trip.style == TravelStyle.ECONOMY:
+        tickets_share = trip.cost_breakdown.tickets / max(total_or_one(trip), 1)
+        if tickets_share > 0.25:
+            warnings.append("style_rule economy：门票占比建议 ≤25%")
+        if not any(it.cost_estimate == 0 for it in items):
+            warnings.append("style_rule economy：建议包含免费/低价备选")
+    return warnings
+
+
+def total_or_one(trip: Trip) -> float:
+    total = trip.cost_breakdown.total
+    return total if total > 0 else 1.0
+
+
 def generate_trips(request: GenerateRequest, settings: Settings | None = None) -> GenerateResponse:
     settings = settings or Settings.from_env()
     generator, engine = make_generator(settings)
     plans: list[Trip] = []
     warnings: list[str] = []
+    engines_used: list[str] = []
 
     for style in request.styles:
         trip, engine_used, fallback_reason = _generate_one(generator, engine, request, style)
         plans.append(trip)
+        engines_used.append(engine_used)
         if fallback_reason:
             warnings.append(f"[{style.value}] {fallback_reason}")
         warnings.extend(f"[{style.value}] {w}" for w in _quality_warnings(trip))
-        engine = engine_used
+        warnings.extend(f"[{style.value}] {w}" for w in _style_warnings(trip))
 
-    return GenerateResponse(engine=engine, plans=plans, warnings=warnings)
+    # 任一方案降级即整体标记 mock，避免混合场景下降级标记丢失
+    if any(e == "mock" for e in engines_used):
+        final_engine = "mock"
+    else:
+        final_engine = engines_used[0] if engines_used else engine
+
+    return GenerateResponse(engine=final_engine, plans=plans, warnings=warnings)
 
 
 def _generate_one(generator, engine: str, request: GenerateRequest, style: TravelStyle):
@@ -64,8 +97,7 @@ def _generate_one(generator, engine: str, request: GenerateRequest, style: Trave
             style=style.value,
         )
         trip = Trip.model_validate(raw)
-        if trip.style != style:
-            trip.style = style
+        trip.style = style
         return trip, engine, ""
     except Exception as exc:  # noqa: BLE001 —— 校验/网络/解析失败一律降级
         reason = f"真实引擎失败已降级 Mock（{type(exc).__name__}）"

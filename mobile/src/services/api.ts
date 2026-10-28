@@ -1,6 +1,6 @@
 import { API_BASE, USE_MOCK } from '../config/constants';
 import { buildMockPlans } from '../data/mockTrips';
-import type { GenerateRequest, GenerateResponse, TravelStyle } from '../types/trip';
+import type { GenerateRequest, GenerateResponse } from '../types/trip';
 
 export type { GenerateRequest, GenerateResponse };
 
@@ -13,7 +13,7 @@ export type { GenerateRequest, GenerateResponse };
  */
 export async function generateTrips(req: GenerateRequest): Promise<GenerateResponse> {
   if (USE_MOCK) {
-    return mockFallback(req.style);
+    return buildMockPlans(req);
   }
 
   try {
@@ -33,18 +33,6 @@ export async function generateTrips(req: GenerateRequest): Promise<GenerateRespo
     }
     return data;
   } catch {
-    return mockFallback(req.style);
+    return buildMockPlans(req);
   }
-}
-
-function mockFallback(style: TravelStyle | 'all'): GenerateResponse {
-  return {
-    engine: 'mock',
-    plans: buildMockPlans(style),
-  };
-}
-
-/** 供 UI 标记「演示引擎」 */
-export function isMockEngine(engine: string): boolean {
-  return engine === 'mock';
 }

@@ -74,6 +74,16 @@ export function ResultScreen({
             </View>
           ) : null}
 
+          {data?.warnings && data.warnings.length > 0 ? (
+            <View style={styles.warnBox}>
+              {data.warnings.slice(0, 3).map((w) => (
+                <Text key={w} style={styles.warnText}>
+                  {w}
+                </Text>
+              ))}
+            </View>
+          ) : null}
+
           {plans.length > 1 ? (
             <View style={styles.tabRow}>
               {plans.map((p, i) => {
@@ -180,6 +190,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   mockBannerText: { fontSize: 12, color: '#92400E', textAlign: 'center' },
+  warnBox: {
+    marginHorizontal: 12,
+    marginTop: 8,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  warnText: { fontSize: 11, color: '#B91C1C', lineHeight: 16 },
   tabRow: {
     flexDirection: 'row',
     gap: 8,

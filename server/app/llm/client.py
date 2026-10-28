@@ -93,7 +93,7 @@ class OpenAICompatClient:
         self.timeout = timeout
         self.engine_name = engine_name
 
-    def _chat(self, messages: list[dict], *, retry_with_repair: bool = False) -> str:
+    def _chat(self, messages: list[dict]) -> str:
         payload = {
             "model": self.model,
             "messages": messages,
@@ -107,10 +107,7 @@ class OpenAICompatClient:
                 json=payload,
             )
             resp.raise_for_status()
-            content = resp.json()["choices"][0]["message"]["content"]
-        if retry_with_repair:
-            return content
-        return content
+            return resp.json()["choices"][0]["message"]["content"]
 
     def generate(self, *, city: str, days: int, budget_total: float, people: int,
                  preferences: list[str], style: str) -> dict:

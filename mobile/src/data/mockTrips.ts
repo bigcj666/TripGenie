@@ -1,280 +1,161 @@
-import type { GenerateResponse, Trip } from '../types/trip';
+/**
+ * 本地 Mock 行程 fixture —— 离线/无后端时的演示保命通道。
+ * 按请求参数（城市/天数/人数/预算/偏好）动态生成，结构与 server 契约一致。
+ */
+import type {
+  CostBreakdown,
+  GenerateRequest,
+  GenerateResponse,
+  ItineraryItem,
+  ItemType,
+  Trip,
+  TravelStyle,
+} from '../types/trip';
 
-const city = '杭州';
-const people = 2;
-const budget_total = 1500;
-const preferences = ['美食', '人文'];
+interface PoiSeed {
+  name: string;
+  lat: number;
+  lng: number;
+  tags: string[];
+  ticket: number;
+  stay: number;
+  desc: string;
+  tips: string;
+}
 
-const baseSources = [
-  {
-    title: '杭州市文化广电旅游局',
-    url: 'https://whly.hangzhou.gov.cn/',
-  },
-  {
-    title: '杭州西湖风景名胜区',
-    url: 'https://www.hzwestlake.com/',
-  },
-];
+const POI_POOL: Record<string, PoiSeed[]> = {
+  杭州: [
+    { name: '断桥残雪', lat: 30.2593, lng: 120.1477, tags: ['人文', '网红打卡'], ticket: 0, stay: 90, desc: '西湖十景之一，白堤东端的标志性景点。', tips: '清晨人少，适合拍照。' },
+    { name: '孤山公园', lat: 30.254, lng: 120.144, tags: ['自然', '亲子'], ticket: 0, stay: 75, desc: '西湖中最大的岛屿，林木幽深。', tips: '可顺路参观浙江省博物馆。' },
+    { name: '楼外楼', lat: 30.2533, lng: 120.1428, tags: ['美食'], ticket: 120, stay: 75, desc: '百年老字号杭帮菜。', tips: '建议提前取号。' },
+    { name: '西湖游船', lat: 30.2489, lng: 120.154, tags: ['亲子', '自然'], ticket: 55, stay: 90, desc: '环湖欣赏三潭印月。', tips: '末班船约 16:30。' },
+    { name: '雷峰塔', lat: 30.232, lng: 120.149, tags: ['人文'], ticket: 40, stay: 90, desc: '登塔可俯瞰西湖全景。', tips: '日落前登塔光线最好。' },
+    { name: '河坊街', lat: 30.2405, lng: 120.169, tags: ['美食', '购物'], ticket: 0, stay: 100, desc: '小吃与手工艺店铺集中。', tips: '晚餐可以在这里解决。' },
+  ],
+  成都: [
+    { name: '武侯祠', lat: 30.646, lng: 104.047, tags: ['人文'], ticket: 50, stay: 100, desc: '三国文化圣地。', tips: '与锦里相邻。' },
+    { name: '锦里古街', lat: 30.645, lng: 104.045, tags: ['美食', '购物'], ticket: 0, stay: 90, desc: '地道小吃汇聚。', tips: '晚上最有氛围。' },
+    { name: '大熊猫基地', lat: 30.735, lng: 104.147, tags: ['亲子', '自然'], ticket: 55, stay: 180, desc: '近距离观赏大熊猫。', tips: '上午最活跃。' },
+    { name: '宽窄巷子', lat: 30.672, lng: 104.055, tags: ['美食', '网红打卡'], ticket: 0, stay: 100, desc: '清代老街休闲街区。', tips: '注意随身物品。' },
+  ],
+  西安: [
+    { name: '钟楼', lat: 34.261, lng: 108.942, tags: ['人文'], ticket: 30, stay: 70, desc: '西安城市中心地标。', tips: '登楼可看四条大街。' },
+    { name: '回民街', lat: 34.262, lng: 108.937, tags: ['美食'], ticket: 0, stay: 110, desc: '西安著名小吃街。', tips: '多走几步更地道。' },
+    { name: '兵马俑', lat: 34.384, lng: 109.278, tags: ['人文', '亲子'], ticket: 120, stay: 240, desc: '世界第八大奇迹。', tips: '务必早出发。' },
+    { name: '西安城墙', lat: 34.254, lng: 108.946, tags: ['人文', '自然'], ticket: 54, stay: 120, desc: '保存最完整的古城墙。', tips: '可骑行环城。' },
+  ],
+};
 
-function makeItem(
-  time_start: string,
-  time_end: string,
-  type: Trip['itinerary'][number]['items'][number]['type'],
-  title: string,
-  duration_min: number,
-  cost_estimate: number,
-  description: string,
-  tips: string,
-  transport: { mode: 'walk' | 'transit' | 'drive' | 'taxi'; duration_min: number; note: string } | null,
-): Trip['itinerary'][number]['items'][number] {
-  return {
-    time_start,
-    time_end,
+const STYLE_CFG: Record<TravelStyle, { count: number; label: string; shares: [number, number, number, number] }> = {
+  compact: { count: 5, label: '紧凑', shares: [0.35, 0.35, 0.18, 0.12] },
+  relaxed: { count: 3, label: '松弛', shares: [0.42, 0.32, 0.16, 0.1] },
+  economy: { count: 4, label: '省钱', shares: [0.3, 0.38, 0.14, 0.18] },
+};
+
+function pickPois(city: string, preferences: string[], count: number): PoiSeed[] {
+  const pool = POI_POOL[city] ?? [
+    { name: `${city}市中心广场`, lat: 30.0, lng: 120.0, tags: ['人文'], ticket: 0, stay: 80, desc: `${city}城市地标。`, tips: '建议第一站。' },
+    { name: `${city}地方菜馆`, lat: 30.001, lng: 120.001, tags: ['美食'], ticket: 80, stay: 70, desc: `品尝${city}本地菜。`, tips: '点菜前先问招牌菜。' },
+    { name: `${city}博物馆`, lat: 30.002, lng: 120.002, tags: ['人文', '亲子'], ticket: 0, stay: 110, desc: `了解${city}历史文化。`, tips: '周一常闭馆。' },
+    { name: `${city}城市公园`, lat: 30.003, lng: 120.003, tags: ['自然'], ticket: 0, stay: 90, desc: '适合散步。', tips: '傍晚更凉爽。' },
+    { name: `${city}夜市`, lat: 30.004, lng: 120.004, tags: ['美食', '购物'], ticket: 0, stay: 95, desc: '小吃集中地。', tips: '看管好物品。' },
+    { name: `${city}观景台`, lat: 30.005, lng: 120.005, tags: ['网红打卡'], ticket: 30, stay: 85, desc: `俯瞰${city}全景。`, tips: '日落最好。' },
+  ];
+  const prefs = new Set(preferences);
+  const matched = pool.filter((p) => p.tags.some((t) => prefs.has(t)));
+  const others = pool.filter((p) => !p.tags.some((t) => prefs.has(t)));
+  const ordered = [...matched, ...others];
+  const picked: PoiSeed[] = [];
+  for (let i = 0; i < count; i += 1) {
+    picked.push(ordered[i % ordered.length]);
+  }
+  return picked;
+}
+
+function buildItem(poi: PoiSeed, startMin: number, style: TravelStyle, isLast: boolean, preferences: string[]): { item: ItineraryItem; nextStart: number } {
+  const scale = style === 'relaxed' ? 1.25 : style === 'compact' ? 0.8 : 1;
+  let stay = Math.max(45, Math.round((poi.stay * scale) / 5) * 5);
+  if (style === 'relaxed') {
+    stay = Math.max(90, stay);
+  }
+  const ticketScale = style === 'economy' ? 0.35 : 1;
+  const matchedTags = poi.tags.filter((t) => preferences.includes(t));
+  const desc = matchedTags.length > 0 ? `${poi.desc}（适合${matchedTags.join('、')}）` : poi.desc;
+  const endMin = startMin + stay;
+  const fmt = (m: number): string => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const type: ItemType = poi.tags.includes('美食') ? 'meal' : 'attraction';
+  const gap = isLast ? 0 : 20;
+  const item: ItineraryItem = {
+    time_start: fmt(startMin),
+    time_end: fmt(endMin),
     type,
-    title,
-    poi: {
-      name: title,
-      lat: 30.25 + Math.random() * 0.02,
-      lng: 120.14 + Math.random() * 0.02,
-      adcode: '330106',
-    },
-    duration_min,
-    cost_estimate,
-    description,
-    tips,
-    transport_to_next: transport,
-    sources: baseSources,
+    title: poi.name,
+    poi: { name: poi.name, lat: poi.lat, lng: poi.lng, adcode: '' },
+    duration_min: stay,
+    cost_estimate: poi.ticket > 0 ? Math.round(poi.ticket * ticketScale * 10) / 10 : 0,
+    description: desc,
+    tips: poi.tips,
+    transport_to_next: isLast
+      ? null
+      : { mode: 'walk', duration_min: gap, note: '步行前往' },
+    sources: [{ title: '途灵 Mock 演示数据', url: 'https://example.com/tuling-mock' }],
+  };
+  return { item, nextStart: endMin + gap };
+}
+
+function buildTrip(req: GenerateRequest, style: TravelStyle): Trip {
+  const cfg = STYLE_CFG[style];
+  const themes = ['经典必游', '深度漫游', '美食与夜色', '亲子时光', '人文历史', '自然休闲'];
+  const itinerary = [];
+  let cursor = 0;
+  for (let day = 1; day <= req.days; day += 1) {
+    const seeds = pickPois(req.city, req.preferences, cfg.count);
+    const items: ItineraryItem[] = [];
+    let start = 9 * 60;
+    for (let i = 0; i < cfg.count; i += 1) {
+      const seed = seeds[cursor % seeds.length];
+      cursor += 1;
+      const built = buildItem(seed, start, style, i === cfg.count - 1, req.preferences);
+      items.push(built.item);
+      start = built.nextStart;
+    }
+    itinerary.push({ day, theme: themes[(day - 1) % themes.length], items });
+  }
+
+  const allItems = itinerary.flatMap((d) => d.items);
+  let tickets = Math.round(allItems.reduce((s, it) => s + it.cost_estimate, 0) * req.people * 10) / 10;
+  if (tickets > req.budget_total * 0.5) {
+    tickets = Math.round(req.budget_total * 0.35 * 10) / 10;
+  }
+  const remaining = Math.max(req.budget_total * 0.95 - tickets, req.budget_total * 0.2);
+  const [hs, fs, ts, os] = cfg.shares;
+  const cost_breakdown: CostBreakdown = {
+    transport: Math.round(remaining * ts * 10) / 10,
+    food: Math.round(remaining * fs * 10) / 10,
+    tickets,
+    hotel: Math.round(remaining * hs * 10) / 10,
+    other: Math.round(remaining * os * 10) / 10,
+  };
+
+  return {
+    trip_id: `mock-${style}-${Date.now()}`,
+    city: req.city,
+    days: req.days,
+    people: req.people,
+    budget_total: req.budget_total,
+    style,
+    preferences: req.preferences,
+    summary: `${req.city}${req.days}天${cfg.label}行程，适合${req.people}人同行。`,
+    itinerary,
+    cost_breakdown,
   };
 }
 
-const compactTrip: Trip = {
-  trip_id: 'mock-compact-hz-001',
-  city,
-  days: 2,
-  people,
-  budget_total,
-  style: 'compact',
-  preferences,
-  summary: '两日紧凑打卡西湖经典线，覆盖断桥、灵隐寺与河坊街美食。',
-  itinerary: [
-    {
-      day: 1,
-      theme: '西湖经典线',
-      items: [
-        makeItem('08:30', '10:00', 'attraction', '断桥残雪', 90, 0, '白堤起点，清晨人少景美。', '建议早去避人流。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '沿白堤步行至孤山',
-        }),
-        makeItem('10:15', '11:30', 'attraction', '浙江省博物馆孤山馆区', 75, 0, '了解西湖与吴越文化。', '免费参观，带身份证。', {
-          mode: 'walk',
-          duration_min: 10,
-          note: '步行到楼外楼',
-        }),
-        makeItem('11:40', '12:40', 'meal', '楼外楼午餐', 60, 120, '西湖醋鱼、龙井虾仁。', '错峰就餐。', {
-          mode: 'walk',
-          duration_min: 20,
-          note: '沿北山街到曲院风荷',
-        }),
-        makeItem('13:00', '14:30', 'attraction', '曲院风荷', 90, 0, '夏日荷花名景。', '沿湖栈道拍照。', {
-          mode: 'transit',
-          duration_min: 25,
-          note: '公交到灵隐',
-        }),
-        makeItem('15:00', '17:00', 'attraction', '灵隐寺', 120, 75, '千年古刹，飞来峰石窟。', '提前网上购票。', {
-          mode: 'transit',
-          duration_min: 30,
-          note: '公交回市区',
-        }),
-        makeItem('17:30', '18:30', 'meal', '知味观小吃', 60, 60, '杭帮小吃简餐。', '点片儿川。', {
-          mode: 'walk',
-          duration_min: 10,
-          note: '步行回酒店',
-        }),
-        makeItem('19:00', '20:30', 'hotel', '西湖边精品酒店', 90, 280, '休息恢复体力。', '尽量订湖景房。', null),
-      ],
-    },
-    {
-      day: 2,
-      theme: '宋韵与市井',
-      items: [
-        makeItem('09:00', '11:00', 'attraction', '河坊街', 120, 30, '南宋御街遗址，老字号聚集。', '早到避团客。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到胡庆余堂',
-        }),
-        makeItem('11:15', '12:15', 'attraction', '胡庆余堂中药博物馆', 60, 20, '江南药王老宅。', '听免费讲解。', {
-          mode: 'walk',
-          duration_min: 10,
-          note: '步行到高银街',
-        }),
-        makeItem('12:30', '13:30', 'meal', '高银街杭帮菜', 60, 100, '东坡肉、叫花鸡。', '两人分菜不浪费。', {
-          mode: 'transit',
-          duration_min: 20,
-          note: '公交到钱王祠',
-        }),
-        makeItem('14:00', '15:30', 'attraction', '钱王祠', 90, 20, '吴越国钱镠纪念地。', '带学生证半价。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到南山路',
-        }),
-        makeItem('15:45', '16:45', 'free', '南山路咖啡休息', 60, 40, '文艺街区闲逛咖啡。', '网红店可打卡。', {
-          mode: 'taxi',
-          duration_min: 15,
-          note: '打车到杭州东站',
-        }),
-        makeItem('17:00', '17:30', 'transport', '前往杭州东站', 30, 50, '返程交通。', '预留安检时间。', null),
-      ],
-    },
-  ],
-  cost_breakdown: { transport: 200, food: 320, tickets: 115, hotel: 280, other: 140 },
-};
-
-const relaxedTrip: Trip = {
-  trip_id: 'mock-relaxed-hz-001',
-  city,
-  days: 2,
-  people,
-  budget_total,
-  style: 'relaxed',
-  preferences,
-  summary: '两日松弛慢游，深度停留西湖与灵隐，节奏舒缓不赶路。',
-  itinerary: [
-    {
-      day: 1,
-      theme: '西湖慢享',
-      items: [
-        makeItem('09:30', '11:30', 'attraction', '断桥残雪', 120, 0, '清晨漫步白堤，远眺保俶塔。', '可在桥头长椅发呆。', {
-          mode: 'walk',
-          duration_min: 20,
-          note: '沿白堤慢走',
-        }),
-        makeItem('12:00', '13:30', 'meal', '平湖秋月茶室', 90, 150, '湖景午餐与龙井。', '点一份定胜糕。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到曲院风荷',
-        }),
-        makeItem('14:00', '16:30', 'attraction', '曲院风荷', 150, 0, '荷塘曲径，适合发呆。', '午后光线好。', {
-          mode: 'taxi',
-          duration_min: 20,
-          note: '打车回酒店',
-        }),
-        makeItem('17:00', '18:30', 'hotel', '湖滨酒店休息', 90, 350, '回酒店小憩。', '可预约SPA。', {
-          mode: 'walk',
-          duration_min: 10,
-          note: '步行到晚餐点',
-        }),
-        makeItem('18:45', '20:30', 'meal', '湖滨银泰晚餐', 105, 180, '杭帮融合菜。', '提前取号。', null),
-      ],
-    },
-    {
-      day: 2,
-      theme: '禅意灵隐',
-      items: [
-        makeItem('09:30', '12:00', 'attraction', '灵隐寺', 150, 75, '香火鼎盛，飞来峰造像。', '请香在寺外。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '寺内步道',
-        }),
-        makeItem('12:30', '14:00', 'meal', '灵隐素斋', 90, 80, '清心素斋。', '人多需等位。', {
-          mode: 'taxi',
-          duration_min: 25,
-          note: '打车到西湖天地',
-        }),
-        makeItem('14:30', '16:30', 'free', '西湖天地闲逛', 120, 50, '湖畔商业街区。', '买伴手礼。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到钱王祠',
-        }),
-        makeItem('17:00', '18:00', 'attraction', '钱王祠', 60, 20, '傍晚游园。', '闭园前1小时入。', null),
-      ],
-    },
-  ],
-  cost_breakdown: { transport: 180, food: 410, tickets: 95, hotel: 350, other: 120 },
-};
-
-const economyTrip: Trip = {
-  trip_id: 'mock-economy-hz-001',
-  city,
-  days: 2,
-  people,
-  budget_total,
-  style: 'economy',
-  preferences,
-  summary: '两日省钱玩法，优先免费景点与公共交通，人均控制在预算内。',
-  itinerary: [
-    {
-      day: 1,
-      theme: '免费西湖环线',
-      items: [
-        makeItem('08:30', '10:30', 'attraction', '断桥残雪', 120, 0, '免费开放的白堤起点。', '自带水和干粮。', {
-          mode: 'walk',
-          duration_min: 30,
-          note: '沿白堤步行到孤山',
-        }),
-        makeItem('11:00', '12:00', 'free', '孤山公园', 60, 0, '免费公园，俯瞰西湖。', '野餐垫休息。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到附近小吃',
-        }),
-        makeItem('12:15', '13:00', 'meal', '老娘舅简餐', 45, 45, '经济快餐。', '错峰更便宜。', {
-          mode: 'transit',
-          duration_min: 40,
-          note: '公交到青芝坞',
-        }),
-        makeItem('13:45', '15:45', 'attraction', '青芝坞街区', 120, 0, '免费文艺街区。', '小店多可逛。', {
-          mode: 'transit',
-          duration_min: 30,
-          note: '公交回市区',
-        }),
-        makeItem('16:15', '17:15', 'free', '武林夜市外围', 60, 30, '感受市井氛围。', '只看不买。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到青年旅舍',
-        }),
-        makeItem('17:30', '18:00', 'hotel', '西湖边青旅床位', 30, 90, '经济住宿。', '自备洗漱。', null),
-      ],
-    },
-    {
-      day: 2,
-      theme: '低价人文',
-      items: [
-        makeItem('09:00', '11:00', 'attraction', '京杭大运河拱宸桥', 120, 0, '世界遗产点，免费。', '博物馆免费。', {
-          mode: 'transit',
-          duration_min: 25,
-          note: '公交到小河直街',
-        }),
-        makeItem('11:30', '12:30', 'meal', '小河直街小吃', 60, 35, '本地小吃。', '人均30内。', {
-          mode: 'walk',
-          duration_min: 15,
-          note: '步行到手工艺活态馆',
-        }),
-        makeItem('12:45', '14:15', 'attraction', '手工艺活态展示馆', 90, 20, '非遗体验，低价。', '学生证优惠。', {
-          mode: 'transit',
-          duration_min: 35,
-          note: '公交到河坊街',
-        }),
-        makeItem('15:00', '16:30', 'free', '河坊街步行', 90, 20, '免费逛街。', '只尝一种小吃。', {
-          mode: 'transit',
-          duration_min: 30,
-          note: '公交到火车站',
-        }),
-        makeItem('17:00', '17:30', 'transport', '公交前往火车站', 30, 10, '最省钱返程。', '刷公交卡。', null),
-      ],
-    },
-  ],
-  cost_breakdown: { transport: 120, food: 200, tickets: 40, hotel: 90, other: 80 },
-};
-
-export const MOCK_TRIPS: Trip[] = [compactTrip, relaxedTrip, economyTrip];
-
-export const MOCK_GENERATE_RESPONSE: GenerateResponse = {
-  engine: 'mock',
-  plans: MOCK_TRIPS,
-};
-
-/** 按 style='all' 或单风格返回对应 plans */
-export function buildMockPlans(style: string): Trip[] {
-  if (style === 'all') return MOCK_TRIPS;
-  return MOCK_TRIPS.filter((t) => t.style === style).slice(0, 1);
+/** style=all 返回三方案，否则返回单方案。 */
+export function buildMockPlans(req: GenerateRequest): GenerateResponse {
+  const styles: TravelStyle[] = req.style === 'all' ? ['compact', 'relaxed', 'economy'] : [req.style];
+  return {
+    engine: 'mock',
+    plans: styles.map((s) => buildTrip(req, s)),
+  };
 }

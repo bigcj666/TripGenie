@@ -59,13 +59,13 @@ npm install
 npx expo start        # 扫码真机预览，或按 a 开安卓模拟器
 ```
 
-> API 地址在 `mobile/src/services/` 中配置：模拟器默认 `http://10.0.2.2:8000`，真机需改成电脑的局域网 IP。
+> API 地址在 `mobile/src/config/constants.ts` 中配置：模拟器默认 `http://10.0.2.2:8000`，真机需改成电脑的局域网 IP（或用环境变量 `EXPO_PUBLIC_API_BASE` 覆盖）。
 
 ## 1 分钟 Mock 演示（断网/无 key 也能跑）
 
 1. 后端以默认配置启动（引擎显示 `mock`）。
 2. `GET /health` 应返回 `{"status":"ok","engine":"mock"}`。
-3. 移动端打开「演示模式」开关（或直接提交表单，后端自动用 mock）。
+3. 移动端设置 `EXPO_PUBLIC_USE_MOCK=1` 可强制走本地演示数据（不设也行：网络失败会自动降级到 mock）。
 4. 输入「杭州 / 3 天 / 1500 元 / 3 人 / 亲子+美食」→ 生成 → 切换紧凑/松弛/省钱三方案 → 展开时间线详情。
 
 内置 mock 演示数据覆盖**杭州、成都、西安**；其他城市走通用模板，结构同样合法。

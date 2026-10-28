@@ -60,9 +60,7 @@ _STYLE_CONFIG: dict[TravelStyle, dict] = {
         "min_items": 5,
         "duration_scale": 0.8,
         "ticket_scale": 1.0,
-        "hotel_per_night": 160,
-        "food_per_day": 110,
-        "transport_per_day": 60,
+        "cost_shares": (0.35, 0.35, 0.18, 0.12),  # hotel/food/transport/other
     },
     TravelStyle.RELAXED: {
         "label": "松弛",
@@ -70,9 +68,7 @@ _STYLE_CONFIG: dict[TravelStyle, dict] = {
         "min_items": 3,
         "duration_scale": 1.25,
         "ticket_scale": 1.0,
-        "hotel_per_night": 260,
-        "food_per_day": 180,
-        "transport_per_day": 90,
+        "cost_shares": (0.42, 0.32, 0.16, 0.10),
     },
     TravelStyle.ECONOMY: {
         "label": "省钱",
@@ -80,9 +76,7 @@ _STYLE_CONFIG: dict[TravelStyle, dict] = {
         "min_items": 4,
         "duration_scale": 1.0,
         "ticket_scale": 0.35,
-        "hotel_per_night": 95,
-        "food_per_day": 70,
-        "transport_per_day": 35,
+        "cost_shares": (0.30, 0.38, 0.14, 0.18),
     },
 }
 
@@ -180,7 +174,13 @@ def _build_item(
     name, lat, lng, tags, ticket, stay, desc, tips = poi
     cfg = _STYLE_CONFIG[style]
     stay_scaled = max(45, int(stay * cfg["duration_scale"] / 5) * 5)
+    if style == TravelStyle.RELAXED:
+        stay_scaled = max(90, stay_scaled)  # 松弛风格：单点停留 ≥90 分钟
     ticket_scaled = round(ticket * cfg["ticket_scale"], 1) if ticket else 0.0
+
+    matched = tags & set(preferences)
+    if matched:
+        desc = f"{desc}（适合{'、'.join(sorted(matched))}）"
 
     end_min = start_min + stay_scaled
     start_str = f"{start_min // 60:02d}:{start_min % 60:02d}"
@@ -249,12 +249,16 @@ def generate_mock_trip(
             items.append(item)
         itinerary.append(DayPlan(day=d, theme=themes[(d - 1) % len(themes)], items=items))
 
-    hotel_per_night = cfg["hotel_per_night"] * max(1, people // 2)
-    hotel_total = hotel_per_night * max(0, days - 1)
-    food_total = cfg["food_per_day"] * people * days
-    transport_total = cfg["transport_per_day"] * people * days
     tickets_total = round(sum(it.cost_estimate for day in itinerary for it in day.items) * people, 1)
-    other_total = round(max(0.0, budget_total - (hotel_total + food_total + transport_total + tickets_total)) * 0.15, 1)
+    # 成本随预算缩放：门票先占，剩余按风格比例拆分，使估算总额落在预算 ±10% 内
+    if tickets_total > budget_total * 0.5:
+        tickets_total = round(budget_total * 0.35, 1)
+    remaining = max(budget_total * 0.95 - tickets_total, budget_total * 0.2)
+    hotel_share, food_share, transport_share, other_share = cfg["cost_shares"]
+    hotel_total = round(remaining * hotel_share, 1)
+    food_total = round(remaining * food_share, 1)
+    transport_total = round(remaining * transport_share, 1)
+    other_total = round(remaining * other_share, 1)
 
     summary = f"{city}{days}天{cfg['label']}行程，覆盖{len(preferences) or '经典'}偏好，适合{people}人同行。"
 
