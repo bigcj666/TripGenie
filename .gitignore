@@ -22,6 +22,10 @@ npm-debug.log*
 .env.*
 !.env.example
 
+## 社区数据
+server/data/*.sqlite
+server/data/*.sqlite-*
+
 ## 构建产物
 android/
 ios/
