@@ -1,5 +1,6 @@
 import { Photo } from '../components/Photo'
 import { PLACES } from '../data/places'
+import { PREFERENCE_TAGS } from '../format'
 import type { CreateDraft } from '../nav'
 
 interface SavedScreenProps {
@@ -49,13 +50,25 @@ export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate 
       </div>
       {city ? (
         <div className="dock">
-          <button type="button" className="primary" onClick={() => onCreate({ city })}>
+          <button type="button" className="primary" onClick={() => onCreate({ city, prefs: prefsFromSaved(savedIds, city) })}>
             用收藏生成{city}攻略
           </button>
         </div>
       ) : null}
     </div>
   )
+}
+
+function prefsFromSaved(ids: string[], city: string): string[] | undefined {
+  const tags = new Set<string>()
+  for (const id of ids) {
+    const place = PLACES.find((item) => item.id === id && item.city === city)
+    if (!place) continue
+    for (const tag of place.tags) {
+      if ((PREFERENCE_TAGS as readonly string[]).includes(tag)) tags.add(tag)
+    }
+  }
+  return tags.size > 0 ? [...tags] : undefined
 }
 
 function dominantCity(ids: string[]): string | null {

@@ -24,25 +24,29 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
   const [loading, setLoading] = useState(true)
   const [composing, setComposing] = useState<Trip | null>(null)
   const [picking, setPicking] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
 
-  const reload = (): void => {
+  useEffect(() => {
+    let stop = false
     setLoading(true)
-    void listCommunity().then(
+    void listCommunity(city === '全部' ? undefined : city).then(
       (rows) => {
+        if (stop) return
         setPosts(rows)
         setError(null)
         setLoading(false)
       },
       (err: unknown) => {
+        if (stop) return
+        setPosts([])
         setError(err instanceof Error ? err.message : '社区暂时连不上')
         setLoading(false)
       },
     )
-  }
-
-  useEffect(() => {
-    reload()
-  }, [])
+    return () => {
+      stop = true
+    }
+  }, [city, reloadKey])
 
   useEffect(() => {
     if (!draft) return
@@ -60,8 +64,8 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
         onDone={(share) => {
           onPublished(share)
           setComposing(null)
-          setCity('全部')
-          reload()
+          if (city === '全部') setReloadKey((value) => value + 1)
+          else setCity('全部')
         }}
       />
     )
@@ -79,8 +83,6 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
       />
     )
   }
-
-  const shown = city === '全部' ? posts : posts.filter((post) => post.city === city)
 
   return (
     <div className="page">
@@ -100,9 +102,9 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
           ))}
         </div>
         <p className="hint pad">看看别人怎么排的，也可以把自己的攻略发上来。导入后保存在这台设备的攻略里。</p>
-        {error ? <p className="hint pad">{error}</p> : null}
+        {error ? <p className="error pad">{error}</p> : null}
         {loading && posts.length === 0 ? <p className="muted pad">正在加载…</p> : null}
-        {!loading && !error && shown.length === 0 ? (
+        {!loading && !error && posts.length === 0 ? (
           <div className="empty">
             <p>还没有人分享{city === '全部' ? '' : city}的攻略</p>
             <button type="button" className="primary" onClick={() => setPicking(true)}>
@@ -111,7 +113,7 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
           </div>
         ) : (
           <div className="post-list">
-            {shown.map((post) => (
+            {posts.map((post) => (
               <button key={post.id} type="button" className="post-card" onClick={() => onOpen(post.id)}>
                 <span className="post-who">
                   <i>{post.author.slice(0, 1)}</i>

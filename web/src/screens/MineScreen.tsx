@@ -41,6 +41,7 @@ function MainPanel({
   onOpen,
   onOpenSaved,
 }: MineScreenProps & { onOpen: (panel: Panel) => void }): React.ReactElement {
+  const [confirming, setConfirming] = useState(false)
   return (
     <div className="page">
       <header className="nav">
@@ -76,8 +77,21 @@ function MainPanel({
         </section>
 
         <section className="set-group">
-          <button type="button" className="set-row danger" onClick={onClear} disabled={tripCount === 0}>
-            清空攻略
+          <button
+            type="button"
+            className="set-row danger"
+            onClick={() => {
+              if (tripCount === 0) return
+              if (!confirming) {
+                setConfirming(true)
+                return
+              }
+              onClear()
+              setConfirming(false)
+            }}
+            disabled={tripCount === 0}
+          >
+            {confirming ? '确认清空' : '清空攻略'}
           </button>
         </section>
         <p className="hint pad">{service}。昵称和城市只保存在这台设备上。</p>
