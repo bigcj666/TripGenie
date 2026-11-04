@@ -67,7 +67,11 @@ export function DetailScreen({ trip, onBack, onShare }: DetailScreenProps): Reac
           交通 {yuan(view.cost_breakdown.transport)} · 餐饮 {yuan(view.cost_breakdown.food)} · 门票{' '}
           {yuan(view.cost_breakdown.tickets)} · 住宿 {yuan(view.cost_breakdown.hotel)}
         </p>
-        {view.preferences.includes('自定义') || view.preferences.includes('分享') ? <p className="hint pad">{view.summary}</p> : null}
+        {view.summary ? <p className="hint pad">{view.summary}</p> : null}
+        {view.route_rationale ? <p className="hint pad">{view.route_rationale}</p> : null}
+        {supplemented(trip, view) ? (
+          <p className="hint pad">饭馆和酒店是打开时按这座城市补上的，已避开和原有安排重叠的时段。上面的费用拆分仍是生成时的数字。</p>
+        ) : null}
         {onShare ? (
           <button type="button" className="share-row" onClick={onShare}>
             分享到社区
@@ -127,6 +131,10 @@ export function DetailScreen({ trip, onBack, onShare }: DetailScreenProps): Reac
       ) : null}
     </div>
   )
+}
+
+function supplemented(source: Trip, view: Trip): boolean {
+  return view.itinerary.some((day, index) => day.items.length !== source.itinerary[index]?.items.length)
 }
 
 function priceLabel(type: string, cost: number): string {

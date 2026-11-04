@@ -167,7 +167,7 @@ function SlotRow({ slot, hint, onPick }: { slot: TimeSlot; hint: string; onPick:
   return (
     <button type="button" className="slot" onClick={onPick}>
       <em>
-        {slot.start}–{slot.end} · {SLOT_LABEL[slot.kind]}
+        {stay ? `${slot.start}–当晚` : `${slot.start}–${slot.end}`} · {SLOT_LABEL[slot.kind]}
       </em>
       {place ? (
         <span className="slot-place">
@@ -175,7 +175,7 @@ function SlotRow({ slot, hint, onPick }: { slot: TimeSlot; hint: string; onPick:
           <b>{place.name}</b>
         </span>
       ) : (
-        <b>{meal ? '附近吃' : stay ? '选一家酒店' : '选择景点'}</b>
+        <b>{meal ? '附近吃' : stay ? '这天不住' : '选择景点'}</b>
       )}
       <small>{place ? `${priceNote}点这里更换` : hint}</small>
     </button>

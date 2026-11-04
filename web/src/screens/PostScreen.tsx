@@ -77,7 +77,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
         <span />
       </header>
       <div className="scroll with-dock">
-        {error ? <p className="hint pad">{error}</p> : null}
+        {error ? <p className="error pad">{error}</p> : null}
         {!post && !error ? <p className="muted pad">正在加载…</p> : null}
         {post ? (
           <>

@@ -34,12 +34,16 @@ export interface ItineraryItem {
   tips: string;
   transport_to_next: TransportToNext | null;
   sources: SourceRef[];
+  ticket_price?: number;
+  fact_status?: 'sourced' | 'estimated';
+  closed_weekdays?: number[];
 }
 
 export interface DayPlan {
   day: number;
   theme: string;
   items: ItineraryItem[];
+  zone?: string;
 }
 
 export interface CostBreakdown {
@@ -48,6 +52,13 @@ export interface CostBreakdown {
   tickets: number;
   hotel: number;
   other: number;
+}
+
+export interface TripMetrics {
+  stop_count: number;
+  transit_min: number;
+  ticket_total: number;
+  walk_ratio: number;
 }
 
 export interface Trip {
@@ -61,6 +72,8 @@ export interface Trip {
   summary: string;
   itinerary: DayPlan[];
   cost_breakdown: CostBreakdown;
+  metrics?: TripMetrics;
+  route_rationale?: string;
 }
 
 export interface GenerateResponse {
