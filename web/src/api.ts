@@ -25,8 +25,9 @@ export interface CommunityDetail extends CommunityPost {
   comments: CommunityComment[]
 }
 
-export async function listCommunity(): Promise<CommunityPost[]> {
-  const data = await readJson<{ posts: CommunityPost[] }>('/api/community')
+export async function listCommunity(city?: string): Promise<CommunityPost[]> {
+  const query = city ? `?city=${encodeURIComponent(city)}` : ''
+  const data = await readJson<{ posts: CommunityPost[] }>(`/api/community${query}`)
   return data.posts
 }
 

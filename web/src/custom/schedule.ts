@@ -204,20 +204,19 @@ export function withStay(trip: Trip): Trip {
   const hotels = listed(trip.city, '酒店')
   if (restaurants.length === 0 && hotels.length === 0) return trip
   const itinerary = trip.itinerary.map((day, index) => {
-    const named = day.items.filter((item) => restaurants.some((place) => item.title.includes(place.name))).length
-    const extra: ItineraryItem[] = []
-    if (restaurants.length > 0 && named < 1) {
-      extra.push(diningItem(restaurants[index % restaurants.length], '12:00', '13:10', '午餐'))
+    const items = [...day.items]
+    const meals = items.filter((item) => item.type === 'meal' || restaurants.some((place) => item.title.includes(place.name))).length
+    if (restaurants.length > 0 && meals < 1) {
+      insertAround(items, 12 * 60, 70, (start) => diningItem(restaurants[index % restaurants.length], fromMinutes(start), fromMinutes(start + 70), '午餐'))
     }
-    if (restaurants.length > 0 && named < 2) {
-      extra.push(diningItem(restaurants[(index + 1) % restaurants.length], '18:00', '19:10', '晚餐'))
+    if (restaurants.length > 0 && meals < 2) {
+      insertAround(items, 18 * 60, 70, (start) => diningItem(restaurants[(index + 1) % restaurants.length], fromMinutes(start), fromMinutes(start + 70), '晚餐'))
     }
     const overnight = trip.days === 1 || index < trip.itinerary.length - 1
-    if (overnight && hotels.length > 0 && !day.items.some((item) => item.type === 'hotel')) {
-      extra.push(stayItem(hotels[index % hotels.length], trip.days === 1))
+    if (overnight && hotels.length > 0 && !items.some((item) => item.type === 'hotel')) {
+      insertAround(items, 21 * 60, 60, (start) => stayItem(hotels[index % hotels.length], trip.days === 1, start))
     }
-    const items = [...day.items, ...extra].sort((a, b) => a.time_start.localeCompare(b.time_start))
-    return { ...day, items }
+    return { ...day, items: relink(items) }
   })
   return { ...trip, itinerary }
 }
@@ -247,7 +246,7 @@ function slotsFor(date: string, weather: DayWeather, city: string, dayIndex: num
         ['dinner', '17:40', '18:50'],
         ['evening', '19:10', '20:40'],
       ]
-  if (overnight) rows.push(['hotel', '21:00', '次日'])
+  if (overnight) rows.push(['hotel', '21:00', '23:00'])
   return rows.map(([kind, start, end]) => ({
     id: `${date}-${kind}`,
     kind,
@@ -259,7 +258,11 @@ function slotsFor(date: string, weather: DayWeather, city: string, dayIndex: num
 
 function itemsFor(day: CustomDay, city: string, dayTrip: boolean): ItineraryItem[] {
   const center = CENTERS[city] ?? { lat: 30.27, lng: 120.16 }
-  const chosen = day.slots.filter((slot) => MEAL_KINDS.has(slot.kind) || slot.kind === 'hotel' || slot.placeId)
+  const chosen = day.slots.filter((slot) => {
+    if (slot.kind === 'hotel') return Boolean(slot.placeId)
+    if (MEAL_KINDS.has(slot.kind)) return true
+    return Boolean(slot.placeId)
+  })
   const points = chosen.map((_, index) => anchor(chosen, index, center))
   const items = chosen.map((slot, index) => slotItem(slot, placeOf(slot), points[index], day.weather, center, dayTrip))
   for (let index = 0; index < items.length - 1; index += 1) {
@@ -310,8 +313,8 @@ function slotItem(
     .filter(Boolean)
     .join('')
   return {
-    time_start: slot.start,
-    time_end: slot.end,
+    time_start: clockOr(slot.start, '09:00'),
+    time_end: stay ? fromMinutes(minutes(slot.start) + 60) : clockOr(slot.end, '10:00'),
     type: stay ? 'hotel' : meal ? 'meal' : 'attraction',
     title,
     poi: { name: title, lat: point.lat, lng: point.lng, adcode: '' },
@@ -379,10 +382,10 @@ function diningItem(place: Place, start: string, end: string, meal: string): Iti
   }
 }
 
-function stayItem(place: Place, dayTrip: boolean): ItineraryItem {
+function stayItem(place: Place, dayTrip: boolean, startMin = 21 * 60): ItineraryItem {
   return {
-    time_start: '21:00',
-    time_end: '次日',
+    time_start: fromMinutes(startMin),
+    time_end: fromMinutes(startMin + 60),
     type: 'hotel',
     title: place.name,
     poi: { name: place.name, lat: place.lat, lng: place.lng, adcode: '' },
@@ -474,7 +477,56 @@ async function geocode(city: string): Promise<{ lat: number; lng: number }> {
 
 function minutes(value: string): number {
   const [hour, minute] = value.split(':').map(Number)
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return Number.NaN
   return hour * 60 + minute
+}
+
+function fromMinutes(total: number): string {
+  const clamped = Math.max(0, Math.min(23 * 60 + 59, Math.round(total)))
+  const hour = Math.floor(clamped / 60)
+  const minute = clamped % 60
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+}
+
+function clockOr(value: string, fallback: string): string {
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : fallback
+}
+
+function rangesOverlap(start: number, end: number, items: ItineraryItem[]): boolean {
+  return items.some((item) => {
+    const itemStart = minutes(item.time_start)
+    const itemEnd = minutes(item.time_end)
+    if (!Number.isFinite(itemStart) || !Number.isFinite(itemEnd)) return false
+    return start < itemEnd - 5 && end > itemStart + 5
+  })
+}
+
+function insertAround(items: ItineraryItem[], preferStart: number, duration: number, make: (start: number) => ItineraryItem): void {
+  const latest = 22 * 60 + 30 - duration
+  const candidates = [preferStart]
+  for (const item of items) {
+    const end = minutes(item.time_end)
+    if (Number.isFinite(end)) candidates.push(end + 15)
+  }
+  candidates.sort((left, right) => Math.abs(left - preferStart) - Math.abs(right - preferStart))
+  const seen = new Set<number>()
+  for (const start of candidates) {
+    const rounded = Math.round(start / 5) * 5
+    if (seen.has(rounded) || rounded < 8 * 60 || rounded > latest) continue
+    seen.add(rounded)
+    if (rangesOverlap(rounded, rounded + duration, items)) continue
+    items.push(make(rounded))
+    return
+  }
+}
+
+function relink(items: ItineraryItem[]): ItineraryItem[] {
+  const sorted = [...items].sort((left, right) => left.time_start.localeCompare(right.time_start))
+  return sorted.map((item, index) => {
+    const next = sorted[index + 1]
+    if (!next) return { ...item, transport_to_next: null }
+    return { ...item, transport_to_next: legBetween(item.poi, next.poi) }
+  })
 }
 
 function km(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {

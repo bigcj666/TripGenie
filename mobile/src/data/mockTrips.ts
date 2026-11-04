@@ -81,8 +81,16 @@ function buildItem(poi: PoiSeed, startMin: number, style: TravelStyle, isLast: b
   const ticketScale = style === 'economy' ? 0.35 : 1;
   const matchedTags = poi.tags.filter((t) => preferences.includes(t));
   const desc = matchedTags.length > 0 ? `${poi.desc}（适合${matchedTags.join('、')}）` : poi.desc;
-  const endMin = startMin + stay;
-  const fmt = (m: number): string => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  let endMin = startMin + stay;
+  if (endMin >= 24 * 60 || endMin <= startMin) {
+    endMin = Math.min(startMin + Math.min(stay, 50), 23 * 60 + 59);
+    if (endMin <= startMin) endMin = Math.min(startMin + 1, 23 * 60 + 59);
+    stay = Math.max(1, endMin - startMin);
+  }
+  const fmt = (m: number): string => {
+    const capped = Math.max(0, Math.min(m, 23 * 60 + 59));
+    return `${String(Math.floor(capped / 60)).padStart(2, '0')}:${String(capped % 60).padStart(2, '0')}`;
+  };
   const type: ItemType = poi.tags.includes('美食') ? 'meal' : 'attraction';
   const gap = isLast ? 0 : 20;
   const item: ItineraryItem = {

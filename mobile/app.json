@@ -11,12 +11,21 @@
     },
     "android": {
       "package": "com.tuling.tripgenie",
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#0F766E"
       }
     },
     "ios": {
-      "bundleIdentifier": "com.tuling.tripgenie"
+      "bundleIdentifier": "com.tuling.tripgenie",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
+    },
+    "web": {
+      "bundler": "metro"
     }
   }
 }

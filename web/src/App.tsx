@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { fetchHealth, type HealthInfo } from './api'
 import { TabBar } from './components/TabBar'
 import { forShare } from './custom/schedule'
 import { PLACES } from './data/places'
+import { PREFERENCE_TAGS } from './format'
 import type { CreateDraft, Tab } from './nav'
 import { CityScreen } from './screens/CityScreen'
 import { CommunityScreen } from './screens/CommunityScreen'
@@ -78,6 +79,7 @@ export function App(): React.ReactElement {
 
   const push = (route: Route): void => setStack((current) => [...current, route])
   const pop = (): void => setStack((current) => current.slice(0, -1))
+  const clearShareDraft = useCallback(() => setShareDraft(null), [])
 
   const toggleSave = (placeId: string): void => {
     const next = savedIds.includes(placeId) ? savedIds.filter((id) => id !== placeId) : [...savedIds, placeId]
@@ -121,7 +123,11 @@ export function App(): React.ReactElement {
           saved={savedIds.includes(top.id)}
           onBack={pop}
           onToggleSave={() => toggleSave(top.id)}
-          onCreate={() => push({ page: 'create', draft: { city: placeCityOf(top.id) } })}
+          onCreate={() => {
+            const place = PLACES.find((item) => item.id === top.id)
+            const prefs = place?.tags.filter((tag) => (PREFERENCE_TAGS as readonly string[]).includes(tag))
+            push({ page: 'create', draft: { city: place?.city, prefs: prefs && prefs.length > 0 ? prefs : undefined } })
+          }}
         />
       ) : null}
       {top?.page === 'create' ? (
@@ -235,7 +241,7 @@ export function App(): React.ReactElement {
           author={profile.name}
           trips={trips}
           draft={shareDraft}
-          onDraftHandled={() => setShareDraft(null)}
+          onDraftHandled={clearShareDraft}
           onOpen={(id) => push({ page: 'post', id })}
           onPublished={(share) => {
             const next = [share, ...shares.filter((item) => item.id !== share.id)].slice(0, 30)
@@ -278,10 +284,6 @@ export function App(): React.ReactElement {
   )
 }
 
-function placeCityOf(placeId: string): string | undefined {
-  return PLACES.find((place) => place.id === placeId)?.city
-}
-
 function DetailRoute({
   id,
   trips,
@@ -314,7 +316,7 @@ function DetailRoute({
 function serviceLabel(health: HealthInfo | { state: 'unknown' }): string {
   if (health.state === 'down') return '生成服务未连接'
   if (health.state === 'unknown') return '正在连接生成服务'
-  if (health.engine === 'mock') return '生成服务已连接'
+  if (health.engine === 'mock') return '演示引擎已连接，没有大模型密钥'
   if (health.engine === 'deepseek') return '生成服务已连接 · DeepSeek'
   if (health.engine === 'glm') return '生成服务已连接 · 智谱'
   return '生成服务已连接'

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
 import { generateTrip } from '../api'
-import { PREFERENCE_TAGS, yuan } from '../format'
+import { PREFERENCE_TAGS, STYLE_META, yuan } from '../format'
 import type { CreateDraft } from '../nav'
-import type { GenerateResponse } from '../types'
+import type { GenerateResponse, TravelStyle } from '../types'
 
 interface CreateScreenProps {
   draft: CreateDraft
@@ -19,7 +19,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
   const [people, setPeople] = useState(2)
   const [budget, setBudget] = useState('1500')
   const [prefs, setPrefs] = useState<string[]>(draft.prefs ?? savedPrefs)
-  const [styleAll, setStyleAll] = useState(true)
+  const [style, setStyle] = useState<TravelStyle | 'all'>('all')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -41,7 +41,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
       people,
       budget_total: budgetNum,
       preferences: prefs,
-      style: styleAll ? 'all' : 'relaxed',
+      style,
     })
       .then(onDone)
       .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : '生成失败'))
@@ -99,10 +99,18 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
             </button>
           ))}
         </div>
-        <label className="check">
-          <input type="checkbox" checked={styleAll} onChange={(event) => setStyleAll(event.target.checked)} />
-          同时给紧凑、松弛、省钱三套
-        </label>
+        <p className="label">方案</p>
+        <div className="chips">
+          <button type="button" className={style === 'all' ? 'chip on' : 'chip'} onClick={() => setStyle('all')}>
+            三套一起
+          </button>
+          {(['compact', 'relaxed', 'economy'] as const).map((item) => (
+            <button key={item} type="button" className={style === item ? 'chip on' : 'chip'} onClick={() => setStyle(item)}>
+              {STYLE_META[item].name}
+            </button>
+          ))}
+        </div>
+        <p className="hint">{style === 'all' ? '一次给出紧凑、松弛、省钱三套。' : STYLE_META[style].line}</p>
         {error ? <p className="error">{error}</p> : null}
         <button className="primary" type="submit" disabled={loading}>
           {loading ? '正在生成…' : '生成攻略'}
