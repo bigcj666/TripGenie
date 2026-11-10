@@ -17,6 +17,7 @@ import { PlaceScreen } from './screens/PlaceScreen'
 import { PlansScreen } from './screens/PlansScreen'
 import { PostScreen } from './screens/PostScreen'
 import { SavedScreen } from './screens/SavedScreen'
+import { ShareScreen } from './screens/ShareScreen'
 import { TripsScreen } from './screens/TripsScreen'
 import {
   loadPack,
@@ -48,6 +49,7 @@ type Route =
   | { page: 'post'; id: string }
 
 export function App(): React.ReactElement {
+  const shareId = useShareId()
   const [tab, setTab] = useState<Tab>('home')
   const [stack, setStack] = useState<Route[]>([])
   const [trips, setTrips] = useState<SavedTrip[]>(() => loadTrips())
@@ -58,6 +60,8 @@ export function App(): React.ReactElement {
   const [shares, setShares] = useState<ShareRecord[]>(() => loadShares())
   const [shareDraft, setShareDraft] = useState<Trip | null>(null)
   const [health, setHealth] = useState<HealthInfo | { state: 'unknown' }>({ state: 'unknown' })
+  const [coverTab, setCoverTab] = useState(false)
+  const [flash, setFlash] = useState<string | null>(null)
 
   useEffect(() => {
     let stop = false
@@ -101,11 +105,20 @@ export function App(): React.ReactElement {
   }
 
   const openTrip = (id: string): void => {
+    setFlash(null)
     push({ page: 'detail', id })
   }
 
+  if (shareId) {
+    return (
+      <div className="phone">
+        <ShareScreen id={shareId} />
+      </div>
+    )
+  }
+
   return (
-    <div className="phone">
+    <div className={top?.page === 'detail' ? 'phone is-wide' : 'phone'}>
       {top?.page === 'city' ? (
         <CityScreen
           city={top.city}
@@ -171,11 +184,17 @@ export function App(): React.ReactElement {
         <DetailRoute
           id={top.id}
           trips={trips}
+          notice={flash}
           onBack={pop}
           onShare={(trip) => {
             setShareDraft(forShare(trip))
             setStack([])
             setTab('community')
+          }}
+          onSave={(row) => {
+            const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
+            setTrips(next)
+            saveTrips(next)
           }}
         />
       ) : null}
@@ -186,6 +205,10 @@ export function App(): React.ReactElement {
           onPlace={(placeId) => push({ page: 'place', id: placeId })}
           onToggleSave={toggleSave}
           onCreate={(draft) => push({ page: 'create', draft })}
+          onBrowse={() => {
+            setStack([])
+            setTab('home')
+          }}
         />
       ) : null}
       {top?.page === 'post' ? (
@@ -200,6 +223,7 @@ export function App(): React.ReactElement {
             const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
             setTrips(next)
             saveTrips(next)
+            setFlash('已导入到「攻略」，可以打开查看或再调整。')
             push({ page: 'detail', id: copy.trip_id })
           }}
           onRemoved={() => {
@@ -228,6 +252,7 @@ export function App(): React.ReactElement {
         <TripsScreen
           trips={trips}
           onCreate={() => push({ page: 'create', draft: {} })}
+          onCommunity={() => setTab('community')}
           onOpen={openTrip}
           onDelete={(id) => {
             const next = trips.filter((item) => item.id !== id)
@@ -248,6 +273,14 @@ export function App(): React.ReactElement {
             setShares(next)
             saveShares(next)
           }}
+          onImport={(trip) => {
+            const copy: Trip = { ...trip, trip_id: `import-${Date.now()}` }
+            const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'community', trip: copy }
+            const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
+            setTrips(next)
+            saveTrips(next)
+          }}
+          onCoverChange={setCoverTab}
         />
       ) : null}
       {!top && tab === 'mine' ? (
@@ -277,9 +310,10 @@ export function App(): React.ReactElement {
             saveTrips([])
           }}
           onOpenSaved={() => push({ page: 'saved' })}
+          onCoverChange={setCoverTab}
         />
       ) : null}
-      {!top ? <TabBar tab={tab} onChange={setTab} /> : null}
+      {!top && !coverTab ? <TabBar tab={tab} onChange={(next) => { setCoverTab(false); setTab(next) }} /> : null}
     </div>
   )
 }
@@ -287,13 +321,17 @@ export function App(): React.ReactElement {
 function DetailRoute({
   id,
   trips,
+  notice,
   onBack,
   onShare,
+  onSave,
 }: {
   id: string
   trips: SavedTrip[]
+  notice: string | null
   onBack: () => void
   onShare: (trip: Trip) => void
+  onSave: (row: SavedTrip) => void
 }): React.ReactElement {
   const saved = trips.find((item) => item.id === id)
   if (!saved) {
@@ -306,11 +344,39 @@ function DetailRoute({
           <h1>攻略</h1>
           <span />
         </header>
-        <p className="muted pad">找不到这套攻略。</p>
+        <div className="empty">
+          <h2>这套行程不在本机。</h2>
+          <p>生成一套，或从社区导入别人的安排，就会出现在这里。</p>
+          <button type="button" className="primary" onClick={onBack}>
+            返回
+          </button>
+        </div>
       </div>
     )
   }
-  return <DetailScreen trip={saved.trip} onBack={onBack} onShare={() => onShare(saved.trip)} />
+  return (
+    <DetailScreen
+      trip={saved.trip}
+      notice={notice}
+      onBack={onBack}
+      onShare={() => onShare(saved.trip)}
+      onSave={() => onSave(saved)}
+    />
+  )
+}
+
+function useShareId(): string | null {
+  const read = (): string | null => {
+    const match = window.location.pathname.match(/^\/share\/([^/]+)\/?$/)
+    return match ? decodeURIComponent(match[1]) : null
+  }
+  const [id, setId] = useState(read)
+  useEffect(() => {
+    const onPop = (): void => setId(read())
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+  return id
 }
 
 function serviceLabel(health: HealthInfo | { state: 'unknown' }): string {

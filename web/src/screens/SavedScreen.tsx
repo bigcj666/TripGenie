@@ -9,9 +9,10 @@ interface SavedScreenProps {
   onPlace: (placeId: string) => void
   onToggleSave: (placeId: string) => void
   onCreate: (draft: CreateDraft) => void
+  onBrowse: () => void
 }
 
-export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate }: SavedScreenProps): React.ReactElement {
+export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate, onBrowse }: SavedScreenProps): React.ReactElement {
   const places = PLACES.filter((place) => savedIds.includes(place.id))
   const city = dominantCity(savedIds)
 
@@ -27,8 +28,11 @@ export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate 
       <div className="scroll">
         {places.length === 0 ? (
           <div className="empty">
-            <p>还没有收藏的景点</p>
-            <small className="muted">在首页或城市页点「收藏」。自定义行程里，收藏的点会排在前面。</small>
+            <h2>还没有收藏的景点。</h2>
+            <p>浏览行程时收藏，方便下次自己排。</p>
+            <button type="button" className="primary" onClick={onBrowse}>
+              去首页看看
+            </button>
           </div>
         ) : (
           places.map((place) => (

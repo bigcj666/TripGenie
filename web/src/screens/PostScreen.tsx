@@ -55,10 +55,6 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
 
   const remove = (): void => {
     if (!token) return
-    if (!confirming) {
-      setConfirming(true)
-      return
-    }
     void removeCommunity(id, token)
       .then(onRemoved)
       .catch((err: unknown) => {
@@ -104,7 +100,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
             ))}
             <section className="post-talk">
               <h2>留言</h2>
-              {post.comments.length === 0 ? <p className="muted">还没有人说话。</p> : null}
+              {post.comments.length === 0 ? <p className="muted">还没有留言。先说一句这套行程好在哪，或哪里想改。</p> : null}
               {post.comments.map((comment) => (
                 <article key={comment.id} className="comment">
                   <b>{comment.author}</b>
@@ -118,7 +114,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
                 id="comment-body"
                 maxLength={120}
                 value={text}
-                placeholder={`以${author}的名字说一句`}
+                placeholder="这套行程你想怎么走？"
                 onChange={(event) => setText(event.target.value)}
               />
               <button type="button" className="primary" disabled={sending || !text.trim()} onClick={send}>
@@ -128,15 +124,28 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
           </>
         ) : null}
       </div>
+      {confirming ? (
+        <div className="dialog">
+          <article>
+            <p>撤回后他人将无法再看到这套分享，确定撤回吗？</p>
+            <button type="button" className="primary" onClick={remove}>
+              撤回
+            </button>
+            <button type="button" className="ghost" onClick={() => setConfirming(false)}>
+              取消
+            </button>
+          </article>
+        </div>
+      ) : null}
       {post ? (
         <div className="dock dock-row">
           {token ? (
-            <button type="button" className="ghost" onClick={remove}>
-              {confirming ? '确认撤回' : '撤回'}
+            <button type="button" className="ghost" onClick={() => setConfirming(true)}>
+              撤回
             </button>
           ) : null}
           <button type="button" className="primary" onClick={() => onImport(post.trip)}>
-            导入这套攻略
+            导入到我的攻略
           </button>
         </div>
       ) : null}

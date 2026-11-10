@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { PREFERENCE_TAGS } from '../format'
 import { PACK_ITEMS, type Profile } from '../storage'
@@ -17,12 +17,18 @@ interface MineScreenProps {
   onTogglePack: (item: string) => void
   onClear: () => void
   onOpenSaved: () => void
+  onCoverChange?: (covered: boolean) => void
 }
 
 const CITIES = ['杭州', '成都', '西安']
 
 export function MineScreen(props: MineScreenProps): React.ReactElement {
   const [panel, setPanel] = useState<Panel>('main')
+  const coverChange = props.onCoverChange
+  useEffect(() => {
+    coverChange?.(panel !== 'main')
+    return () => coverChange?.(false)
+  }, [panel, coverChange])
   if (panel === 'name') return <NamePanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'city') return <CityPanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'prefs') return <PrefsPanel {...props} onBack={() => setPanel('main')} />
@@ -54,7 +60,7 @@ function MainPanel({
           <i>{profile.name.slice(0, 1)}</i>
           <span>
             <b>{profile.name}</b>
-            <small>本地账号 · {profile.city}</small>
+            <small>{profile.city}</small>
           </span>
         </button>
 
@@ -94,7 +100,8 @@ function MainPanel({
             {confirming ? '确认清空' : '清空攻略'}
           </button>
         </section>
-        <p className="hint pad">{service}。昵称和城市只保存在这台设备上。</p>
+        <p className="hint pad">{service}</p>
+        <p className="hint pad">昵称会显示在你分享的行程上。</p>
       </div>
     </div>
   )
@@ -120,6 +127,7 @@ function NamePanel({ profile, onProfile, onBack }: MineScreenProps & { onBack: (
           onBack()
         }}
       >
+        <p className="hint">昵称会显示在你分享的行程上。</p>
         <label htmlFor="nick">显示名称</label>
         <input id="nick" value={name} maxLength={12} onChange={(event) => setName(event.target.value)} />
         <button className="primary" type="submit">
@@ -171,7 +179,7 @@ function PrefsPanel({ prefs, onTogglePref, onBack }: MineScreenProps & { onBack:
         <span />
       </header>
       <div className="scroll">
-        <p className="hint pad">生成攻略时会带上这里选中的偏好。</p>
+        <p className="hint pad">这些偏好会在下次生成时作为默认条件。</p>
         <div className="set-group set-pad">
           {PREFERENCE_TAGS.map((tag) => (
             <button
@@ -201,6 +209,15 @@ function PackPanel({ packed, onTogglePack, onBack }: MineScreenProps & { onBack:
         <span />
       </header>
       <div className="scroll">
+        {packed.length === 0 ? (
+          <div className="empty">
+            <h2>行前清单</h2>
+            <p>出发前把要带的和要订的记在这里。</p>
+            <button type="button" className="primary" onClick={() => onTogglePack(PACK_ITEMS[0])}>
+              记下第一项
+            </button>
+          </div>
+        ) : null}
         <div className="set-group">
           {PACK_ITEMS.map((item) => {
             const on = packed.includes(item)

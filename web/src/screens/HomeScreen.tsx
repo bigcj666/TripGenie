@@ -81,32 +81,35 @@ export function HomeScreen({
         </label>
       </header>
       <div className="scroll">
-        <section className="home-panel">
-          <div className="home-actions">
-            <button type="button" className="home-action" onClick={() => onCreate(draftFromQuery(keyword))}>
-              <b>{keyword ? `生成「${keyword}」` : '生成攻略'}</b>
-              <small>一次给出三套走法</small>
-            </button>
-            <button type="button" className="home-action quiet" onClick={() => onCustom(draftFromQuery(keyword).city)}>
-              <b>自己排</b>
-              <small>天气、三餐、住宿</small>
-            </button>
-          </div>
-          {latest && !keyword ? (
-            <button type="button" className="home-recent" onClick={() => onOpenGuide(latest.id)}>
-              <span>最近</span>
-              <b>
-                {latest.trip.city} · {tripKindName(latest.trip)} · {latest.trip.days}天
-              </b>
-            </button>
-          ) : null}
+        <section className="home-hero">
+          <h1>把想去的地方，排成走得通的几天。</h1>
+          {/* 副标题按 14px 排，430px 内大约三行；若仍被裁切，需推广改一版，不要改这句。 */}
+          <p>国内城市 1–5 日自由行。一次给出紧凑、松弛、省钱三套行程，按天看时间、花费和路线顺序。</p>
         </section>
+        <div className="home-cta">
+          <button type="button" className="primary" onClick={() => onCreate(draftFromQuery(keyword))}>
+            {keyword ? `生成行程` : '生成行程'}
+          </button>
+          <button type="button" className="ghost" onClick={() => onCustom(draftFromQuery(keyword).city)}>
+            自己排
+          </button>
+          <p className="home-note">按出发日天气排好时间段，景点留给你自己选；饭馆和住宿也可以随时更换。</p>
+        </div>
+        {latest && !keyword ? (
+          <button type="button" className="home-recent" onClick={() => onOpenGuide(latest.id)}>
+            <span>最近</span>
+            <b>
+              {latest.trip.city} · {tripKindName(latest.trip)} · {latest.trip.days}天
+            </b>
+          </button>
+        ) : null}
 
         <section>
           <div className="sec-head">
-            <h2>目的地</h2>
+            <h2>先从这些城市开始。</h2>
           </div>
-          {cities.length === 0 ? <p className="muted pad">没有这个城市，仍可以用上面的按钮生成攻略</p> : null}
+          <p className="hint pad">杭州、成都、西安可直接生成；其他城市也能出行程，部分地点为估算。</p>
+          {cities.length === 0 ? <p className="muted pad">没有这个城市，仍可以用上面的按钮生成行程</p> : null}
           <div className="hscroll">
             {cities.map((city) => (
               <button key={city.name} type="button" className="city-card" onClick={() => onCity(city.name)}>
@@ -120,9 +123,15 @@ export function HomeScreen({
           </div>
         </section>
 
+        <section className="trust" aria-label="可以对照的三点">
+          <div>一次三套，数字可对比</div>
+          <div>按片区排程，减少折返</div>
+          <div>可保存、可分享、可导入</div>
+        </section>
+
         <section className="block">
           <div className="sec-head">
-            <h2>{keyword ? '景点' : '攻略里常见的点'}</h2>
+            <h2>{keyword ? '景点' : '常见的地方'}</h2>
           </div>
           {places.length === 0 ? <p className="muted pad">没有匹配的景点</p> : null}
           {places.map((place) => (
@@ -148,6 +157,7 @@ export function HomeScreen({
             </div>
           ))}
         </section>
+        <p className="page-foot">生成后可按天查看，并分享到社区。</p>
       </div>
     </div>
   )

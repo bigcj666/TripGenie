@@ -134,7 +134,7 @@ export async function loadWeather(city: string, start: string, days: number): Pr
     }
   } catch {
     return {
-      warning: '天气暂时取不到，时间和三餐按一般节奏排好了，出发前再看一眼预报。',
+      warning: '时间已按一般节奏排列，出发前建议再看当天预报。',
       days: dates.map(unknownWeather),
     }
   }

@@ -108,6 +108,9 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
       ) : (
         <>
           <div className="scroll with-dock">
+            <p className="hint pad">
+              已选 {picked} / 建议 {plan.reduce((sum, day) => sum + day.slots.filter((slot) => slot.kind !== 'breakfast' && slot.kind !== 'lunch' && slot.kind !== 'dinner' && slot.kind !== 'hotel').length, 0)}
+            </p>
             {warning ? <p className="hint pad">{warning}</p> : null}
             <div className="day-line">
               {plan.map((day, index) => (
@@ -132,15 +135,15 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
                     {current.weather.pace}。{current.weather.carry}。
                   </p>
                 </section>
-                {current.slots.map((slot) => (
-                  <SlotRow key={slot.id} slot={slot} hint={pickHint(slot.kind, current.weather)} onPick={() => setPicker({ dayIndex, slotId: slot.id })} />
+                {current.slots.map((slot, index) => (
+                  <SlotRow key={slot.id} index={index + 1} slot={slot} hint={pickHint(slot.kind, current.weather)} onPick={() => setPicker({ dayIndex, slotId: slot.id })} />
                 ))}
               </>
             ) : null}
           </div>
           <div className="dock">
             <button type="button" className="primary" onClick={() => onDone(composeTrip(city.trim(), people, plan))}>
-              保存攻略{picked > 0 ? ` · 已选 ${picked} 个景点` : ''}
+              保存到攻略
             </button>
           </div>
         </>
@@ -159,18 +162,19 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
   )
 }
 
-function SlotRow({ slot, hint, onPick }: { slot: TimeSlot; hint: string; onPick: () => void }): React.ReactElement {
+function SlotRow({ index, slot, hint, onPick }: { index: number; slot: TimeSlot; hint: string; onPick: () => void }): React.ReactElement {
   const place = slot.placeId ? PLACES.find((item) => item.id === slot.placeId) : undefined
   const meal = slot.kind === 'breakfast' || slot.kind === 'lunch' || slot.kind === 'dinner'
   const stay = slot.kind === 'hotel'
   const priceNote = place?.price ? `约 ${place.price} 元${stay ? '/间' : meal ? '/人' : ''} · ` : ''
   return (
-    <button type="button" className="slot" onClick={onPick}>
+    <button type="button" className={place ? 'slot filled' : 'slot empty-slot'} onClick={onPick}>
       <em>
         {stay ? `${slot.start}–当晚` : `${slot.start}–${slot.end}`} · {SLOT_LABEL[slot.kind]}
       </em>
       {place ? (
         <span className="slot-place">
+          <span className="num-badge">{index}</span>
           <Photo src={place.image} alt={place.name} />
           <b>{place.name}</b>
         </span>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { listCommunity, publishCommunity, type CommunityPost } from '../api'
+import { listCommunity, publishCommunity, readCommunity, type CommunityPost } from '../api'
 import { forShare } from '../custom/schedule'
-import { STYLE_META, tripKindName } from '../format'
+import { tripKindName } from '../format'
 import type { SavedTrip, ShareRecord } from '../storage'
-import type { TravelStyle, Trip } from '../types'
+import type { Trip } from '../types'
 
 interface CommunityScreenProps {
   author: string
@@ -13,11 +13,13 @@ interface CommunityScreenProps {
   onDraftHandled: () => void
   onOpen: (id: string) => void
   onPublished: (share: ShareRecord) => void
+  onImport: (trip: Trip) => void
+  onCoverChange?: (covered: boolean) => void
 }
 
 const CITIES = ['全部', '杭州', '成都', '西安']
 
-export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, onPublished }: CommunityScreenProps): React.ReactElement {
+export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, onPublished, onImport, onCoverChange }: CommunityScreenProps): React.ReactElement {
   const [posts, setPosts] = useState<CommunityPost[]>([])
   const [city, setCity] = useState('全部')
   const [error, setError] = useState<string | null>(null)
@@ -25,6 +27,11 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
   const [composing, setComposing] = useState<Trip | null>(null)
   const [picking, setPicking] = useState(false)
   const [reloadKey, setReloadKey] = useState(0)
+  const [notice, setNotice] = useState<string | null>(null)
+
+  useEffect(() => {
+    onCoverChange?.(Boolean(composing || picking))
+  }, [composing, picking, onCoverChange])
 
   useEffect(() => {
     let stop = false
@@ -64,6 +71,7 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
         onDone={(share) => {
           onPublished(share)
           setComposing(null)
+          setNotice('已分享到社区。如需撤回，请在这台设备上操作。')
           if (city === '全部') setReloadKey((value) => value + 1)
           else setCity('全部')
         }}
@@ -101,31 +109,59 @@ export function CommunityScreen({ author, trips, draft, onDraftHandled, onOpen, 
             </button>
           ))}
         </div>
-        <p className="hint pad">看看别人怎么排的，也可以把自己的攻略发上来。导入后保存在这台设备的攻略里。</p>
+        <h2 className="day-theme">看看别人怎么排。</h2>
+        <p className="hint pad">浏览同行行程，留言交流，或导入到自己的攻略。</p>
+        {notice ? <p className="banner">{notice}</p> : null}
         {error ? <p className="error pad">{error}</p> : null}
         {loading && posts.length === 0 ? <p className="muted pad">正在加载…</p> : null}
         {!loading && !error && posts.length === 0 ? (
           <div className="empty">
-            <p>还没有人分享{city === '全部' ? '' : city}的攻略</p>
+            {city === '全部' ? (
+              <>
+                <h2>社区还很安静。</h2>
+                <p>把你排好的行程发出来，给同行人一个可直接导入的参考。</p>
+              </>
+            ) : (
+              <>
+                <h2>这个城市还没有分享。</h2>
+                <p>这个城市还没有分享，换个城市，或先发一套你的行程。</p>
+              </>
+            )}
             <button type="button" className="primary" onClick={() => setPicking(true)}>
-              分享我的攻略
+              分享我的行程
             </button>
           </div>
         ) : (
           <div className="post-list">
             {posts.map((post) => (
-              <button key={post.id} type="button" className="post-card" onClick={() => onOpen(post.id)}>
+              <article key={post.id} className="post-card static">
                 <span className="post-who">
                   <i>{post.author.slice(0, 1)}</i>
                   <b>{post.author}</b>
                   <small>{postedAt(post.created_at)}</small>
                 </span>
                 <strong>
-                  {post.city} · {post.days}天{styleName(post.style) ? ` · ${styleName(post.style)}` : ''}
+                  {post.city} · {post.days}天 · {post.people}人
                 </strong>
                 <p>{post.note || post.summary}</p>
-                <em>{post.comment_count} 条留言</em>
-              </button>
+                <div className="post-actions">
+                  <button type="button" onClick={() => onOpen(post.id)}>
+                    查看详情
+                  </button>
+                  <button
+                    type="button"
+                    className="primary"
+                    onClick={() => {
+                      void readCommunity(post.id).then((detail) => {
+                        onImport(detail.trip)
+                        setNotice('已导入到「攻略」，可以打开查看或再调整。')
+                      })
+                    }}
+                  >
+                    导入到我的攻略
+                  </button>
+                </div>
+              </article>
             ))}
           </div>
         )}
@@ -148,8 +184,11 @@ function PickList({ trips, onBack, onChoose }: { trips: SavedTrip[]; onBack: () 
         <p className="hint pad">发出去之后，别人可以留言，也可以导入到自己的攻略里。</p>
         {trips.length === 0 ? (
           <div className="empty">
-            <p>还没有可分享的攻略</p>
-            <small className="muted">先生成一套，或自己排一套。</small>
+            <h2>还没有保存的行程。</h2>
+            <p>生成一套，或从社区导入别人的安排，就会出现在这里。</p>
+            <button type="button" className="primary" onClick={onBack}>
+              返回
+            </button>
           </div>
         ) : (
           <div className="set-group">
@@ -219,11 +258,6 @@ function Compose({
       </div>
     </div>
   )
-}
-
-function styleName(style: string): string {
-  if (style === 'compact' || style === 'relaxed' || style === 'economy') return STYLE_META[style as TravelStyle].name
-  return ''
 }
 
 function postedAt(iso: string): string {

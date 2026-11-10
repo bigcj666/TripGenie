@@ -70,6 +70,29 @@ async function readJson<T>(url: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>
 }
 
+export async function saveSharedTrip(trip: Trip): Promise<{ id: string }> {
+  return tripJson('/api/trips', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(trip),
+  })
+}
+
+export async function readSharedTrip(id: string): Promise<Trip> {
+  return tripJson<Trip>(`/api/trips/${encodeURIComponent(id)}`)
+}
+
+async function tripJson<T>(url: string, init?: RequestInit): Promise<T> {
+  let response: Response
+  try {
+    response = await fetch(url, init)
+  } catch {
+    throw new Error('分享链接暂时没有连上。')
+  }
+  if (!response.ok) throw new Error(await readError(response))
+  return response.json() as Promise<T>
+}
+
 export async function generateTrip(body: GenerateRequest): Promise<GenerateResponse> {
   let response: Response
   try {
