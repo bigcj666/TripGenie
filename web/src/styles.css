@@ -4,10 +4,10 @@
   line-height: 1.4;
   background: #c8c8cc;
   font-size: 15px;
-  /* 色条待产品确认，不是定稿品牌色，只在这里改。 */
-  --style-compact: #3b6ff5;
-  --style-relaxed: #2a9b8f;
-  --style-economy: #c4843a;
+  /* 风格色条已确认：紧凑、松弛、省钱。改色只改这三行。 */
+  --style-compact: #3B6FF5;
+  --style-relaxed: #2A9B8F;
+  --style-economy: #C4843A;
 }
 
 * { box-sizing: border-box; }
@@ -587,9 +587,9 @@ img { display: block; max-width: 100%; }
 .pad-x { padding: 0 16px; }
 
 .plan-row { padding: 14px 16px; border-bottom: 1px solid #f0f0f2; }
-.mark { width: 4px; align-self: stretch; border-radius: 4px; background: #1c1c1e; }
-.mark.relaxed { background: #8e8e93; }
-.mark.economy { background: #c47b2b; }
+.mark { width: 4px; align-self: stretch; border-radius: 4px; background: var(--style-compact); }
+.mark.relaxed { background: var(--style-relaxed); }
+.mark.economy { background: var(--style-economy); }
 .day-line { display: flex; gap: 8px; padding: 8px 16px; background: #fff; overflow: auto; }
 .day-line button { border: 0; background: #f2f2f4; border-radius: 999px; padding: 6px 12px; }
 .day-theme { padding: 10px 16px 0; font-weight: 650; }
