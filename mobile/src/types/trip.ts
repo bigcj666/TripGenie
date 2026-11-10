@@ -74,6 +74,9 @@ export interface Trip {
   cost_breakdown: CostBreakdown;
   metrics?: TripMetrics;
   route_rationale?: string;
+  date_start?: string | null;
+  must_visit?: string[];
+  budget_includes_hotel?: boolean;
 }
 
 export interface GenerateResponse {
@@ -89,4 +92,7 @@ export interface GenerateRequest {
   people: number;
   preferences: string[];
   style: TravelStyle | 'all';
+  date_start?: string;
+  must_visit?: string[];
+  budget_includes_hotel?: boolean;
 }

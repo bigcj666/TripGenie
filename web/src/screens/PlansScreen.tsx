@@ -74,7 +74,7 @@ export function PlansScreen({ result, onBack, onOpen }: PlansScreenProps): React
 }
 
 function engineLine(engine: string): string {
-  if (engine === 'mock') return '演示引擎：没有大模型密钥，这套行程来自杭州、成都、西安的内置数据。'
+  if (engine === 'mock') return '这套行程按杭州、成都、西安的目录排好，说明来自目录简介。'
   if (engine === 'deepseek') return '由 DeepSeek 写成。点位仍以返回的行程为准。'
   if (engine === 'glm') return '由智谱写成。点位仍以返回的行程为准。'
   return '行程已生成。'

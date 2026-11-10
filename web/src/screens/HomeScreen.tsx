@@ -38,7 +38,11 @@ export function HomeScreen({
   )
   const places = useMemo(() => {
     if (!keyword) {
-      return PLACES.filter((place) => ['断桥残雪', '熊猫基地', '兵马俑', '灵隐寺', '锦里古街', '西安城墙'].includes(place.name))
+      const featured = ['duanqiao', 'panda', 'terracotta', 'lingyin', 'jinli', 'wall']
+      return featured.flatMap((id) => {
+        const place = PLACES.find((item) => item.id === id)
+        return place ? [place] : []
+      })
     }
     return PLACES.filter(
       (place) => place.name.includes(keyword) || place.city.includes(keyword) || place.tags.some((tag) => tag.includes(keyword)),

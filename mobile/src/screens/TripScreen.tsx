@@ -40,7 +40,7 @@ export function TripScreen({ trip, engine, onBack, onOpenDay }: TripScreenProps)
           交通 {yuan(trip.cost_breakdown.transport)} · 餐饮 {yuan(trip.cost_breakdown.food)} · 门票{' '}
           {yuan(trip.cost_breakdown.tickets)} · 住宿 {yuan(trip.cost_breakdown.hotel)}
         </Text>
-        {engine === 'mock' ? <Text style={styles.note}>这份行程来自演示数据，和网页连同一个后端时内容一致。</Text> : null}
+        {engine === 'mock' ? <Text style={styles.note}>这份行程按城市目录排成，和网页连同一个后端时内容一致。</Text> : null}
         {trip.itinerary.map((day, index) => {
           const first = day.items[0];
           return (

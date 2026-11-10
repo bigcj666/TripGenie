@@ -52,7 +52,7 @@ export function warningsFor(warnings: string[] | undefined, style?: TravelStyle)
 export function engineLabel(state: 'ok' | 'down' | 'unknown', engine?: string): string {
   if (state === 'down') return '生成服务未连接。生成时会改用手机里的演示数据。';
   if (state === 'unknown') return '正在连接生成服务…';
-  if (engine === 'mock') return '演示引擎已连接（无大模型密钥）';
+  if (engine === 'mock') return '目录行程已就绪，说明来自城市目录';
   if (engine === 'deepseek') return '生成服务已连接 · DeepSeek';
   if (engine === 'glm') return '生成服务已连接 · 智谱';
   return '生成服务已连接';

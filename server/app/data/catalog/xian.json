@@ -1,0 +1,827 @@
+{
+  "city": "西安",
+  "city_slug": "xian",
+  "updated": "2026-11-10",
+  "timezone": "Asia/Shanghai",
+  "zones": [
+    {
+      "id": "inner-city",
+      "name": "明城墙内",
+      "suburban": false
+    },
+    {
+      "id": "qujiang-xiaozhai",
+      "name": "曲江/小寨",
+      "suburban": false
+    },
+    {
+      "id": "lintong",
+      "name": "临潼",
+      "suburban": true,
+      "note": "兵马俑与华清宫同区，不与城区混排；建议当日返回城区住宿"
+    }
+  ],
+  "places": [
+    {
+      "id": "bell",
+      "city": "西安",
+      "name": "钟楼",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.261,
+      "lng": 108.942,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 60,
+      "ticket_price": 30,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "登楼需购票；与鼓楼联票常见 50 元。预约渠道为「西安市钟鼓楼博物馆」公众号，具体开闭时间以馆方当日为准。",
+      "blurb": "明城墙里的城市原点，四条大街在这里交汇。登楼主要是为了看格局，不必停留过久。",
+      "description": "明城墙里的城市原点，四条大街在这里交汇。登楼主要是为了看格局，不必停留过久。",
+      "tips": "单票 30 元，鼓楼也是 30 元，联票 50 元更划算。只在楼下拍照不花钱。",
+      "image": "/places/bell.jpg",
+      "sources": [
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "gulou",
+      "city": "西安",
+      "name": "鼓楼",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2617,
+      "lng": 108.9394,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 50,
+      "ticket_price": 30,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "与钟楼同属钟鼓楼博物馆，联票 50 元。开放时间以馆方为准。",
+      "blurb": "钟楼西侧的鼓楼，楼下就是北院门和回民街入口，登楼视野对着城隍庙和巷道，适合和钟楼打联票。",
+      "description": "钟楼西侧的鼓楼，楼下就是北院门和回民街入口，登楼视野对着城隍庙和巷道，适合和钟楼打联票。",
+      "tips": "若已买 50 元联票，不要再单独购 30 元。只逛回民街可以不登楼。",
+      "image": "/places/bell.jpg",
+      "sources": [
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "muslim",
+      "city": "西安",
+      "name": "回民街（北院门）",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.262,
+      "lng": 108.937,
+      "tags": [
+        "美食"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "街区全天开放，店铺午晚最密。",
+      "blurb": "北院门一带最出名的回坊主街，肉夹馍、泡馍、甑糕的招牌很密，也是游客陷阱最集中的一段。",
+      "description": "北院门一带最出名的回坊主街，肉夹馍、泡馍、甑糕的招牌很密，也是游客陷阱最集中的一段。",
+      "tips": "街区免费。主街价高、味道不稳定。想吃得更本地，往西走到洒金桥；正餐优先同盛祥、春发生，不要只跟网红店排队。",
+      "image": "/places/muslim.jpg",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "sajinqiao",
+      "city": "西安",
+      "name": "洒金桥",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2635,
+      "lng": 108.9335,
+      "tags": [
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "街道全天可走，早点摊上午更齐，晚上也有小吃。",
+      "blurb": "回坊西侧更生活化的一条街，油茶麻花、酸汤水饺和甑糕常被本地人提起，用来对照北院门主街的游客区。",
+      "description": "回坊西侧更生活化的一条街，油茶麻花、酸汤水饺和甑糕常被本地人提起，用来对照北院门主街的游客区。",
+      "tips": "免费。人均可以控制在 15–50 元。和回民街写在同一片区，方便在攻略里直接对比，而不是把「回民街」当成唯一选择。",
+      "image": "/places/muslim.jpg",
+      "sources": [
+        {
+          "title": "公开攻略对洒金桥与回民街的对照",
+          "url": "https://www.163.com/dy/article/L1I10CHD0556KNUW.html"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "wall",
+      "city": "西安",
+      "name": "西安城墙（永宁门）",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.254,
+      "lng": 108.946,
+      "tags": [
+        "人文",
+        "自然"
+      ],
+      "duration_min": 120,
+      "ticket_price": 54,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "永宁门、文昌门、勿幕门、中山门、建国门等 8:00–22:00；北门、东门、西门、含光门、尚德门及东北/西北城角 8:00–20:00。网络实名预约，可购未来 7 日票，常见已无线下窗口。每月 15 日有免费开放日（需提前领取）。",
+      "blurb": "中国保存最完整的古城墙之一，永宁门是最常用的登城口。可以骑行一圈，也可以只走南门到文昌门的一段。",
+      "description": "中国保存最完整的古城墙之一，永宁门是最常用的登城口。可以骑行一圈，也可以只走南门到文昌门的一段。",
+      "tips": "成人 54 元，学生 27 元。租自行车另计。亲子或松弛日不必骑满 13 公里，走一段一样能看到城与巷的对照。",
+      "image": "/places/wall.jpg",
+      "sources": [
+        {
+          "title": "西安本地宝·2026城墙开放时间与票价",
+          "url": "http://xa.bendibao.com/tour/2021525/84926.shtm"
+        },
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "beilin",
+      "city": "西安",
+      "name": "西安碑林博物馆",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2553,
+      "lng": 108.9528,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 100,
+      "ticket_price": 85,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常见 9:00 开馆，17:00 停止检票，18:30 闭馆。须身份证实名预约，可提前约 5 天通过官网、官方微信或支付宝购票。",
+      "blurb": "孔庙和碑石集中地，石台孝经、颜柳欧褚的刻石是主线。在城墙东南靠近，适合不想只逛街的人把文化点补上。",
+      "description": "孔庙和碑石集中地，石台孝经、颜柳欧褚的刻石是主线。在城墙东南靠近，适合不想只逛街的人把文化点补上。",
+      "tips": "全票 85 元，半票 42 元。请勿触摸碑石或使用闪光灯。门票偏高，省钱日可改永兴坊或只走城墙外的环城公园。",
+      "image": "",
+      "sources": [
+        {
+          "title": "西安碑林博物馆官网",
+          "url": "https://www.beilin-museum.com/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "yongxingfang",
+      "city": "西安",
+      "name": "永兴坊",
+      "type": "attraction",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2588,
+      "lng": 108.9647,
+      "tags": [
+        "美食",
+        "购物"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "开放式街区，店铺午晚营业更齐。",
+      "blurb": "明城墙东侧附近的非遗美食坊，摔碗酒和各地陕西小吃集中，热闹，也偏表演化。",
+      "description": "明城墙东侧附近的非遗美食坊，摔碗酒和各地陕西小吃集中，热闹，也偏表演化。",
+      "tips": "进坊免费，消费另计。摔碗酒是表演项目，不必勉强参加。与永宁门、碑林需短途公交或出租车，仍放在明城墙内片区，方便东线收尾。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "tongshengxiang",
+      "city": "西安",
+      "name": "同盛祥（钟楼店）",
+      "type": "restaurant",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2634,
+      "lng": 108.9432,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 55,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以钟楼店营业时间为准，饭点需等位。",
+      "blurb": "钟楼附近的牛羊肉泡馍老字号，自己掰馍更入味，是城墙内比回民街摊位更稳的一顿正餐。",
+      "description": "钟楼附近的牛羊肉泡馍老字号，自己掰馍更入味，是城墙内比回民街摊位更稳的一顿正餐。",
+      "tips": "人均约 47–75 元，按 55 元计。把馍掰小再交回锅里。不必再同时打卡多家泡馍店。",
+      "image": "",
+      "sources": [
+        {
+          "title": "携程点评·同盛祥钟楼店",
+          "url": "https://you.ctrip.com/food/xian7/5067010-dianping117082276.html"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "laosunjia",
+      "city": "西安",
+      "name": "老孙家（北院门）",
+      "type": "restaurant",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2641,
+      "lng": 108.9396,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 58,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以北院门店时间为准。",
+      "blurb": "回民街边上的泡馍老店，名气大，位置方便，价格和体验都更偏游客区。",
+      "description": "回民街边上的泡馍老店，名气大，位置方便，价格和体验都更偏游客区。",
+      "tips": "人均按 58 元估。可以吃，但不要把它当成「最地道」；预算或口味更在意时，优先同盛祥或去洒金桥吃小吃。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "chunfasheng",
+      "city": "西安",
+      "name": "春发生（南院门）",
+      "type": "restaurant",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2576,
+      "lng": 108.9478,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 55,
+      "ticket_price": 0,
+      "price": 45,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以南院门店时间为准。",
+      "blurb": "南院门附近的葫芦头泡馍老字号，和羊肉泡馍不是同一道菜，适合想在钟楼南边换一种口味的人。",
+      "description": "南院门附近的葫芦头泡馍老字号，和羊肉泡馍不是同一道菜，适合想在钟楼南边换一种口味的人。",
+      "tips": "人均按目录 45 元。离永宁门近，适合走完城墙后来吃。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "defachang",
+      "city": "西安",
+      "name": "德发长（钟楼）",
+      "type": "restaurant",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2605,
+      "lng": 108.9435,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 50,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以钟楼店时间为准。",
+      "blurb": "钟楼附近以饺子出名的老字号，种类多，适合不想全员只吃泡馍、又想留在城墙内的一餐。",
+      "description": "钟楼附近以饺子出名的老字号，种类多，适合不想全员只吃泡馍、又想留在城墙内的一餐。",
+      "tips": "人均按 50 元估。观光店属性仍在，点几个招牌即可，不必配一桌宴席。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-xa",
+      "city": "西安",
+      "name": "全季酒店（南大街店）",
+      "type": "hotel",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2598,
+      "lng": 108.9472,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 360,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "钟楼南边的全季酒店，去城墙、南院门和钟楼都近，适合作为西安城区的默认住宿。",
+      "description": "钟楼南边的全季酒店，去城墙、南院门和钟楼都近，适合作为西安城区的默认住宿。",
+      "tips": "房价按目录 360 元/间夜。临潼当天建议返回此店或北院门美居，不必默认在临潼过夜。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "meiju-xa",
+      "city": "西安",
+      "name": "美居酒店（北院门店）",
+      "type": "hotel",
+      "zone": "明城墙内",
+      "suburban": false,
+      "lat": 34.2584,
+      "lng": 108.9402,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 480,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "鼓楼、北院门附近的美居，晚饭后走路就能回，适合把住宿放在回坊一侧。",
+      "description": "鼓楼、北院门附近的美居，晚饭后走路就能回，适合把住宿放在回坊一侧。",
+      "tips": "房价按目录 480 元/间夜。比南大街全季高一档，看预算选择。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "museum",
+      "city": "西安",
+      "name": "陕西历史博物馆",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.223,
+      "lng": 108.958,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 150,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "2026-03-15 至 2026-11-14：8:30–19:00（18:00 停止检票），期间取消周一闭馆。2026-11-15 至 2027-03-14：9:00–17:30（16:30 停止检票），恢复每周一闭馆（法定节假日除外）。门票免费，须在「陕西历史博物馆」公众号预约；提前 5 天（含当天）17:00 放票，一证一日一票，一账号每单最多 5 人。",
+      "blurb": "小寨东路 91 号，周秦汉唐文物最集中的一处，何家村窖藏几乎是必看。要提前抢票，不要指望当天现场进入。",
+      "description": "小寨东路 91 号，周秦汉唐文物最集中的一处，何家村窖藏几乎是必看。要提前抢票，不要指望当天现场进入。",
+      "tips": "基本陈列免费但必须预约，这是西安最难抢的门票之一。closed_weekdays 含周一（0）；若出发日在 2026-11-15 之前的延时开放期，周一可能仍开放，以官网公告为准。壁画珍品等临展可能另收费。与大雁塔同片区，但不要和兵马俑排同一天。",
+      "image": "/places/museum.jpg",
+      "sources": [
+        {
+          "title": "陕西历史博物馆·参观公告",
+          "url": "https://www.sxhm.com/guide/visit.html"
+        },
+        {
+          "title": "陕西历史博物馆·2026年延时开放公告",
+          "url": "https://www.sxhm.com/guide/visit/detail/18620.html"
+        },
+        {
+          "title": "华商网转载·陕历博2026-11-15起冬季开放并恢复周一闭馆",
+          "url": "https://news.hsw.cn/system/2026/1109/1972917.shtml"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "tang",
+      "city": "西安",
+      "name": "大雁塔",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.218,
+      "lng": 108.964,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 35,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "大慈恩寺常见旺季 8:00–18:00、淡季 8:00–17:30；登塔常见旺季 8:30–17:30、淡季 9:00–17:00。寺票需在「大慈恩寺」小程序预约；登塔票通常现场购买。周一常闭塔检修（法定假日除外），仍可能入寺。",
+      "blurb": "大慈恩寺里的唐塔，是曲江的地标。只看寺院和塔身、或再登塔，是两种完全不同的停留时间；夜间灯光在北广场和不夜城一侧看，不必再进寺。",
+      "description": "大慈恩寺里的唐塔，是曲江的地标。只看寺院和塔身、或再登塔，是两种完全不同的停留时间；夜间灯光在北广场和不夜城一侧看，不必再进寺。",
+      "tips": "原 id「tang」由「大雁塔·大唐不夜城」拆出，本条只保留大雁塔。寺票 10 元，登塔 25 元，目录按完整体验合计 35 元；只进寺不登塔按 10 元即可。与不夜城已分开。",
+      "image": "/places/wildgoose.jpg",
+      "sources": [
+        {
+          "title": "西安本地宝·大慈恩寺/大雁塔门票预约",
+          "url": "http://xa.bendibao.com/tour/2021520/ly84810.shtm"
+        },
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "dayan-square",
+      "city": "西安",
+      "name": "大雁塔北广场",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.221,
+      "lng": 108.9642,
+      "tags": [
+        "亲子",
+        "网红打卡"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "广场免费开放。音乐喷泉常见场次约 12:00、16:00、19:00、21:00（各约 10 分钟）；设备检修时周二可能取消 12:00、16:00 场，以「西安大唐不夜城」官方微博为准。",
+      "blurb": "塔北的免费广场，音乐喷泉是最明确的停留理由，也是连接陕历博和大雁塔的步行缓冲带。",
+      "description": "塔北的免费广场，音乐喷泉是最明确的停留理由，也是连接陕历博和大雁塔的步行缓冲带。",
+      "tips": "免费、无需预约。最佳观看位置常在地铁口朝塔方向。不要和收费的大唐芙蓉园搞混。",
+      "image": "/places/tang.jpg",
+      "sources": [
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "buyecheng",
+      "city": "西安",
+      "name": "大唐不夜城",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.2158,
+      "lng": 108.964,
+      "tags": [
+        "人文",
+        "网红打卡",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "开放式街区，通常 24 小时可进入；演出和商铺按各自时间，晚上灯光后最值得走。",
+      "blurb": "大雁塔南面的步行街，雕塑、铺面和夜间灯光是主体。白天可以过，真正该留的是晚饭后这一段。",
+      "description": "大雁塔南面的步行街，雕塑、铺面和夜间灯光是主体。白天可以过，真正该留的是晚饭后这一段。",
+      "tips": "免费、无需预约。已从原合并点「大雁塔·大唐不夜城」拆出，新 id 为 buyecheng。不用买门票，也不要用大雁塔的寺票来代表这里。",
+      "image": "/places/tang.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xiaoyanta",
+      "city": "西安",
+      "name": "西安博物院（小雁塔）",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.2394,
+      "lng": 108.9411,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 100,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "常见夏令 8:30–18:00（17:00 停止检票），冬令 11月15日–3月14日 9:00–17:30（16:30 停止入园）。免费需预约，放票规则近年有调整（如提前 5 天、18:00 更新），以「西安博物院」公众号为准。常规周一闭馆（法定假日除外），出发前请再确认。",
+      "blurb": "荐福寺小雁塔和西安博物院在同一个园子里，比大雁塔安静，也免费，适合作为曲江/小寨日的补充或陕历博约满时的备选。",
+      "description": "荐福寺小雁塔和西安博物院在同一个园子里，比大雁塔安静，也免费，适合作为曲江/小寨日的补充或陕历博约满时的备选。",
+      "tips": "免费预约。与陕历博、大雁塔有几公里距离，按市内公交衔接。周一风险较大，请核对闭馆日。",
+      "image": "",
+      "sources": [
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "furongyuan",
+      "city": "西安",
+      "name": "大唐芙蓉园",
+      "type": "attraction",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.2089,
+      "lng": 108.9728,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 120,
+      "ticket_price": 120,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常见 9:00–22:00，最晚约 21:00 入园。演出《梦回大唐》另购票。",
+      "blurb": "曲江的大型唐风主题园，晚上灯光和演出是主要理由。门票偏高，不是这条线的必选项。",
+      "description": "曲江的大型唐风主题园，晚上灯光和演出是主要理由。门票偏高，不是这条线的必选项。",
+      "tips": "成人 120 元，半价 60 元。紧凑日若已含陕历博、大雁塔、不夜城，可不进园；想看园内演出再单独加。与不夜城相邻，仍属同一片区。",
+      "image": "",
+      "sources": [
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "shanxishi",
+      "city": "西安",
+      "name": "陕拾叁（大唐不夜城一带）",
+      "type": "restaurant",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.2162,
+      "lng": 108.9638,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 70,
+      "ticket_price": 0,
+      "price": 90,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以门店当日时间为准，晚饭需排队或预订。",
+      "blurb": "大雁塔、不夜城附近的陕西菜餐厅，锅盔、脍和分量都更像正餐，适合把曲江当天的晚餐留在片区内。",
+      "description": "大雁塔、不夜城附近的陕西菜餐厅，锅盔、脍和分量都更像正餐，适合把曲江当天的晚餐留在片区内。",
+      "tips": "人均按 90 元估。请核对不夜城/大雁塔附近门店；若想更省，改小寨或北广场一带的面和肉夹馍。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xiaozhai-noodle",
+      "city": "西安",
+      "name": "小寨陕西面食",
+      "type": "restaurant",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.2245,
+      "lng": 108.953,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": 35,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "小寨商圈全天有面馆、肉夹馍店。",
+      "blurb": "小寨、陕历博周边的 biangbiang 面、肉夹馍和凉皮，用来给参观博物馆的人一顿快、热、便宜的午餐。",
+      "description": "小寨、陕历博周边的 biangbiang 面、肉夹馍和凉皮，用来给参观博物馆的人一顿快、热、便宜的午餐。",
+      "tips": "人均按 35 元估，适合省钱日。不必指定唯一店名，避开纯景区定价的店即可。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-dayanta",
+      "city": "西安",
+      "name": "全季酒店（西安大雁塔店）",
+      "type": "hotel",
+      "zone": "曲江/小寨",
+      "suburban": false,
+      "lat": 34.22,
+      "lng": 108.961,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 400,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "按大雁塔、小寨一带中档商务酒店估算，方便早去陕历博或晚回不夜城。",
+      "description": "按大雁塔、小寨一带中档商务酒店估算，方便早去陕历博或晚回不夜城。",
+      "tips": "400 元/间夜为同城全季外推，写入前核对门店。全程也可只住南大街全季，当天来回本片区。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "terracotta",
+      "city": "西安",
+      "name": "秦始皇兵马俑博物馆",
+      "type": "attraction",
+      "zone": "临潼",
+      "suburban": true,
+      "lat": 34.384,
+      "lng": 109.278,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 150,
+      "ticket_price": 120,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "淡季 11月16日–次年3月15日 8:30 开始检票、16:30 停止检票；旺季 3月16日–11月15日 8:30–17:00 停止检票。须通过官网或「秦始皇帝陵博物院」「兵马俑票务在线」实名预约。北门入园。门票含丽山园，当日有效，共检票三次。",
+      "blurb": "一号坑是最震撼的部分，二号、三号坑规模较小但内容不同。这一天只留给临潼，不要再塞城墙或回民街。",
+      "description": "一号坑是最震撼的部分，二号、三号坑规模较小但内容不同。这一天只留给临潼，不要再塞城墙或回民街。",
+      "tips": "成人 120 元，学生 60 元；16 岁及以下（中国籍）及 65 岁及以上等政策免票，仍须预约。建议请讲解或租讲解器。门票已含丽山园铜车马，出园后坐免费摆渡车即可，不必另买。进出城按远郊至少 60 分钟、每人 40 元。",
+      "image": "/places/terracotta.jpg",
+      "sources": [
+        {
+          "title": "秦始皇帝陵博物院·购票须知",
+          "url": "https://www.bmy.com.cn/jingtai/bmyweb/ticketing.html?pubDate=20260324"
+        },
+        {
+          "title": "秦始皇帝陵博物院官网",
+          "url": "https://www.bmy.com.cn/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "lishanyuan",
+      "city": "西安",
+      "name": "丽山园（铜车马）",
+      "type": "attraction",
+      "zone": "临潼",
+      "suburban": true,
+      "lat": 34.3818,
+      "lng": 109.256,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "与兵马俑同一张票、同一检票季节。乘免费摆渡车往返。园内电瓶车另收费。",
+      "blurb": "秦始皇陵园范围内的考古遗址公园，铜车马是这里最值得看的一组，和俑坑不在同一片场地，需要单独留时间。",
+      "description": "秦始皇陵园范围内的考古遗址公园，铜车马是这里最值得看的一组，和俑坑不在同一片场地，需要单独留时间。",
+      "tips": "无需另购门票。两处各约 1.5 小时，不要只看俑坑就回城。可上午先俑坑、再来丽山园，或相反以错开人流。",
+      "image": "/places/terracotta.jpg",
+      "sources": [
+        {
+          "title": "秦始皇帝陵博物院·购票须知",
+          "url": "https://www.bmy.com.cn/jingtai/bmyweb/ticketing.html?pubDate=20260324"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huaqing",
+      "city": "西安",
+      "name": "华清宫",
+      "type": "attraction",
+      "zone": "临潼",
+      "suburban": true,
+      "lat": 34.2472,
+      "lng": 109.2119,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 120,
+      "ticket_price": 120,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "官网常见冬季/当前页为 7:30–17:30，17:00 停止售票和入园；旺季或节假日可延至约 18:00–18:40。以华清宫景区当日公告为准。《长恨歌》演出另购票，季节性停演。",
+      "blurb": "骊山脚下的唐离宫，温泉、御汤和西安事变旧址叠在同一园里。和兵马俑同属临潼，适合放在下午，但不要指望再赶回城区赶场。",
+      "description": "骊山脚下的唐离宫，温泉、御汤和西安事变旧址叠在同一园里。和兵马俑同属临潼，适合放在下午，但不要指望再赶回城区赶场。",
+      "tips": "成人 120 元，学生 60 元。看《长恨歌》通常另买演出票，并不自动含园票规则，需以官方说明为准。官方 FAQ 与票务页对关闭时间不完全一致，出发前看 hqc.cn。",
+      "image": "",
+      "sources": [
+        {
+          "title": "华清宫官网·游玩攻略",
+          "url": "https://www.hqc.cn/Play/Raiders/"
+        },
+        {
+          "title": "华清宫票务页（开放时间说明）",
+          "url": "https://www.hqpalaceglobal.com/zh-CN/tickets"
+        },
+        {
+          "title": "西安本地宝·2026景点门票与预约汇总",
+          "url": "https://xa.bendibao.com/tour/jingdianbao/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "lintong-canteen",
+      "city": "西安",
+      "name": "临潼景区餐饮",
+      "type": "restaurant",
+      "zone": "临潼",
+      "suburban": true,
+      "lat": 34.3842,
+      "lng": 109.2765,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": 50,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "兵马俑园区及周边午餐时段有食堂和餐馆。",
+      "blurb": "兵马俑出园后的午餐点，图的是把这一餐留在临潼，避免中午往返市区。",
+      "description": "兵马俑出园后的午餐点，图的是把这一餐留在临潼，避免中午往返市区。",
+      "tips": "人均按 50 元估。园外周边宰客和价格虚高常见，优先馆内或正规食堂，点简单套餐即可，不要跟拉客去「特色宴」。晚上建议返回城区住宿。",
+      "image": "",
+      "sources": [
+        {
+          "title": "秦始皇帝陵博物院·购票须知",
+          "url": "https://www.bmy.com.cn/jingtai/bmyweb/ticketing.html?pubDate=20260324"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    }
+  ]
+}

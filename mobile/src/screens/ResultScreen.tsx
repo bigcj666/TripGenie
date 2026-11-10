@@ -128,7 +128,7 @@ function styleLabel(style: TravelStyle): string {
 function engineLine(engine: string | undefined): string {
   if (engine === 'deepseek') return '由 DeepSeek 写成';
   if (engine === 'glm') return '由智谱写成';
-  if (engine === 'mock') return '演示引擎：没有密钥时与网页一样走内置数据；若写了连不上后端，则是手机里的备份';
+  if (engine === 'mock') return '和网页一样按城市目录排行程；若连不上后端，则是手机里的备份';
   return '行程已生成';
 }
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from enum import Enum
 from typing import Optional
 from uuid import uuid4
@@ -21,6 +22,11 @@ class ItemType(str, Enum):
     TRANSPORT = "transport"
     HOTEL = "hotel"
     FREE = "free"
+
+
+class FactStatus(str, Enum):
+    SOURCED = "sourced"
+    ESTIMATED = "estimated"
 
 
 class TransportMode(str, Enum):
@@ -56,10 +62,21 @@ class ItineraryItem(BaseModel):
     poi: Poi
     duration_min: int = Field(ge=1, le=720)
     cost_estimate: float = Field(ge=0)
+    ticket_price: float = Field(default=0, ge=0, description="景点人均门票；餐饮为 0")
+    fact_status: FactStatus = FactStatus.ESTIMATED
+    closed_weekdays: list[int] = Field(default_factory=list, description="0=周一 … 6=周日")
     description: str = ""
     tips: str = ""
     transport_to_next: Optional[TransportToNext] = None
     sources: list[SourceRef] = Field(default_factory=list)
+
+    @field_validator("closed_weekdays")
+    @classmethod
+    def _check_closed(cls, days: list[int]) -> list[int]:
+        for day in days:
+            if day < 0 or day > 6:
+                raise ValueError(f"闭馆日非法: {day}")
+        return days
 
     @model_validator(mode="after")
     def _check_time_order(self) -> "ItineraryItem":
@@ -75,6 +92,7 @@ def _to_minutes(hhmm: str) -> int:
 
 class DayPlan(BaseModel):
     day: int = Field(ge=1, le=30)
+    zone: str = ""
     theme: str = Field(min_length=1)
     items: list[ItineraryItem] = Field(min_length=2, max_length=6)
 
@@ -88,6 +106,13 @@ class DayPlan(BaseModel):
                     f"Day{self.day} 时段重叠: {prev.title}({prev.time_end}) 与 {cur.title}({cur.time_start})"
                 )
         return self
+
+
+class TripMetrics(BaseModel):
+    stop_count: int = Field(default=0, ge=0)
+    transit_min: int = Field(default=0, ge=0)
+    ticket_total: float = Field(default=0, ge=0)
+    walk_ratio: float = Field(default=0, ge=0, le=1)
 
 
 class CostBreakdown(BaseModel):
@@ -110,9 +135,27 @@ class Trip(BaseModel):
     budget_total: float = Field(gt=0)
     style: TravelStyle
     preferences: list[str] = Field(default_factory=list)
+    date_start: Optional[str] = None
+    must_visit: list[str] = Field(default_factory=list)
+    budget_includes_hotel: bool = False
     summary: str = ""
+    route_rationale: str = ""
+    metrics: TripMetrics = Field(default_factory=TripMetrics)
     itinerary: list[DayPlan]
     cost_breakdown: CostBreakdown
+
+    @field_validator("date_start")
+    @classmethod
+    def _check_date(cls, value: object) -> object:
+        if value is None or value == "":
+            return None
+        if not isinstance(value, str):
+            raise ValueError("date_start 应为 YYYY-MM-DD")
+        try:
+            datetime.strptime(value, "%Y-%m-%d")
+        except ValueError as exc:
+            raise ValueError("date_start 应为有效日期 YYYY-MM-DD") from exc
+        return value
 
     @model_validator(mode="after")
     def _check_days(self) -> "Trip":
@@ -131,6 +174,35 @@ class GenerateRequest(BaseModel):
     people: int = Field(ge=1, le=20)
     preferences: list[str] = Field(default_factory=list)
     style: TravelStyle | str = "all"
+    date_start: Optional[str] = None
+    must_visit: list[str] = Field(default_factory=list)
+    budget_includes_hotel: bool = False
+
+    @field_validator("date_start")
+    @classmethod
+    def _check_date(cls, value: object) -> object:
+        if value is None or value == "":
+            return None
+        if not isinstance(value, str):
+            raise ValueError("date_start 应为 YYYY-MM-DD")
+        try:
+            datetime.strptime(value, "%Y-%m-%d")
+        except ValueError as exc:
+            raise ValueError("date_start 应为有效日期 YYYY-MM-DD") from exc
+        return value
+
+    @field_validator("must_visit")
+    @classmethod
+    def _check_must_visit(cls, names: list[str]) -> list[str]:
+        cleaned: list[str] = []
+        for name in names:
+            text = str(name).strip()
+            if not text:
+                raise ValueError("必去地名不能是空的")
+            cleaned.append(text)
+        if len(cleaned) > 5:
+            raise ValueError("必去最多 5 个")
+        return cleaned
 
     @field_validator("style")
     @classmethod

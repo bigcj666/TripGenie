@@ -106,7 +106,7 @@ function buildItem(poi: PoiSeed, startMin: number, style: TravelStyle, isLast: b
     transport_to_next: isLast
       ? null
       : { mode: 'walk', duration_min: gap, note: '步行前往' },
-    sources: [{ title: '途灵 Mock 演示数据', url: 'https://example.com/tuling-mock' }],
+    sources: [{ title: '途灵离线行程', url: 'https://example.com/tuling-offline' }],
   };
   return { item, nextStart: endMin + gap };
 }

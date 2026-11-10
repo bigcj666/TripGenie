@@ -316,7 +316,7 @@ function DetailRoute({
 function serviceLabel(health: HealthInfo | { state: 'unknown' }): string {
   if (health.state === 'down') return '生成服务未连接'
   if (health.state === 'unknown') return '正在连接生成服务'
-  if (health.engine === 'mock') return '演示引擎已连接，没有大模型密钥'
+  if (health.engine === 'mock') return '目录行程已就绪，说明来自城市目录'
   if (health.engine === 'deepseek') return '生成服务已连接 · DeepSeek'
   if (health.engine === 'glm') return '生成服务已连接 · 智谱'
   return '生成服务已连接'

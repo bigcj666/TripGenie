@@ -21,15 +21,17 @@ const CENTERS: Record<string, { lat: number; lng: number }> = {
   西安: { lat: 34.3416, lng: 108.9398 },
 }
 
+/** 目录缺 ticket_price 时的后备。灵隐 2025-12-01 起免票；大雁塔按寺 10 + 登塔 25。 */
 const TICKET: Record<string, number> = {
-  lingyin: 45,
+  lingyin: 0,
+  feilaifeng: 0,
   leifeng: 40,
-  cruise: 50,
+  cruise: 55,
   xixi: 80,
   panda: 55,
   terracotta: 120,
   wall: 54,
-  tang: 40,
+  tang: 35,
 }
 
 const MEAL_PRICE: Record<'breakfast' | 'lunch' | 'dinner', number> = {
@@ -302,7 +304,7 @@ function slotItem(
   const stay = slot.kind === 'hotel'
   const far = place ? km(center, { lat: place.lat, lng: place.lng }) >= 12 : false
   const title = place ? place.name : stay ? '住宿 · 还没选' : `${SLOT_LABEL[slot.kind]} · 附近吃`
-  const ticket = place && !meal && !stay ? (TICKET[place.id] ?? 0) : 0
+  const ticket = place && !meal && !stay ? (place.ticket_price ?? TICKET[place.id] ?? 0) : 0
   const mealKind = slot.kind === 'breakfast' || slot.kind === 'lunch' || slot.kind === 'dinner' ? slot.kind : null
   const tips = [
     far ? '离市区较远，这一天不要再排第二个远的点。' : '',
