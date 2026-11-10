@@ -15,7 +15,7 @@ GOLD = {
     "style": "all",
 }
 
-FORBIDDEN = ("mock", "Mock", "engine", "密钥", "API key", "api key")
+FORBIDDEN = ("mock", "Mock", "engine", "密钥", "API key", "api key", "演示数据", "演示引擎", "参赛作品", "敬请期待")
 
 
 def test_gold_path_returns_three_openable_plans(monkeypatch):

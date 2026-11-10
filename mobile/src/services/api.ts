@@ -43,7 +43,7 @@ export async function fetchHealth(): Promise<HealthInfo> {
  */
 export async function generateTrips(req: GenerateRequest): Promise<GenerateResponse> {
   if (USE_MOCK) {
-    return withFallback(buildMockPlans(req), '已按设置使用手机内演示数据');
+    return withFallback(buildMockPlans(req), '已按设置使用备用方案');
   }
 
   let response: Response;
@@ -54,7 +54,7 @@ export async function generateTrips(req: GenerateRequest): Promise<GenerateRespo
       body: JSON.stringify(req),
     });
   } catch {
-    return withFallback(buildMockPlans(req), `连不上 ${API_BASE}，已改用手机内演示数据`);
+    return withFallback(buildMockPlans(req), '暂时连不上，已改用备用方案');
   }
 
   if (!response.ok) {

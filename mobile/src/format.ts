@@ -37,7 +37,8 @@ export function presentWarning(raw: string): string {
     .replace(/^offline_fallback\s+/, '')
     .replace(/^over_budget\s+/, '')
     .replace(/^under_budget\s+/, '')
-    .replace(/^style_rule\s+/, '');
+    .replace(/^style_rule\s+/, '')
+    .replace(/^closed_day\s+/, '');
 }
 
 export function warningsFor(warnings: string[] | undefined, style?: TravelStyle): string[] {
@@ -50,7 +51,7 @@ export function warningsFor(warnings: string[] | undefined, style?: TravelStyle)
 }
 
 export function engineLabel(state: 'ok' | 'down' | 'unknown', engine?: string): string {
-  if (state === 'down') return '生成服务未连接。生成时会改用手机里的演示数据。';
+  if (state === 'down') return '生成服务未连接。生成时会改用备用方案。';
   if (state === 'unknown') return '正在连接生成服务…';
   if (engine === 'mock') return '目录行程已就绪，说明来自城市目录';
   if (engine === 'deepseek') return '生成服务已连接 · DeepSeek';

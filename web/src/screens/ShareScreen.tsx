@@ -63,8 +63,9 @@ export function ShareScreen({ id }: ShareScreenProps): React.ReactElement {
       </header>
       <div className="scroll with-dock">
         <p className="hint pad">{style?.line ?? '按天写好了时间、吃饭和花费。'}</p>
+        {/* 分享句按原句接上完整产品名。若 390px 挤掉一行，需推广改一版，不要改短。 */}
         <p className="pad">
-          我用途灵排了一份{trip.city}
+          我用「途灵 TripGenie」排了一份{trip.city}
           {trip.days}日行程（{style?.name ?? tripKindName(trip)}）。按天写好了时间、吃饭和花费，需要的可以导入查看。
         </p>
         {notice ? <p className="banner">{notice}</p> : null}

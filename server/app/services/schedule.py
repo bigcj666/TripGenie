@@ -7,7 +7,9 @@
 from __future__ import annotations
 
 import math
+from contextvars import ContextVar
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 
 from ..data.catalog import (
     GENERIC_HOTEL_RATE,
@@ -55,6 +57,7 @@ DEFAULT_HOTEL_ID = {
 BACKUP_RESTAURANTS = {"waipojia", "xinbailu", "xiaolongkan", "shudaxia"}
 SHUTTLE_PAIR = frozenset({"terracotta", "lishanyuan"})
 DAY_START = 9 * 60
+_PLAN_NOTES: ContextVar[list[str] | None] = ContextVar("plan_notes", default=None)
 ATTRACTION_QUOTA = {
     TravelStyle.COMPACT: 4,
     TravelStyle.RELAXED: 2,
@@ -265,10 +268,94 @@ def _stay_minutes(style: TravelStyle, kind: str, catalog_minutes: int, drafted: 
     return max(45, base)
 
 
+def pop_plan_notes() -> list[str]:
+    notes = _PLAN_NOTES.get()
+    _PLAN_NOTES.set(None)
+    return list(notes or [])
+
+
+def _public_copy(text: str) -> str:
+    cleaned = text.replace("大雁塔·大唐不夜城", "大雁塔和不夜城")
+    cleaned = cleaned.replace("closed_weekdays", "闭馆日")
+    return cleaned
+
+
+def _visit_weekday(date_start: str | None, day_index: int) -> int | None:
+    if not date_start:
+        return None
+    try:
+        start = datetime.strptime(date_start, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+    return (start + timedelta(days=day_index)).weekday()
+
+
+def _replace_closed(
+    slots: list[dict],
+    catalog: CityCatalog,
+    zone: str,
+    weekday: int | None,
+    style: TravelStyle,
+) -> list[str]:
+    if weekday is None:
+        return []
+    notes: list[str] = []
+    occupied = {slot.get("place_id") for slot in slots}
+    for slot in list(slots):
+        place = catalog.by_id(slot.get("place_id") or "")
+        if place is None or place.type != "attraction" or weekday not in place.closed_weekdays:
+            continue
+        candidates = [
+            item
+            for item in catalog.in_zone(zone, "attraction")
+            if item.id not in occupied and weekday not in item.closed_weekdays
+        ]
+        if style == TravelStyle.ECONOMY:
+            free = [item for item in candidates if item.ticket_price == 0]
+            candidates = free or candidates
+        if candidates:
+            pick = candidates[0]
+            occupied.discard(place.id)
+            occupied.add(pick.id)
+            slot["place_id"] = pick.id
+            slot["duration_min"] = None
+            notes.append(f"closed_day {place.name}这天不开放，已改排同片区的{pick.name}。")
+        else:
+            slots.remove(slot)
+            occupied.discard(place.id)
+            notes.append(f"closed_day {place.name}这天不开放，同片区没有可替换的地点，已从这一天拿下。")
+    return notes
+
+
+def _suburban_zone(catalog: CityCatalog, name: str) -> bool:
+    zone = catalog.zone(name)
+    return bool(zone and zone.suburban)
+
+
+def _without_optional_suburban(catalog: CityCatalog, zones: list[str], must_zones: list[str]) -> list[str]:
+    kept = [zone for zone in zones if zone in must_zones or not _suburban_zone(catalog, zone)]
+    if not kept:
+        return zones
+    downtown = [zone for zone in kept if not _suburban_zone(catalog, zone)] or kept
+
+    def free_count(zone: str) -> int:
+        return sum(1 for place in catalog.in_zone(zone, "attraction") if place.ticket_price == 0)
+
+    while len(kept) < len(zones):
+        pool = sorted(downtown, key=free_count, reverse=True)
+        kept.append(pool[0])
+    return kept[: len(zones)]
+
+
+def _tickets_above_peers(tickets: float, food: float, transport: float) -> bool:
+    return tickets > min(tickets, food, transport)
+
+
 def _tips(place: Place, meal_rate: int | None) -> str:
-    text = place.tips.strip()
-    if place.hours_note and place.hours_note not in text:
-        text = f"{text} {place.hours_note}".strip()
+    text = _public_copy(place.tips.strip())
+    hours = _public_copy(place.hours_note)
+    if hours and hours not in text:
+        text = f"{text} {hours}".strip()
     if meal_rate is not None:
         prefix = f"这一顿按人均 {meal_rate} 元餐标计入，不是菜单标价。"
         if prefix not in text:
@@ -277,7 +364,7 @@ def _tips(place: Place, meal_rate: int | None) -> str:
 
 
 def _description(place: Place, preferences: list[str]) -> str:
-    text = (place.description or place.blurb).strip()
+    text = _public_copy((place.description or place.blurb).strip())
     matched = [tag for tag in preferences if tag in place.tags]
     if matched:
         text = f"{text}（适合{'、'.join(matched)}）"
@@ -484,62 +571,76 @@ def plan_trip(
     for place in must_places:
         if place.zone not in must_zones:
             must_zones.append(place.zone)
-    zones = choose_zones(catalog, days, must_zones)
-    used: set[str] = set()
-    day_plans: list[DayPlan] = []
-    transport_total = 0.0
-    transit_min = 0
-    walk_legs = 0
-    leg_count = 0
+    notes: list[str] = []
+    _PLAN_NOTES.set(notes)
 
-    for index, zone_name in enumerate(zones):
-        zone_info = catalog.zone(zone_name)
-        suburban = bool(zone_info.suburban) if zone_info else any(
-            place.suburban for place in catalog.in_zone(zone_name)
-        )
-        draft = _draft(catalog.city, zone_name, style)
-        draft_ids = {slot.get("place_id") for slot in (draft or {}).get("slots") or []}
-        if draft and draft_ids.isdisjoint(used):
-            slots = [
-                {
-                    "place_id": slot.get("place_id"),
-                    "duration_min": slot.get("duration_min"),
-                    "type": slot.get("type"),
-                }
-                for slot in draft["slots"]
-            ]
-        else:
-            slots = _fallback_slots(catalog, zone_name, style, used)
-        slots = _ensure_must(slots, [place for place in must_places if place.zone == zone_name])
-        items, cost, minutes, walks, legs = _layout(
-            catalog,
-            slots,
-            style=style,
-            people=people,
-            preferences=preferences,
-            suburban=suburban,
-        )
-        if len(items) < 2:
-            # 保底两条，避免契约失败。仍然只用目录里的点。
-            slots = _fallback_slots(catalog, zone_name, TravelStyle.RELAXED, set())
+    def render(zone_names: list[str]) -> tuple[list[DayPlan], float, int, int, int]:
+        used: set[str] = set()
+        day_plans: list[DayPlan] = []
+        transport_total = 0.0
+        transit_min = 0
+        walk_legs = 0
+        leg_count = 0
+        for index, zone_name in enumerate(zone_names):
+            zone_info = catalog.zone(zone_name)
+            suburban = bool(zone_info.suburban) if zone_info else any(
+                place.suburban for place in catalog.in_zone(zone_name)
+            )
+            draft = _draft(catalog.city, zone_name, style)
+            draft_ids = {slot.get("place_id") for slot in (draft or {}).get("slots") or []}
+            if draft and draft_ids.isdisjoint(used):
+                slots = [
+                    {
+                        "place_id": slot.get("place_id"),
+                        "duration_min": slot.get("duration_min"),
+                        "type": slot.get("type"),
+                    }
+                    for slot in draft["slots"]
+                ]
+            else:
+                slots = _fallback_slots(catalog, zone_name, style, used)
+            slots = _ensure_must(slots, [place for place in must_places if place.zone == zone_name])
+            notes.extend(
+                _replace_closed(slots, catalog, zone_name, _visit_weekday(date_start, index), style)
+            )
             items, cost, minutes, walks, legs = _layout(
                 catalog,
-                slots[:3],
+                slots,
                 style=style,
                 people=people,
                 preferences=preferences,
                 suburban=suburban,
             )
-        for item in items:
-            named = next((place for place in catalog.places if place.name == item.title), None)
-            if named:
-                used.add(named.id)
-        theme = _demo_theme(catalog.city, index, zone_name) or f"{zone_name}片区"
-        day_plans.append(DayPlan(day=index + 1, zone=zone_name, theme=theme, items=items))
-        transport_total += cost
-        transit_min += minutes
-        walk_legs += walks
-        leg_count += legs
+            if len(items) < 2:
+                slots = _fallback_slots(catalog, zone_name, TravelStyle.RELAXED, set())
+                items, cost, minutes, walks, legs = _layout(
+                    catalog,
+                    slots[:3],
+                    style=style,
+                    people=people,
+                    preferences=preferences,
+                    suburban=suburban,
+                )
+            for item in items:
+                named = next((place for place in catalog.places if place.name == item.title), None)
+                if named:
+                    used.add(named.id)
+            theme = _demo_theme(catalog.city, index, zone_name) or f"{zone_name}片区"
+            day_plans.append(DayPlan(day=index + 1, zone=zone_name, theme=theme, items=items))
+            transport_total += cost
+            transit_min += minutes
+            walk_legs += walks
+            leg_count += legs
+        return day_plans, transport_total, transit_min, walk_legs, leg_count
+
+    zones = choose_zones(catalog, days, must_zones)
+    day_plans, transport_total, transit_min, walk_legs, leg_count = render(zones)
+    ticket_probe = sum(item.ticket_price for day in day_plans for item in day.items if item.type == ItemType.ATTRACTION) * people
+    meal_probe = sum(item.cost_estimate for day in day_plans for item in day.items if item.type == ItemType.MEAL) * people
+    if style == TravelStyle.ECONOMY and _tickets_above_peers(ticket_probe, meal_probe, transport_total):
+        notes.clear()
+        zones = _without_optional_suburban(catalog, zones, must_zones)
+        day_plans, transport_total, transit_min, walk_legs, leg_count = render(zones)
 
     ticket_units = sum(item.ticket_price for day in day_plans for item in day.items if item.type == ItemType.ATTRACTION)
     meal_units = sum(item.cost_estimate for day in day_plans for item in day.items if item.type == ItemType.MEAL)

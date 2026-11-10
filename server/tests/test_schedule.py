@@ -192,6 +192,45 @@ def test_prose_cannot_invent_places_or_prices():
     assert bridge.poi.lat == original.poi.lat
 
 
+def test_xian_economy_drops_paid_suburban_day():
+    from app.services.generate import _style_warnings
+
+    trip = generate_mock_trip("西安", 3, 1500, 3, ["亲子", "美食"], TravelStyle.ECONOMY)
+    titles = _titles(trip)
+    assert "秦始皇兵马俑博物馆" not in titles
+    assert not any("style_rule" in warning for warning in _style_warnings(trip))
+    compact = generate_mock_trip("西安", 3, 1500, 3, ["亲子", "美食"], TravelStyle.COMPACT)
+    assert any("兵马俑" in title for title in _titles(compact))
+    assert trip.cost_breakdown.tickets < compact.cost_breakdown.tickets
+
+
+def test_closed_museum_is_rescheduled_on_monday():
+    from app.services.schedule import pop_plan_notes
+
+    trip = generate_mock_trip(
+        "西安",
+        3,
+        1500,
+        2,
+        [],
+        TravelStyle.COMPACT,
+        date_start="2026-11-15",
+    )
+    notes = pop_plan_notes()
+    titles = _titles(trip)
+    monday_index = None
+    for index, day in enumerate(trip.itinerary):
+        # 2026-11-15 is Sunday, so day 2 is Monday.
+        if index == 1:
+            monday_index = day
+    assert monday_index is not None
+    assert all(item.title != "陕西历史博物馆" for item in monday_index.items)
+    assert "陕西历史博物馆" not in titles or any(item.title == "陕西历史博物馆" for day in trip.itinerary if day.day != 2 for item in day.items)
+    assert any("不开放" in note for note in notes)
+    assert all("大雁塔·大唐不夜城" not in item.tips for day in trip.itinerary for item in day.items)
+    assert all("closed_weekdays" not in item.tips for day in trip.itinerary for item in day.items)
+
+
 def test_restaurant_notes_survive_and_meals_use_rate():
     trip = generate_mock_trip(**GOLD, style=TravelStyle.COMPACT)
     lou = next(item for day in trip.itinerary for item in day.items if item.title.startswith("楼外楼"))

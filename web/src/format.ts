@@ -55,12 +55,15 @@ const WARNING_COPY: Array<[string, string]> = [
   ['under_budget', '这套还低于预算，可改看更从容的方案，或加入必去地点。'],
   ['style_rule', '该片区可排的点有限，已尽量按当前风格安排。'],
   ['must_visit_unmatched', '有的必去地点还匹配不到目录，未写入行程。'],
+  ['closed_day', ''],
 ]
 
 export function presentWarning(raw: string): string {
   const body = raw.replace(/^\[(compact|relaxed|economy)\]\s*/, '')
   for (const [code, sentence] of WARNING_COPY) {
-    if (body.startsWith(code)) return sentence
+    if (!body.startsWith(code)) continue
+    if (code === 'closed_day') return body.slice(code.length).trim()
+    return sentence
   }
   return body
 }

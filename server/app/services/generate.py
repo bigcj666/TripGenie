@@ -8,7 +8,7 @@ from ..config import Settings
 from ..llm.client import make_generator
 from ..llm.mock_engine import generate_mock_trip
 from ..schemas.trip import GenerateRequest, GenerateResponse, ItemType, TravelStyle, Trip
-from ..services.schedule import unmatched_must_visits
+from ..services.schedule import pop_plan_notes, unmatched_must_visits
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +73,7 @@ def generate_trips(request: GenerateRequest, settings: Settings | None = None) -
         engines_used.append(engine_used)
         if fallback_reason:
             warnings.append(f"[{style.value}] {fallback_reason}")
+        warnings.extend(f"[{style.value}] {note}" for note in pop_plan_notes())
         warnings.extend(f"[{style.value}] {w}" for w in unmatched_must_visits(request.city, request.must_visit, trip))
         warnings.extend(f"[{style.value}] {w}" for w in _quality_warnings(trip))
         warnings.extend(f"[{style.value}] {w}" for w in _style_warnings(trip))

@@ -69,7 +69,8 @@ export function HomeScreen({
     <div className="page">
       <header className="top home-bar">
         <div className="home-title">
-          <strong>途灵</strong>
+          {/* 品牌名完整展示。若和右侧城市胶囊抢一行，需推广改一版，不要改短名称。 */}
+          <strong>途灵 TripGenie</strong>
           <button type="button" className="home-meta" onClick={() => onCity(focusCity)}>
             <b>{focusCity}</b>
             {weather ? <span>{weather}</span> : null}

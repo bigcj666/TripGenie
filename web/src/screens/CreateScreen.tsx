@@ -21,6 +21,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
   const [prefs, setPrefs] = useState<string[]>(draft.prefs ?? savedPrefs)
   const [style, setStyle] = useState<TravelStyle | 'all'>('all')
   const [includeHotel, setIncludeHotel] = useState(false)
+  const [dateStart, setDateStart] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,6 +41,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
       preferences: prefs,
       style,
       budget_includes_hotel: includeHotel,
+      date_start: dateStart || undefined,
     })
       .then(onDone)
       .catch(() => setError('这次没有生成成功，请检查条件后重试。'))
@@ -78,6 +80,9 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
           <Stepper label="人数" value={people} unit="人" min={1} max={10} onChange={setPeople} />
         </div>
         <p className="hint">1–5 天的短途更合适。费用按出行人数估算。</p>
+        <label htmlFor="date-start">出发日期</label>
+        <input id="date-start" type="date" value={dateStart} onChange={(event) => setDateStart(event.target.value)} />
+        <p className="hint">填了出发日，遇到闭馆会改到同片区其他地方。</p>
         <label htmlFor="budget">总预算 · {people} 人</label>
         <input
           id="budget"

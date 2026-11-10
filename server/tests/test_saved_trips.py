@@ -58,6 +58,12 @@ def test_save_and_read_trip(tmp_path, monkeypatch):
     assert client.get("/api/trips/missing").status_code == 404
 
 
+def test_odd_share_id_is_not_found(tmp_path, monkeypatch):
+    monkeypatch.setenv("TRIPS_DB", str(tmp_path / "trips.sqlite"))
+    assert client.get("/api/trips/not-a-real-id").status_code == 404
+    assert client.get("/api/trips/../../etc").status_code == 404
+
+
 def test_empty_trip_rejected(tmp_path, monkeypatch):
     monkeypatch.setenv("TRIPS_DB", str(tmp_path / "trips.sqlite"))
     resp = client.post("/api/trips", json={"city": "杭州"})

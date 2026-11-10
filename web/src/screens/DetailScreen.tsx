@@ -36,7 +36,7 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
       .then(async ({ id }) => {
         const url = `${window.location.origin}/share/${id}`
         const style = STYLE_META[trip.style]?.name ?? tripKindName(trip)
-        const sentence = `我用途灵排了一份${trip.city}${trip.days}日行程（${style}）。按天写好了时间、吃饭和花费，需要的可以导入查看。 ${url}`
+        const sentence = `我用「途灵 TripGenie」排了一份${trip.city}${trip.days}日行程（${style}）。按天写好了时间、吃饭和花费，需要的可以导入查看。 ${url}`
         try {
           await navigator.clipboard?.writeText(sentence)
           setLinkNote('已复制分享句和链接。')
@@ -45,7 +45,7 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
         }
       })
       .catch(() => {
-        setLinkNote(`我在途灵排好了${trip.city}的行程，三套走法能直接对比。打开「社区」就能导入。`)
+        setLinkNote(`我在「途灵 TripGenie」排好了${trip.city}的行程，三套走法能直接对比。打开「社区」就能导入。`)
       })
   }
 
