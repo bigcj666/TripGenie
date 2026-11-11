@@ -4,6 +4,18 @@ import { commentCommunity, readCommunity, removeCommunity, type CommunityDetail 
 import { TYPE_LABEL, tripKindName } from '../format'
 import type { Trip } from '../types'
 
+function PhotoGrid({ photos }: { photos: string[] }): React.ReactElement | null {
+  if (!photos.length) return null
+  const count = Math.min(photos.length, 3)
+  return (
+    <div className={`photo-grid n${count}`}>
+      {photos.slice(0, 6).map((src) => (
+        <img key={src} src={src} alt="" />
+      ))}
+    </div>
+  )
+}
+
 interface PostScreenProps {
   id: string
   author: string
@@ -69,7 +81,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
         <button type="button" className="nav-btn" onClick={onBack}>
           返回
         </button>
-        <h1>{post ? `${post.city} · ${post.days}天` : '分享'}</h1>
+        <h1>{post ? (post.days > 0 ? `${post.city} · ${post.days}天` : post.city || '点评') : '分享'}</h1>
         <span />
       </header>
       <div className="scroll with-dock">
@@ -81,26 +93,31 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
               <span className="post-who">
                 <i>{post.author.slice(0, 1)}</i>
                 <b>{post.author}</b>
-                <small>{post.people}人 · {tripKindName(post.trip)}</small>
+                <small>{post.trip ? `${post.people}人 · ${tripKindName(post.trip)}` : '点评'}</small>
               </span>
               <p>{post.note || post.summary}</p>
+              <PhotoGrid photos={post.photos ?? []} />
             </article>
-            {post.trip.itinerary.map((day) => (
-              <section key={day.day} className="post-day">
-                <h2>第{day.day}天{day.theme ? ` · ${day.theme}` : ''}</h2>
-                {day.items.map((item) => (
-                  <p key={`${item.time_start}-${item.title}`}>
-                    <em>
-                      {item.time_start} {TYPE_LABEL[item.type]}
-                    </em>
-                    {item.title}
-                  </p>
-                ))}
-              </section>
-            ))}
+            {post.trip
+              ? post.trip.itinerary.map((day) => (
+                  <section key={day.day} className="post-day">
+                    <h2>
+                      第 {day.day} 天 · {day.zone || '片区'} · {day.theme}
+                    </h2>
+                    {day.items.map((item) => (
+                      <p key={`${item.time_start}-${item.title}`}>
+                        <em>
+                          {item.time_start} {TYPE_LABEL[item.type]}
+                        </em>
+                        {item.title}
+                      </p>
+                    ))}
+                  </section>
+                ))
+              : null}
             <section className="post-talk">
               <h2>留言</h2>
-              {post.comments.length === 0 ? <p className="muted">还没有留言。先说一句这套行程好在哪，或哪里想改。</p> : null}
+              {post.comments.length === 0 ? <p className="muted">还没有留言。可以说说哪里值得去，或哪里想避开。</p> : null}
               {post.comments.map((comment) => (
                 <article key={comment.id} className="comment">
                   <b>{comment.author}</b>
@@ -112,9 +129,9 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
               </label>
               <textarea
                 id="comment-body"
-                maxLength={120}
+                maxLength={200}
                 value={text}
-                placeholder="这套行程你想怎么走？"
+                placeholder="写下你的看法"
                 onChange={(event) => setText(event.target.value)}
               />
               <button type="button" className="primary" disabled={sending || !text.trim()} onClick={send}>
@@ -144,9 +161,11 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
               撤回
             </button>
           ) : null}
-          <button type="button" className="primary" onClick={() => onImport(post.trip)}>
-            导入到我的攻略
-          </button>
+          {post.trip ? (
+            <button type="button" className="primary" onClick={() => onImport(post.trip as Trip)}>
+              导入到我的攻略
+            </button>
+          ) : null}
         </div>
       ) : null}
     </div>

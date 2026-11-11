@@ -21,7 +21,7 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
       <header className="nav">
         <span />
         <h1>攻略</h1>
-        <button type="button" className="nav-btn" onClick={onCreate}>
+        <button type="button" className="nav-action" onClick={onCreate}>
           生成行程
         </button>
       </header>

@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import os
+import re
 import secrets
 import sqlite3
 import threading
@@ -13,6 +15,7 @@ from typing import Any
 
 _LOCK = threading.Lock()
 _STYLES = {"compact", "relaxed", "economy"}
+_MEDIA_NAME = re.compile(r"^[0-9a-f]{16}\.(jpg|png|webp)$")
 
 
 def db_path() -> Path:
@@ -28,6 +31,7 @@ def list_posts(city: str | None = None) -> list[dict[str, Any]]:
         try:
             sql = """
                 SELECT p.id, p.author, p.note, p.city, p.days, p.people, p.style, p.summary, p.created_at,
+                       p.photos, p.payload,
                        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
                 FROM posts p
             """
@@ -53,7 +57,7 @@ def get_post(post_id: str) -> dict[str, Any] | None:
                 (post_id,),
             ).fetchall()
             data = _public(row)
-            data["trip"] = json.loads(row["payload"])
+            data["trip"] = _trip_or_none(row["payload"])
             data["comments"] = [dict(item) for item in comments]
             data["comment_count"] = len(data["comments"])
             return data
@@ -61,13 +65,27 @@ def get_post(post_id: str) -> dict[str, Any] | None:
             conn.close()
 
 
-def publish(author: str, note: str, trip: dict[str, Any]) -> dict[str, Any]:
-    city, days, people, style, summary = _check_trip(trip)
+def publish(
+    author: str,
+    note: str,
+    trip: dict[str, Any] | None = None,
+    photos: list[str] | None = None,
+    city: str = "",
+) -> dict[str, Any]:
     author = _name(author)
-    note = _clip(note, 80)
-    payload = json.dumps(trip, ensure_ascii=False)
-    if len(payload) > 200_000:
-        raise ValueError("这套攻略太长，发不出去")
+    note = _clip(note, 400)
+    photo_urls = _store_photos(photos or [])
+    if trip:
+        city, days, people, style, summary = _check_trip(trip)
+        payload = json.dumps(trip, ensure_ascii=False)
+        if len(payload) > 200_000:
+            raise ValueError("这套攻略太长，发不出去")
+    else:
+        if not note and not photo_urls:
+            raise ValueError("写一点内容再发布")
+        city = _clip(city, 20)
+        days, people, style, summary = 0, 0, "", ""
+        payload = "{}"
     post_id = secrets.token_hex(8)
     token = secrets.token_urlsafe(18)
     created = _now()
@@ -76,10 +94,10 @@ def publish(author: str, note: str, trip: dict[str, Any]) -> dict[str, Any]:
         try:
             conn.execute(
                 """
-                INSERT INTO posts (id, author, note, city, days, people, style, summary, payload, token, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO posts (id, author, note, city, days, people, style, summary, payload, photos, token, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                (post_id, author, note, city, days, people, style, summary, payload, token, created),
+                (post_id, author, note, city, days, people, style, summary, payload, json.dumps(photo_urls, ensure_ascii=False), token, created),
             )
             conn.commit()
         finally:
@@ -98,6 +116,9 @@ def publish(author: str, note: str, trip: dict[str, Any]) -> dict[str, Any]:
             "summary": summary,
             "created_at": created,
             "comment_count": 0,
+            "photos": photo_urls,
+            "highlights": _highlights(payload),
+            "has_trip": bool(trip),
         },
     }
 
@@ -106,8 +127,8 @@ def add_comment(post_id: str, author: str, body: str) -> dict[str, Any]:
     text = body.strip()
     if not text:
         raise ValueError("留言是空的")
-    if len(text) > 120:
-        raise ValueError("留言最多 120 字")
+    if len(text) > 200:
+        raise ValueError("留言最多 200 字")
     created = _now()
     comment = {"id": secrets.token_hex(8), "author": _name(author), "body": text, "created_at": created}
     with _LOCK:
@@ -133,13 +154,14 @@ def remove_post(post_id: str, token: str) -> bool:
     with _LOCK:
         conn = _connect()
         try:
-            row = conn.execute("SELECT token FROM posts WHERE id = ?", (post_id,)).fetchone()
+            row = conn.execute("SELECT token, photos FROM posts WHERE id = ?", (post_id,)).fetchone()
             if row is None:
                 return False
             if not token or not secrets.compare_digest(row["token"], token):
                 raise PermissionError
             conn.execute("DELETE FROM comments WHERE post_id = ?", (post_id,))
             conn.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+            _delete_media(row["photos"] if "photos" in row.keys() else "[]")
             conn.commit()
             return True
         finally:
@@ -164,6 +186,7 @@ def _connect() -> sqlite3.Connection:
             summary TEXT NOT NULL,
             payload TEXT NOT NULL,
             token TEXT NOT NULL,
+            photos TEXT NOT NULL DEFAULT '[]',
             created_at TEXT NOT NULL
         );
         CREATE TABLE IF NOT EXISTS comments (
@@ -175,6 +198,9 @@ def _connect() -> sqlite3.Connection:
         );
         """
     )
+    columns = {item["name"] for item in conn.execute("PRAGMA table_info(posts)")}
+    if "photos" not in columns:
+        conn.execute("ALTER TABLE posts ADD COLUMN photos TEXT NOT NULL DEFAULT '[]'")
     if not os.environ.get("COMMUNITY_DB"):
         _seed(conn)
     return conn
@@ -188,9 +214,9 @@ def _seed(conn: sqlite3.Connection) -> None:
             continue
         conn.execute(
             """
-            INSERT INTO posts (id, author, note, city, days, people, style, summary, payload, token, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+                INSERT INTO posts (id, author, note, city, days, people, style, summary, payload, photos, token, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
             (
                 post["id"],
                 post["author"],
@@ -201,6 +227,7 @@ def _seed(conn: sqlite3.Connection) -> None:
                 post["trip"]["style"],
                 post["trip"]["summary"],
                 json.dumps(post["trip"], ensure_ascii=False),
+                json.dumps(post.get("photos") or [], ensure_ascii=False),
                 secrets.token_urlsafe(18),
                 post["created_at"],
             ),
@@ -217,11 +244,19 @@ def _seed(conn: sqlite3.Connection) -> None:
             (comment["id"], comment["post_id"], comment["author"], comment["body"], comment["created_at"]),
         )
         changed = True
+    for post in _SAMPLES:
+        photos = json.dumps(post.get("photos") or [], ensure_ascii=False)
+        current = conn.execute("SELECT photos FROM posts WHERE id = ?", (post["id"],)).fetchone()
+        if current is not None and (current["photos"] or "[]") in ("", "[]") and post.get("photos"):
+            conn.execute("UPDATE posts SET photos = ? WHERE id = ?", (photos, post["id"]))
+            changed = True
     if changed:
         conn.commit()
 
 
 def _public(row: sqlite3.Row) -> dict[str, Any]:
+    payload = row["payload"] if "payload" in row.keys() else "{}"
+    photos = _photo_list(row["photos"] if "photos" in row.keys() else "[]")
     return {
         "id": row["id"],
         "author": row["author"],
@@ -233,7 +268,100 @@ def _public(row: sqlite3.Row) -> dict[str, Any]:
         "summary": row["summary"],
         "created_at": row["created_at"],
         "comment_count": row["comment_count"] if "comment_count" in row.keys() else 0,
+        "photos": photos,
+        "highlights": _highlights(payload),
+        "has_trip": _trip_or_none(payload) is not None,
     }
+
+
+def media_path(name: str) -> Path | None:
+    if not _MEDIA_NAME.fullmatch(name):
+        return None
+    return db_path().parent / "community-media" / name
+
+
+def _photo_list(raw: str | None) -> list[str]:
+    try:
+        data = json.loads(raw or "[]")
+    except json.JSONDecodeError:
+        return []
+    if not isinstance(data, list):
+        return []
+    return [item for item in data if isinstance(item, str) and item.startswith("/")]
+
+
+def _trip_or_none(raw: str | None) -> dict[str, Any] | None:
+    try:
+        data = json.loads(raw or "{}")
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, dict) or not data.get("itinerary"):
+        return None
+    return data
+
+
+def _highlights(raw: str | None) -> list[str]:
+    trip = _trip_or_none(raw)
+    if trip is None:
+        return []
+    names: list[str] = []
+    for day in trip.get("itinerary") or []:
+        if not isinstance(day, dict):
+            continue
+        for item in day.get("items") or []:
+            if not isinstance(item, dict) or item.get("type") == "hotel":
+                continue
+            title = str(item.get("title") or "").strip()
+            if title and title not in names:
+                names.append(title)
+            if len(names) >= 2:
+                return names
+    return names
+
+
+def _store_photos(raws: list[str]) -> list[str]:
+    if len(raws) > 6:
+        raise ValueError("最多 6 张照片")
+    folder = db_path().parent / "community-media"
+    saved: list[str] = []
+    for raw in raws:
+        if not isinstance(raw, str):
+            raise ValueError("照片格式不对")
+        if raw.startswith("/places/") or raw.startswith("/api/community/media/"):
+            saved.append(raw)
+            continue
+        if not raw.startswith("data:image/"):
+            raise ValueError("照片格式不对")
+        header, _, encoded = raw.partition(",")
+        if "png" in header:
+            ext = "png"
+        elif "webp" in header:
+            ext = "webp"
+        elif "jpeg" in header or "jpg" in header:
+            ext = "jpg"
+        else:
+            raise ValueError("只支持常见图片")
+        try:
+            blob = base64.b64decode(encoded, validate=False)
+        except Exception as exc:  # noqa: BLE001
+            raise ValueError("照片格式不对") from exc
+        if not blob or len(blob) > 1_200_000:
+            raise ValueError("有一张照片太大了")
+        folder.mkdir(parents=True, exist_ok=True)
+        name = f"{secrets.token_hex(8)}.{ext}"
+        (folder / name).write_bytes(blob)
+        saved.append(f"/api/community/media/{name}")
+    return saved
+
+
+def _delete_media(raw: str) -> None:
+    for url in _photo_list(raw):
+        prefix = "/api/community/media/"
+        if not url.startswith(prefix):
+            continue
+        path = media_path(url[len(prefix) :])
+        if path is not None and path.is_file():
+            path.unlink()
 
 
 def _check_trip(trip: Any) -> tuple[str, int, int, str, str]:
@@ -331,6 +459,7 @@ _SAMPLES: list[dict[str, Any]] = [
         "id": "seed-hangzhou",
         "author": "阿宁",
         "note": "下雨就改走灵隐，中午知味观，晚上住湖滨。",
+        "photos": ["/places/lingyin.jpg", "/places/westlake.jpg"],
         "created_at": "2026-10-28T02:10:00+00:00",
         "trip": _trip(
             "杭州",
@@ -364,6 +493,7 @@ _SAMPLES: list[dict[str, Any]] = [
         "id": "seed-chengdu",
         "author": "老周",
         "note": "不想跑远，武侯祠、麻婆豆腐、宽窄巷子一天走完。",
+        "photos": ["/places/wuhou.jpg", "/places/jinli.jpg"],
         "created_at": "2026-10-29T06:20:00+00:00",
         "trip": _trip(
             "成都",
@@ -389,6 +519,7 @@ _SAMPLES: list[dict[str, Any]] = [
         "id": "seed-xian",
         "author": "小满",
         "note": "钟楼附近吃住，兵马俑单独留一个上午。",
+        "photos": ["/places/bell.jpg", "/places/terracotta.jpg"],
         "created_at": "2026-10-30T09:00:00+00:00",
         "trip": _trip(
             "西安",

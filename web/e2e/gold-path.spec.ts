@@ -110,8 +110,16 @@ test('gold path at phone width', async ({ page, request }) => {
 test('empty guide and failed generate', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '攻略' }).click()
+  const headerAction = page.getByRole('button', { name: '生成行程' }).first()
+  const headerBox = await headerAction.boundingBox()
+  expect(headerBox && headerBox.height).toBeGreaterThanOrEqual(44)
+  expect(headerBox && headerBox.height).toBeLessThan(56)
   await expect(page.getByRole('heading', { name: '还没有保存的行程。' })).toBeVisible()
   await expect(page.getByRole('button', { name: '去社区看看' })).toBeVisible()
+  await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '社区' }).click()
+  await expect(page.getByRole('heading', { name: '看看别人怎么逛。' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '写点评' })).toBeVisible()
+  await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '攻略' }).click()
 
   await page.getByRole('button', { name: '生成行程' }).first().click()
   await page.route('**/api/trip/generate', (route) => route.abort())

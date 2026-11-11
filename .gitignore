@@ -26,6 +26,7 @@ npm-debug.log*
 ## 社区数据
 server/data/*.sqlite
 server/data/*.sqlite-*
+server/data/community-media/
 
 ## 测试产物
 web/test-results/

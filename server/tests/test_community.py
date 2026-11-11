@@ -85,6 +85,23 @@ def test_publish_comment_and_remove(tmp_path, monkeypatch):
     assert client.get(f"/api/community/{post_id}").status_code == 404
 
 
+def test_review_with_photo_and_without_trip(tmp_path, monkeypatch):
+    monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
+    png = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+    created = client.post("/api/community", json={"author": "阿宁", "note": "湖边风很大，适合慢慢走。", "photos": [png], "city": "杭州"})
+    assert created.status_code == 201, created.text
+    body = created.json()
+    assert body["post"]["has_trip"] is False
+    assert body["post"]["photos"][0].startswith("/api/community/media/")
+    listed = client.get("/api/community", params={"city": "杭州"}).json()["posts"]
+    assert listed[0]["note"].startswith("湖边风很大")
+    photo = client.get(body["post"]["photos"][0])
+    assert photo.status_code == 200
+    assert photo.headers["content-type"].startswith("image/")
+    detail = client.get(f"/api/community/{body['id']}").json()
+    assert detail["trip"] is None
+
+
 def test_empty_plan_rejected(tmp_path, monkeypatch):
     monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
     resp = client.post("/api/community", json={"author": "小林", "trip": {"city": "杭州"}})

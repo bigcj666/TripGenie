@@ -11,6 +11,9 @@ export interface CommunityPost {
   summary: string
   created_at: string
   comment_count: number
+  photos?: string[]
+  highlights?: string[]
+  has_trip?: boolean
 }
 
 export interface CommunityComment {
@@ -21,7 +24,7 @@ export interface CommunityComment {
 }
 
 export interface CommunityDetail extends CommunityPost {
-  trip: Trip
+  trip: Trip | null
   comments: CommunityComment[]
 }
 
@@ -35,11 +38,17 @@ export async function readCommunity(id: string): Promise<CommunityDetail> {
   return readJson<CommunityDetail>(`/api/community/${id}`)
 }
 
-export async function publishCommunity(author: string, note: string, trip: Trip): Promise<{ id: string; token: string; post: CommunityPost }> {
+export async function publishCommunity(
+  author: string,
+  note: string,
+  trip?: Trip | null,
+  photos: string[] = [],
+  city = '',
+): Promise<{ id: string; token: string; post: CommunityPost }> {
   return readJson('/api/community', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ author, note, trip }),
+    body: JSON.stringify({ author, note, trip: trip ?? {}, photos, city: city || trip?.city || '' }),
   })
 }
 

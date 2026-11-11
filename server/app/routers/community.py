@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from ..community import store
@@ -10,6 +11,8 @@ class PublishBody(BaseModel):
     author: str = ""
     note: str = ""
     trip: dict = Field(default_factory=dict)
+    photos: list[str] = Field(default_factory=list)
+    city: str = ""
 
 
 class CommentBody(BaseModel):
@@ -27,6 +30,15 @@ def feed(city: str | None = None) -> dict:
     return {"posts": store.list_posts(chosen or None)}
 
 
+@router.get("/media/{name}")
+def media(name: str) -> FileResponse:
+    path = store.media_path(name)
+    if path is None or not path.is_file():
+        raise HTTPException(status_code=404, detail="找不到这张照片")
+    kind = "image/png" if name.endswith(".png") else "image/webp" if name.endswith(".webp") else "image/jpeg"
+    return FileResponse(path, media_type=kind)
+
+
 @router.get("/{post_id}")
 def read(post_id: str) -> dict:
     post = store.get_post(post_id)
@@ -38,7 +50,8 @@ def read(post_id: str) -> dict:
 @router.post("", status_code=201)
 def publish(body: PublishBody) -> dict:
     try:
-        return store.publish(body.author, body.note, body.trip)
+        trip = body.trip if body.trip.get("itinerary") else None
+        return store.publish(body.author, body.note, trip, body.photos, body.city)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
