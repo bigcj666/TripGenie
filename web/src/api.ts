@@ -11,6 +11,9 @@ export interface CommunityPost {
   summary: string
   created_at: string
   comment_count: number
+  photos?: string[]
+  highlights?: string[]
+  has_trip?: boolean
 }
 
 export interface CommunityComment {
@@ -21,12 +24,13 @@ export interface CommunityComment {
 }
 
 export interface CommunityDetail extends CommunityPost {
-  trip: Trip
+  trip: Trip | null
   comments: CommunityComment[]
 }
 
-export async function listCommunity(): Promise<CommunityPost[]> {
-  const data = await readJson<{ posts: CommunityPost[] }>('/api/community')
+export async function listCommunity(city?: string): Promise<CommunityPost[]> {
+  const query = city ? `?city=${encodeURIComponent(city)}` : ''
+  const data = await readJson<{ posts: CommunityPost[] }>(`/api/community${query}`)
   return data.posts
 }
 
@@ -34,11 +38,17 @@ export async function readCommunity(id: string): Promise<CommunityDetail> {
   return readJson<CommunityDetail>(`/api/community/${id}`)
 }
 
-export async function publishCommunity(author: string, note: string, trip: Trip): Promise<{ id: string; token: string; post: CommunityPost }> {
+export async function publishCommunity(
+  author: string,
+  note: string,
+  trip?: Trip | null,
+  photos: string[] = [],
+  city = '',
+): Promise<{ id: string; token: string; post: CommunityPost }> {
   return readJson('/api/community', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ author, note, trip }),
+    body: JSON.stringify({ author, note, trip: trip ?? {}, photos, city: city || trip?.city || '' }),
   })
 }
 
@@ -64,6 +74,29 @@ async function readJson<T>(url: string, init?: RequestInit): Promise<T> {
     response = await fetch(url, init)
   } catch {
     throw new Error('社区暂时连不上。请先在 server 目录启动后端，端口 8000。')
+  }
+  if (!response.ok) throw new Error(await readError(response))
+  return response.json() as Promise<T>
+}
+
+export async function saveSharedTrip(trip: Trip): Promise<{ id: string }> {
+  return tripJson('/api/trips', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(trip),
+  })
+}
+
+export async function readSharedTrip(id: string): Promise<Trip> {
+  return tripJson<Trip>(`/api/trips/${encodeURIComponent(id)}`)
+}
+
+async function tripJson<T>(url: string, init?: RequestInit): Promise<T> {
+  let response: Response
+  try {
+    response = await fetch(url, init)
+  } catch {
+    throw new Error('分享链接暂时没有连上。')
   }
   if (!response.ok) throw new Error(await readError(response))
   return response.json() as Promise<T>

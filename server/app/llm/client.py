@@ -20,65 +20,20 @@ class TripGenerator(Protocol):
         ...
 
 
-_SCHEMA_HINT = """{
-  "trip_id": "uuid字符串",
-  "city": "城市名",
-  "days": 3,
-  "people": 3,
-  "budget_total": 1500,
-  "style": "compact|relaxed|economy",
-  "preferences": ["亲子"],
-  "summary": "一句话概述",
-  "itinerary": [
-    {
-      "day": 1,
-      "theme": "当日主题",
-      "items": [
-        {
-          "time_start": "09:00", "time_end": "11:30",
-          "type": "attraction|meal|transport|hotel|free",
-          "title": "地点名",
-          "poi": {"name": "地点名", "lat": 30.25, "lng": 120.15, "adcode": "330106"},
-          "duration_min": 150,
-          "cost_estimate": 0,
-          "description": "介绍",
-          "tips": "建议",
-          "transport_to_next": {"mode": "walk|transit|drive|taxi", "duration_min": 15, "note": "说明"},
-          "sources": [{"title": "来源名", "url": "https://..."}]
-        }
-      ]
-    }
-  ],
-  "cost_breakdown": {"transport": 200, "food": 400, "tickets": 300, "hotel": 500, "other": 100}
-}"""
-
-_STYLE_DESC = {
-    "compact": "紧凑高效：每天 5–6 个安排，节奏快，步行衔接多",
-    "relaxed": "松弛休闲：每天 3–4 个安排，单点停留 ≥90 分钟，不赶场",
-    "economy": "省钱优先：门票花费尽量低，优先免费景点与平价餐饮",
-}
-
-
-def build_prompt(*, city: str, days: int, budget_total: float, people: int,
-                 preferences: list[str], style: str) -> list[dict]:
+def build_prompt(*, skeleton: dict) -> list[dict]:
     user = (
-        f"请为我生成一份旅游行程。\n"
-        f"- 城市：{city}\n"
-        f"- 天数：{days} 天\n"
-        f"- 总预算：{budget_total} 元\n"
-        f"- 人数：{people} 人\n"
-        f"- 偏好标签：{', '.join(preferences) if preferences else '无特别偏好'}\n"
-        f"- 风格：{style}（{_STYLE_DESC.get(style, style)}）\n\n"
-        f"硬性要求：\n"
-        f"1. itinerary 恰好 {days} 个元素，day 从 1 连续编号；\n"
-        f"2. 每日 items 2–6 个，time_start < time_end，当日时段不得重叠；\n"
-        f"3. poi 的 lat/lng 必须是真实地点的近似坐标；\n"
-        f"4. cost_breakdown 各项之和与 budget_total 偏差不超过 20%；\n"
-        f"5. 只输出一个 JSON 对象，不要任何解释文字、不要 markdown 代码块。\n\n"
-        f"JSON 结构如下：\n{_SCHEMA_HINT}"
+        "下面这份行程的地点、顺序、时间和价格已经定好。请只改写说明文字。\n"
+        "可以改 summary、route_rationale，以及已有项目的 description 和 tips。\n"
+        "不要新增地点，不要删除地点，不要改标题、时间、价格、坐标或片区。\n"
+        "只输出一个 JSON 对象，不要解释，不要 markdown。格式：\n"
+        '{"summary":"","route_rationale":"","items":[{"day":1,"title":"已有标题","description":"","tips":""}]}\n\n'
+        f"行程骨架：\n{json.dumps(skeleton, ensure_ascii=False)}"
     )
     return [
-        {"role": "system", "content": "你是旅游行程规划引擎，只输出合法 JSON 对象，字段与结构必须与用户给出的 schema 完全一致。"},
+        {
+            "role": "system",
+            "content": "你只改写已经排好的行程说明。不新增地点，不改价格。只输出 JSON。",
+        },
         {"role": "user", "content": user},
     ]
 
@@ -110,24 +65,34 @@ class OpenAICompatClient:
             return resp.json()["choices"][0]["message"]["content"]
 
     def generate(self, *, city: str, days: int, budget_total: float, people: int,
-                 preferences: list[str], style: str) -> dict:
-        messages = build_prompt(
-            city=city, days=days, budget_total=budget_total,
-            people=people, preferences=preferences, style=style,
+                 preferences: list[str], style: str, must_visit: list[str] | None = None,
+                 date_start: str | None = None, budget_includes_hotel: bool = False) -> dict:
+        from ..schemas.trip import TravelStyle
+        from ..services.copywriting import apply_prose, prose_skeleton
+
+        trip = generate_mock_trip(
+            city=city,
+            days=days,
+            budget_total=budget_total,
+            people=people,
+            preferences=preferences,
+            style=TravelStyle(style),
+            must_visit=must_visit,
+            date_start=date_start,
+            budget_includes_hotel=budget_includes_hotel,
         )
+        messages = build_prompt(skeleton=prose_skeleton(trip))
         raw = self._chat(messages)
         try:
-            data = _extract_json(raw)
-            if _looks_like_trip(data):
-                return data
-        except Exception:  # noqa: BLE001 —— 解析失败走修复重试
-            data = None
-        messages.append({"role": "assistant", "content": raw})
-        messages.append({
-            "role": "user",
-            "content": "上面的输出不是合法的行程 JSON，请重新输出修正后的完整 JSON 对象（仅 JSON，无解释）。",
-        })
-        return _extract_json(self._chat(messages))
+            prose = _extract_json(raw)
+        except Exception:  # noqa: BLE001 —— 解析失败再要一次说明文字
+            messages.append({"role": "assistant", "content": raw})
+            messages.append({
+                "role": "user",
+                "content": "请只输出说明文字的 JSON（summary、route_rationale、items 的 description 和 tips），不要改地点和价格。",
+            })
+            prose = _extract_json(self._chat(messages))
+        return apply_prose(trip, prose).model_dump(mode="json")
 
 
 def _extract_json(raw: str) -> dict:
@@ -176,7 +141,8 @@ def make_generator(settings: Settings) -> tuple[TripGenerator, str]:
 
 class _MockGenerator:
     def generate(self, *, city: str, days: int, budget_total: float, people: int,
-                 preferences: list[str], style: str) -> dict:
+                 preferences: list[str], style: str, must_visit: list[str] | None = None,
+                 date_start: str | None = None, budget_includes_hotel: bool = False) -> dict:
         from ..schemas.trip import TravelStyle
 
         trip = generate_mock_trip(
@@ -186,5 +152,8 @@ class _MockGenerator:
             people=people,
             preferences=preferences,
             style=TravelStyle(style),
+            must_visit=must_visit,
+            date_start=date_start,
+            budget_includes_hotel=budget_includes_hotel,
         )
         return trip.model_dump(mode="json")

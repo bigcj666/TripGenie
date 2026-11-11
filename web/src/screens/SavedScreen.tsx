@@ -1,5 +1,6 @@
 import { Photo } from '../components/Photo'
 import { PLACES } from '../data/places'
+import { PREFERENCE_TAGS } from '../format'
 import type { CreateDraft } from '../nav'
 
 interface SavedScreenProps {
@@ -8,9 +9,10 @@ interface SavedScreenProps {
   onPlace: (placeId: string) => void
   onToggleSave: (placeId: string) => void
   onCreate: (draft: CreateDraft) => void
+  onBrowse: () => void
 }
 
-export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate }: SavedScreenProps): React.ReactElement {
+export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate, onBrowse }: SavedScreenProps): React.ReactElement {
   const places = PLACES.filter((place) => savedIds.includes(place.id))
   const city = dominantCity(savedIds)
 
@@ -26,8 +28,11 @@ export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate 
       <div className="scroll">
         {places.length === 0 ? (
           <div className="empty">
-            <p>还没有收藏的景点</p>
-            <small className="muted">在首页或城市页点「收藏」。自定义行程里，收藏的点会排在前面。</small>
+            <h2>还没有收藏的景点。</h2>
+            <p>浏览行程时收藏，方便下次自己排。</p>
+            <button type="button" className="primary" onClick={onBrowse}>
+              去首页看看
+            </button>
           </div>
         ) : (
           places.map((place) => (
@@ -49,13 +54,25 @@ export function SavedScreen({ savedIds, onBack, onPlace, onToggleSave, onCreate 
       </div>
       {city ? (
         <div className="dock">
-          <button type="button" className="primary" onClick={() => onCreate({ city })}>
+          <button type="button" className="primary" onClick={() => onCreate({ city, prefs: prefsFromSaved(savedIds, city) })}>
             用收藏生成{city}攻略
           </button>
         </div>
       ) : null}
     </div>
   )
+}
+
+function prefsFromSaved(ids: string[], city: string): string[] | undefined {
+  const tags = new Set<string>()
+  for (const id of ids) {
+    const place = PLACES.find((item) => item.id === id && item.city === city)
+    if (!place) continue
+    for (const tag of place.tags) {
+      if ((PREFERENCE_TAGS as readonly string[]).includes(tag)) tags.add(tag)
+    }
+  }
+  return tags.size > 0 ? [...tags] : undefined
 }
 
 function dominantCity(ids: string[]): string | null {

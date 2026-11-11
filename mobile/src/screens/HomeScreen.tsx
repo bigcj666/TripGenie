@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import { DEMO_CITIES } from '../format';
 import type { GenerateRequest, TravelStyle } from '../types/trip';
 
 const PREFERENCE_TAGS = ['美食', '自然', '人文', '亲子', '购物', '网红打卡'] as const;
@@ -24,9 +25,10 @@ const STYLE_OPTIONS: { value: StyleOption; label: string; hint: string }[] = [
 export interface HomeScreenProps {
   onSubmit: (req: GenerateRequest) => void;
   loading: boolean;
+  service: string;
 }
 
-export function HomeScreen({ onSubmit, loading }: HomeScreenProps): React.ReactElement {
+export function HomeScreen({ onSubmit, loading, service }: HomeScreenProps): React.ReactElement {
   const [city, setCity] = useState('杭州');
   const [days, setDays] = useState(2);
   const [budget, setBudget] = useState('1500');
@@ -56,7 +58,18 @@ export function HomeScreen({ onSubmit, loading }: HomeScreenProps): React.ReactE
       <Text style={styles.tagline}>AI 旅游攻略 · 输入需求生成行程</Text>
 
       <View style={styles.card}>
+        <Text style={styles.service}>{service}</Text>
         <Text style={styles.label}>目的地城市</Text>
+        <View style={styles.tagWrap}>
+          {DEMO_CITIES.map((name) => {
+            const active = city === name;
+            return (
+              <Pressable key={name} onPress={() => setCity(name)} style={[styles.tag, active && styles.tagActive]}>
+                <Text style={[styles.tagText, active && styles.tagTextActive]}>{name}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
         <TextInput
           style={styles.input}
           value={city}
@@ -77,7 +90,7 @@ export function HomeScreen({ onSubmit, loading }: HomeScreenProps): React.ReactE
           <Text style={styles.stepValue}>{days} 天</Text>
           <Pressable
             style={styles.stepBtn}
-            onPress={() => setDays((d) => Math.min(7, d + 1))}
+            onPress={() => setDays((d) => Math.min(5, d + 1))}
             accessibilityLabel="增加天数"
           >
             <Text style={styles.stepBtnText}>+</Text>
@@ -173,6 +186,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
+  service: { fontSize: 12, color: '#0F766E', marginBottom: 4, lineHeight: 18 },
   label: { fontSize: 13, fontWeight: '700', color: '#334155', marginTop: 16, marginBottom: 8 },
   input: {
     borderWidth: 1,

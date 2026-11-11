@@ -99,3 +99,24 @@ def test_generate_request_styles():
 def test_generate_request_bad_style_rejected():
     with pytest.raises(ValidationError):
         GenerateRequest(city="杭州", days=1, budget_total=100, people=1, style="luxury")
+
+
+def test_v3_defaults_and_rejections():
+    req = GenerateRequest(city="杭州", days=3, budget_total=1500, people=3)
+    assert req.budget_includes_hotel is False
+    assert req.must_visit == []
+    assert req.date_start is None
+    with pytest.raises(ValidationError):
+        GenerateRequest(city="杭州", days=1, budget_total=100, people=1, must_visit=["a", "b", "c", "d", "e", "f"])
+    with pytest.raises(ValidationError):
+        GenerateRequest(city="杭州", days=1, budget_total=100, people=1, date_start="2026/11/02")
+    with pytest.raises(ValidationError):
+        GenerateRequest(city="杭州", days=1, budget_total=100, people=1, date_start="2026-02-31")
+    bad_fact = _item("09:00", "10:00").model_dump()
+    bad_fact["fact_status"] = "guessed"
+    with pytest.raises(ValidationError):
+        ItineraryItem.model_validate(bad_fact)
+    bad_closed = _item("09:00", "10:00").model_dump()
+    bad_closed["closed_weekdays"] = [7]
+    with pytest.raises(ValidationError):
+        ItineraryItem.model_validate(bad_closed)

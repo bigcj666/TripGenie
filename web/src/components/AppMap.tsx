@@ -14,12 +14,13 @@ interface AppMapProps {
   route?: boolean
   className?: string
   onPick?: (id: string) => void
+  onTileFailure?: () => void
 }
 
 const TILES =
   'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}'
 
-export function AppMap({ points, activeId, route, className, onPick }: AppMapProps): React.ReactElement {
+export function AppMap({ points, activeId, route, className, onPick, onTileFailure }: AppMapProps): React.ReactElement {
   const el = useRef<HTMLDivElement>(null)
   const signature = `${route ? 'r' : 'p'}:${activeId ?? ''}:${points.map((point) => point.id).join(',')}`
 
@@ -28,11 +29,12 @@ export function AppMap({ points, activeId, route, className, onPick }: AppMapPro
     if (!node) return
     const map = L.map(node, { zoomControl: false, attributionControl: true })
     L.control.zoom({ position: 'topright' }).addTo(map)
-    L.tileLayer(TILES, {
+    const tiles = L.tileLayer(TILES, {
       subdomains: ['1', '2', '3', '4'],
       maxZoom: 18,
       attribution: '高德地图',
     }).addTo(map)
+    tiles.on('tileerror', () => onTileFailure?.())
 
     if (route && points.length > 1) {
       L.polyline(
@@ -46,8 +48,8 @@ export function AppMap({ points, activeId, route, className, onPick }: AppMapPro
         icon: L.divIcon({
           className: 'tuli-pin',
           html: `<span class="${point.id === activeId ? 'on' : ''}">${route ? index + 1 : ''}</span>`,
-          iconSize: [22, 22],
-          iconAnchor: [11, 11],
+          iconSize: [26, 26],
+          iconAnchor: [13, 13],
         }),
         title: point.name,
       })

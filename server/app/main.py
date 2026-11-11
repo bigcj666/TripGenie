@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import Settings
 from .routers.community import router as community_router
+from .routers.saved_trips import router as saved_trips_router
 from .routers.trip import router
 
 app = FastAPI(title="途灵 TripGenie API", version="0.1.0")
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(saved_trips_router)
 app.include_router(community_router)
 
 
