@@ -102,6 +102,16 @@ def test_review_with_photo_and_without_trip(tmp_path, monkeypatch):
     assert detail["trip"] is None
 
 
+def test_nine_photos_allowed_tenth_rejected(tmp_path, monkeypatch):
+    monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
+    png = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+    created = client.post("/api/community", json={"author": "阿宁", "note": "九张照片", "photos": [png] * 9, "city": "杭州"})
+    assert created.status_code == 201, created.text
+    assert len(created.json()["post"]["photos"]) == 9
+    over = client.post("/api/community", json={"author": "阿宁", "note": "十张照片", "photos": [png] * 10, "city": "杭州"})
+    assert over.status_code == 400
+
+
 def test_empty_plan_rejected(tmp_path, monkeypatch):
     monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
     resp = client.post("/api/community", json={"author": "小林", "trip": {"city": "杭州"}})

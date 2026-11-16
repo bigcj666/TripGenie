@@ -320,8 +320,8 @@ def _highlights(raw: str | None) -> list[str]:
 
 
 def _store_photos(raws: list[str]) -> list[str]:
-    if len(raws) > 6:
-        raise ValueError("最多 6 张照片")
+    if len(raws) > 9:
+        raise ValueError("最多 9 张照片")
     folder = db_path().parent / "community-media"
     saved: list[str] = []
     for raw in raws:

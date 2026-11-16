@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { listCommunity, publishCommunity, readCommunity, type CommunityPost } from '../api'
 import { forShare } from '../custom/schedule'
+import { cityImage } from '../data/places'
 import { tripKindName } from '../format'
 import type { SavedTrip, ShareRecord } from '../storage'
 import type { Trip } from '../types'
@@ -96,12 +97,15 @@ export function CommunityScreen({
 
   return (
     <div className="page">
-      <header className="nav">
-        <span />
-        <h1>社区</h1>
-        <button type="button" className="nav-action" onClick={() => setWriting(true)}>
-          写点评
-        </button>
+      <header className="feed-top">
+        <div className="feed-top-row">
+          <h1>看看别人怎么排。</h1>
+          {/* 右上发布入口用全文。若 430px 和标题抢一行，需推广改一版，不要缩短。 */}
+          <button type="button" className="text-publish" onClick={() => setWriting(true)}>
+            分享我的行程
+          </button>
+        </div>
+        <p>浏览同行行程，留言交流，或导入到自己的攻略。</p>
       </header>
       <div className="scroll">
         <div className="chips pad-chips">
@@ -110,10 +114,6 @@ export function CommunityScreen({
               {name}
             </button>
           ))}
-        </div>
-        <div className="community-lead">
-          <h2>看看别人怎么排。</h2>
-          <p>浏览同行行程，留言交流，或导入到自己的攻略。</p>
         </div>
         {notice ? <p className="banner">{notice}</p> : null}
         {error ? <p className="error pad">{error}</p> : null}
@@ -135,49 +135,52 @@ export function CommunityScreen({
         ) : (
           <div className="post-list">
             {posts.map((post) => (
-              <article key={post.id} className="post-card">
-                <button type="button" className="post-open" onClick={() => onOpen(post.id)}>
-                  <span className="post-who">
-                    <i>{post.author.slice(0, 1)}</i>
+              <article key={post.id} className="post-card" onClick={() => onOpen(post.id)}>
+                <div className="post-who">
+                  <i>{post.author.slice(0, 1)}</i>
+                  <span>
                     <b>{post.author}</b>
                     <small>{postedAt(post.created_at)}</small>
                   </span>
-                  <p>{post.note || post.summary}</p>
-                  <PhotoGrid photos={post.photos ?? []} />
-                </button>
+                </div>
+                <ClampText text={post.note || ''} />
+                <PhotoGrid photos={post.photos ?? []} />
                 {post.has_trip ? (
                   <div className="trip-attach">
-                    <button type="button" onClick={() => onOpen(post.id)}>
-                      <b>
+                    <img src={(post.photos ?? [])[0] || cityImage(post.city)} alt="" />
+                    <span>
+                      <b>{(post.highlights ?? []).slice(0, 2).join('、') || post.summary || post.city}</b>
+                      <small>
                         {post.city} · {post.days}天 · {post.people}人
-                      </b>
-                      <span>{(post.highlights ?? []).slice(0, 2).join('、') || post.summary}</span>
-                    </button>
+                      </small>
+                    </span>
                   </div>
                 ) : null}
-                <div className="post-actions">
-                  <button type="button" onClick={() => onOpen(post.id)}>
-                    查看详情
+                <div className="post-foot" onClick={(event) => event.stopPropagation()}>
+                  <button type="button" className="text-link" onClick={() => onOpen(post.id)}>
+                    留言 {post.comment_count}
                   </button>
-                  {post.has_trip ? (
-                    <button
-                      type="button"
-                      className="primary"
-                      onClick={() => {
-                        void readCommunity(post.id).then((detail) => {
-                          if (!detail.trip) return
-                          onImport(detail.trip)
-                          setNotice('已导入到「攻略」，可以打开查看或再调整。')
-                        })
-                      }}
-                    >
-                      导入到我的攻略
+                  <span>
+                    <button type="button" className="text-link" onClick={() => onOpen(post.id)}>
+                      查看详情
                     </button>
-                  ) : null}
+                    {post.has_trip ? (
+                      <button
+                        type="button"
+                        className="text-link"
+                        onClick={() => {
+                          void readCommunity(post.id).then((detail) => {
+                            if (!detail.trip) return
+                            onImport(detail.trip)
+                            setNotice('已导入到「攻略」，可以打开查看或再调整。')
+                          })
+                        }}
+                      >
+                        导入到我的攻略
+                      </button>
+                    ) : null}
+                  </span>
                 </div>
-                <button type="button" className="post-comments" onClick={() => onOpen(post.id)}>
-                  {post.comment_count} 条留言
-                </button>
               </article>
             ))}
           </div>
@@ -188,14 +191,61 @@ export function CommunityScreen({
 }
 
 function PhotoGrid({ photos }: { photos: string[] }): React.ReactElement | null {
-  if (!photos.length) return null
-  const count = photos.length >= 3 ? 3 : photos.length
+  const shown = photos.slice(0, 9)
+  const [shape, setShape] = useState('')
+  if (!shown.length) return null
+  if (shown.length === 1) {
+    return (
+      <div className={`photo-grid n1 ${shape}`}>
+        <img
+          src={shown[0]}
+          alt=""
+          onLoad={(event) => {
+            const ratio = event.currentTarget.naturalWidth / event.currentTarget.naturalHeight
+            if (ratio > 2) setShape('wide')
+            else if (ratio < 0.5) setShape('tall')
+          }}
+        />
+      </div>
+    )
+  }
   return (
-    <div className={`photo-grid n${count}`}>
-      {photos.slice(0, 6).map((src) => (
+    <div className="photo-grid">
+      {shown.map((src) => (
         <img key={src} src={src} alt="" />
       ))}
     </div>
+  )
+}
+
+function ClampText({ text }: { text: string }): React.ReactElement | null {
+  const ref = useRef<HTMLParagraphElement>(null)
+  const [open, setOpen] = useState(false)
+  const [overflow, setOverflow] = useState(false)
+  useEffect(() => {
+    const node = ref.current
+    if (!node || open) return
+    setOverflow(node.scrollHeight > node.clientHeight + 1)
+  }, [text, open])
+  if (!text.trim()) return null
+  return (
+    <>
+      <p ref={ref} className={open ? 'post-body' : 'post-body clamp'}>
+        {text}
+      </p>
+      {!open && overflow ? (
+        <button
+          type="button"
+          className="text-expand"
+          onClick={(event) => {
+            event.stopPropagation()
+            setOpen(true)
+          }}
+        >
+          展开
+        </button>
+      ) : null}
+    </>
   )
 }
 
@@ -237,7 +287,7 @@ function Compose({
 
   const addPhotos = (files: FileList | null): void => {
     if (!files?.length) return
-    const picked = [...files].slice(0, 6 - photos.length)
+    const picked = [...files].slice(0, 9 - photos.length)
     void Promise.all(
       picked.map(
         (file) =>
@@ -257,7 +307,7 @@ function Compose({
           }),
       ),
     )
-      .then((urls) => setPhotos((current) => [...current, ...urls].slice(0, 6)))
+      .then((urls) => setPhotos((current) => [...current, ...urls].slice(0, 9)))
       .catch((err: unknown) => setError(err instanceof Error ? err.message : '照片没有读出来'))
   }
 
@@ -265,45 +315,55 @@ function Compose({
     <div className="page">
       <header className="nav">
         <button type="button" className="nav-btn" onClick={onBack}>
-          返回
+          取消
         </button>
         <h1>写点评</h1>
-        <button type="button" className="nav-action" onClick={publish} disabled={sending}>
+        <button type="button" className="text-publish" onClick={publish} disabled={sending}>
           发布
         </button>
       </header>
       <div className="scroll form">
-        <p className="hint">昵称会显示在你分享的行程上。当前是「{author}」。</p>
-        <label htmlFor="share-note">这一趟怎么样</label>
+        <p className="hint">昵称会显示在你分享的行程上。</p>
+        <label htmlFor="share-note" className="sr">
+          这一趟怎么样
+        </label>
         <textarea
           id="share-note"
           maxLength={400}
           value={note}
-          placeholder="写下真实感受，好吃的、好逛的、想避开的都可以。"
+          placeholder="这套行程你想怎么走？"
           onChange={(event) => setNote(event.target.value)}
         />
-        <label className="file-label">
-          添加照片
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={(event) => {
-              addPhotos(event.target.files)
-              event.target.value = ''
-            }}
-          />
-        </label>
-        <PhotoGrid photos={photos} />
+        <div className="compose-photos">
+          {photos.length < 9 ? (
+            <label className="photo-add">
+              +
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                aria-label="添加照片"
+                onChange={(event) => {
+                  addPhotos(event.target.files)
+                  event.target.value = ''
+                }}
+              />
+            </label>
+          ) : null}
+          {photos.map((src) => (
+            <img key={src} src={src} alt="" />
+          ))}
+        </div>
         {attached ? (
           <div className="trip-attach">
-            <div>
-              <b>
+            <img src={cityImage(attached.city)} alt="" />
+            <span>
+              <b>{highlightsOf(attached).join('、') || attached.city}</b>
+              <small>
                 {attached.city} · {attached.days}天 · {attached.people}人
-              </b>
-              <span>{highlightsOf(attached).join('、')}</span>
-            </div>
-            <button type="button" onClick={() => onAttach(null)}>
+              </small>
+            </span>
+            <button type="button" className="text-link" onClick={() => onAttach(null)}>
               移除
             </button>
           </div>
@@ -361,7 +421,13 @@ function postedAt(iso: string): string {
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return ''
   const now = new Date()
-  const sameDay = date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate()
-  if (sameDay) return `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`
+  const diff = now.getTime() - date.getTime()
+  const minutes = Math.floor(diff / 60000)
+  if (minutes < 1) return '刚刚'
+  if (minutes < 60) return `${minutes}分钟前`
+  const startOf = (value: Date): number => new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime()
+  const dayGap = Math.round((startOf(now) - startOf(date)) / 86400000)
+  if (dayGap <= 0) return `${Math.floor(minutes / 60)}小时前`
+  if (dayGap === 1) return '昨天'
   return `${date.getMonth() + 1}月${date.getDate()}日`
 }

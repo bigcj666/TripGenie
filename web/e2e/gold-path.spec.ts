@@ -120,7 +120,12 @@ test('empty guide and failed generate', async ({ page }) => {
   await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '社区' }).click()
   await expect(page.getByRole('heading', { name: '看看别人怎么排。' })).toBeVisible()
   await expect(page.getByText('浏览同行行程，留言交流，或导入到自己的攻略。')).toBeVisible()
-  await expect(page.getByRole('button', { name: '写点评' })).toBeVisible()
+  const publish = page.getByRole('button', { name: '分享我的行程' })
+  await expect(publish).toBeVisible()
+  const publishBg = await publish.evaluate((node) => getComputedStyle(node).backgroundColor)
+  expect(publishBg === 'rgba(0, 0, 0, 0)' || publishBg === 'transparent').toBeTruthy()
+  await expect(page.getByRole('button', { name: '查看详情' }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: '导入到我的攻略' }).first()).toBeVisible()
   await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '攻略' }).click()
 
   await page.getByRole('button', { name: '生成行程' }).first().click()
@@ -128,4 +133,42 @@ test('empty guide and failed generate', async ({ page }) => {
   await page.getByRole('button', { name: '生成行程' }).click()
   await expect(page.getByText('这次没有生成成功，请检查条件后重试。')).toBeVisible()
   await expect(page.getByRole('button', { name: '重试' })).toBeVisible()
+})
+
+test('home shows one recent trip under the cities', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'tuling.trips',
+      JSON.stringify([
+        {
+          id: 'local-1',
+          savedAt: Date.now(),
+          engine: 'share',
+          trip: {
+            trip_id: 'local-1',
+            city: '杭州',
+            days: 3,
+            people: 2,
+            budget_total: 1500,
+            style: 'compact',
+            preferences: [],
+            summary: '',
+            itinerary: [],
+            cost_breakdown: { transport: 0, food: 0, tickets: 0, hotel: 0, other: 0 },
+          },
+        },
+      ]),
+    )
+  })
+  await page.goto('/')
+  const recent = page.getByRole('heading', { name: '最近的行程' })
+  await expect(recent).toBeVisible()
+  const cities = page.getByRole('heading', { name: '先从这些城市开始。' })
+  const trust = page.getByText('一次三套，数字可对比')
+  const recentBox = await recent.boundingBox()
+  const cityBox = await cities.boundingBox()
+  const trustBox = await trust.boundingBox()
+  expect(cityBox && recentBox && cityBox.y < recentBox.y).toBeTruthy()
+  expect(recentBox && trustBox && recentBox.y < trustBox.y).toBeTruthy()
+  await expect(page.getByRole('button', { name: /杭州 · 紧凑/ })).toHaveCount(1)
 })

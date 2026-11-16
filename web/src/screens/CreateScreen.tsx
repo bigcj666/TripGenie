@@ -66,6 +66,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
         }}
       >
         <p className="hint">先填写这次出行的基本条件。</p>
+        <div className="form-card">
         <label htmlFor="city">城市</label>
         <input id="city" value={city} maxLength={20} onChange={(event) => setCity(event.target.value)} />
         <div className="chips">
@@ -126,6 +127,7 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
           ))}
         </div>
         <p className="hint">{style === 'all' ? '一次给出紧凑、松弛、省钱三套。' : STYLE_META[style].line}</p>
+        </div>
         {loading ? <p className="hint">正在按你的条件排出三套行程…</p> : null}
         {error ? <p className="error">{error}</p> : null}
       </form>

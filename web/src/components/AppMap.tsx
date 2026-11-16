@@ -39,7 +39,7 @@ export function AppMap({ points, activeId, route, className, onPick, onTileFailu
     if (route && points.length > 1) {
       L.polyline(
         points.map((point) => [point.lat, point.lng] as [number, number]),
-        { color: '#1c1c1e', weight: 3, opacity: 0.85 },
+        { color: '#2F6FED', weight: 3, opacity: 0.85 },
       ).addTo(map)
     }
 

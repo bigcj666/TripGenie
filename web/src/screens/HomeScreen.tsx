@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Photo } from '../components/Photo'
 import { isoShift, loadWeather } from '../custom/schedule'
-import { CITIES, PLACES } from '../data/places'
+import { CITIES, PLACES, cityImage, photoFor } from '../data/places'
 import { tripKindName } from '../format'
 import type { CreateDraft } from '../nav'
 import type { SavedTrip } from '../storage'
@@ -96,15 +96,6 @@ export function HomeScreen({
           </button>
           <p className="home-note">按出发日天气排好时间段，景点留给你自己选；饭馆和住宿也可以随时更换。</p>
         </div>
-        {latest && !keyword ? (
-          <button type="button" className="home-recent" onClick={() => onOpenGuide(latest.id)}>
-            <span>最近</span>
-            <b>
-              {latest.trip.city} · {tripKindName(latest.trip)} · {latest.trip.days}天
-            </b>
-          </button>
-        ) : null}
-
         <section>
           <div className="sec-head">
             <h2>先从这些城市开始。</h2>
@@ -123,6 +114,23 @@ export function HomeScreen({
             ))}
           </div>
         </section>
+
+        {latest && !keyword ? (
+          <section className="recent-block">
+            <h2>最近的行程</h2>
+            <button type="button" className="home-recent" onClick={() => onOpenGuide(latest.id)}>
+              <Photo src={photoFor(latest.trip.itinerary[0]?.items[0]?.title ?? '') || cityImage(latest.trip.city)} alt="" />
+              <span>
+                <b>
+                  {latest.trip.city} · {tripKindName(latest.trip)}
+                </b>
+                <small>
+                  {latest.trip.days}天 · {tripKindName(latest.trip)}
+                </small>
+              </span>
+            </button>
+          </section>
+        ) : null}
 
         <section className="trust" aria-label="可以对照的三点">
           <div>一次三套，数字可对比</div>

@@ -18,8 +18,7 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
   const [pendingDelete, setPendingDelete] = useState<string | null>(null)
   return (
     <div className="page">
-      <header className="nav">
-        <span />
+      <header className="nav nav-split">
         <h1>攻略</h1>
         <button type="button" className="nav-action" onClick={onCreate}>
           生成行程
@@ -41,7 +40,8 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
             </div>
           </div>
         ) : (
-          trips.map((item) => {
+          <div className="guide-list">
+          {trips.map((item) => {
             const first = item.trip.itinerary[0]?.items[0]
             return (
               <div key={item.id} className="trip-row">
@@ -52,7 +52,7 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
                       {item.trip.city} · {tripKindName(item.trip)}
                     </b>
                     <small>
-                      {item.trip.days}天 · {item.trip.people}人 · {formatDay(item.savedAt)}
+                      {item.trip.days}天 · {tripKindName(item.trip)}
                     </small>
                   </span>
                 </button>
@@ -66,7 +66,8 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
                 ) : null}
               </div>
             )
-          })
+          })}
+          </div>
         )}
       </div>
       {pendingDelete ? (
@@ -92,9 +93,4 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
       ) : null}
     </div>
   )
-}
-
-function formatDay(stamp: number): string {
-  const date = new Date(stamp)
-  return `${date.getMonth() + 1}月${date.getDate()}日`
 }
