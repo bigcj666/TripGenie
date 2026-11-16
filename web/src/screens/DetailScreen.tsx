@@ -5,11 +5,12 @@ import { AppMap } from '../components/AppMap'
 import { Photo } from '../components/Photo'
 import { withStay } from '../custom/schedule'
 import { photoFor } from '../data/places'
-import { STYLE_META, TYPE_LABEL, costTotal, tripKindName, yuan } from '../format'
+import { TYPE_LABEL, costTotal, shareFallback, shareSentence, tripKindName, yuan } from '../format'
 import type { ItineraryItem, Trip } from '../types'
 
 interface DetailScreenProps {
   trip: Trip
+  warnings?: string[]
   notice?: string | null
   onBack: () => void
   onShare?: () => void
@@ -18,25 +19,25 @@ interface DetailScreenProps {
 
 const WEEKDAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
 
-export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailScreenProps): React.ReactElement {
+export function DetailScreen({ trip, warnings, notice, onBack, onShare, onSave }: DetailScreenProps): React.ReactElement {
   const view = useMemo(() => withStay(trip), [trip])
   const [dayIndex, setDayIndex] = useState(0)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [tilesDown, setTilesDown] = useState(false)
+  const [mapTry, setMapTry] = useState(0)
   const [savedNote, setSavedNote] = useState<string | null>(null)
   const [linkNote, setLinkNote] = useState<string | null>(null)
   const day = view.itinerary[dayIndex]
   const items = day?.items ?? []
   const sum = costTotal(view.cost_breakdown)
   const hotelOn = Boolean(trip.budget_includes_hotel) || view.cost_breakdown.hotel > 0
-  const upcoming = nextItem(items)
+  const upcoming = nextStop(items)
 
   const copyLink = (): void => {
     void saveSharedTrip(view)
       .then(async ({ id }) => {
         const url = `${window.location.origin}/share/${id}`
-        const style = STYLE_META[trip.style]?.name ?? tripKindName(trip)
-        const sentence = `我用「途灵 TripGenie」排了一份${trip.city}${trip.days}日行程（${style}）。按天写好了时间、吃饭和花费，需要的可以导入查看。 ${url}`
+        const sentence = `${shareSentence(trip.city, trip.days, tripKindName(trip))} ${url}`
         try {
           await navigator.clipboard?.writeText(sentence)
           setLinkNote('已复制分享句和链接。')
@@ -45,8 +46,15 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
         }
       })
       .catch(() => {
-        setLinkNote(`我在「途灵 TripGenie」排好了${trip.city}的行程，三套走法能直接对比。打开「社区」就能导入。`)
+        setLinkNote(shareFallback(trip.city))
       })
+  }
+
+  const goNext = (): void => {
+    if (!upcoming) return
+    const id = `${dayIndex}-${upcoming.index}`
+    setActiveId(id)
+    document.getElementById(`stop-${id}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' })
   }
 
   return (
@@ -55,9 +63,7 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
         <button type="button" className="nav-btn" onClick={onBack}>
           返回
         </button>
-        <h1>
-          {trip.city} · {tripKindName(trip)}
-        </h1>
+        <h1>{trip.city}</h1>
         <button type="button" className="nav-btn" onClick={copyLink}>
           复制链接
         </button>
@@ -65,9 +71,14 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
       <div className="workbench-scroll">
         <div className="workbench-main">
           {notice ? <p className="banner">{notice}</p> : null}
-          <p className="hint pad">
+          <p className="cost-note">
             {hotelOn ? '住宿已按估算计入，并在费用中单独列出。' : '下列花费含门票、餐饮和市内交通，住宿未计入。'}
           </p>
+          {warnings?.map((warning) => (
+            <p key={warning} className="banner">
+              {warning}
+            </p>
+          ))}
           <section className="budget">
             <div>
               <span>预算</span>
@@ -87,7 +98,7 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
             {yuan(view.cost_breakdown.tickets)} · 住宿 {yuan(view.cost_breakdown.hotel)}
           </p>
           {view.route_rationale ? <p className="hint pad">{view.route_rationale}</p> : null}
-          <div className="day-line">
+          <div className="day-line sticky">
             {view.itinerary.map((item, index) => (
               <button key={item.day} type="button" className={index === dayIndex ? 'on' : ''} onClick={() => { setDayIndex(index); setActiveId(null); setTilesDown(false) }}>
                 第{item.day}天
@@ -96,7 +107,11 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
           </div>
           <h2 className="day-theme">{day ? `第 ${day.day} 天 · ${day.zone || '片区'} · ${day.theme}` : '行程'}</h2>
           {items.map((item, index) => (
-            <article key={`${item.time_start}-${item.title}`} className="guide-stop">
+            <article
+              key={`${item.time_start}-${item.title}`}
+              id={`stop-${dayIndex}-${index}`}
+              className={activeId === `${dayIndex}-${index}` ? 'guide-stop on' : 'guide-stop'}
+            >
               <button type="button" className="poi-main" onClick={() => setActiveId(`${dayIndex}-${index}`)}>
                 <span className="num-badge">{index + 1}</span>
                 <span>
@@ -117,6 +132,7 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
           <p className="hint pad">地图按当天先后顺序标注，仅表示走法，不提供导航。</p>
           <div className="workbench-map">
             <AppMap
+              key={mapTry}
               className="map-box"
               route
               activeId={activeId ?? undefined}
@@ -129,7 +145,20 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
                 lng: item.poi.lng,
               }))}
             />
-            {tilesDown ? <div className="map-fallback">地图瓦片没有加载。当天的时间线仍可查看。</div> : null}
+            {tilesDown ? (
+              <div className="map-fallback">
+                <p>地图暂时没法显示，行程仍可按下面的时间线查看。</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTilesDown(false)
+                    setMapTry((value) => value + 1)
+                  }}
+                >
+                  重试
+                </button>
+              </div>
+            ) : null}
           </div>
         </aside>
       </div>
@@ -154,8 +183,11 @@ export function DetailScreen({ trip, notice, onBack, onShare, onSave }: DetailSc
       <div className="next-dock">
         <span>
           <small>下一站</small>
-          <b>{upcoming ? `${upcoming.time_start} ${upcoming.title}` : '这一天还没有安排'}</b>
+          <b>{upcoming ? `${upcoming.item.time_start} ${upcoming.item.title}` : '已是今日最后一站'}</b>
         </span>
+        <button type="button" onClick={goNext} disabled={!upcoming}>
+          下一站
+        </button>
       </div>
     </div>
   )
@@ -192,17 +224,19 @@ function PlaceCard({ item, onClose }: { item: ItineraryItem | undefined; onClose
         </div>
         <div>
           <dt>闭馆日</dt>
-          <dd>{closed.length ? closed.join('、') : '没有标注闭馆日。'}</dd>
+          <dd>{closed.length ? closed.join('、') : '未查到闭馆日'}</dd>
         </div>
       </dl>
     </section>
   )
 }
 
-function nextItem(items: ItineraryItem[]): ItineraryItem | undefined {
+function nextStop(items: ItineraryItem[]): { index: number; item: ItineraryItem } | null {
   const now = new Date()
   const minutes = now.getHours() * 60 + now.getMinutes()
-  return items.find((item) => toMinutes(item.time_end) > minutes) ?? items[0]
+  const index = items.findIndex((item) => toMinutes(item.time_end) > minutes)
+  if (index < 0) return null
+  return { index, item: items[index] }
 }
 
 function toMinutes(value: string): number {
@@ -212,7 +246,7 @@ function toMinutes(value: string): number {
 }
 
 function legLine(mode: string, minutes: number): string {
-  if (mode === 'walk') return `步行约 ${minutes} 分钟`
+  if (mode === 'walk') return `步行约 ${minutes} 分钟（时间为粗算）`
   if (mode === 'transit') return `公交约 ${minutes} 分钟（时间为粗算）`
   return `约 ${minutes} 分钟（时间为粗算）`
 }

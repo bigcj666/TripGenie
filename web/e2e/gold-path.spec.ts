@@ -39,7 +39,7 @@ test('gold path at phone width', async ({ page, request }) => {
   await expect(page.getByText('地图按当天先后顺序标注，仅表示走法，不提供导航。')).toBeVisible()
   await expect(page.locator('.tuli-pin span').first()).toHaveText('1')
   await expect(page.locator('.leaflet-overlay-pane svg').first()).toBeVisible()
-  await expect(page.getByText('下一站')).toBeVisible()
+  await expect(page.getByRole('button', { name: '下一站' })).toBeVisible()
   await expect(page.getByText('西溪')).toHaveCount(0)
 
   await page.getByRole('button', { name: '第2天' }).click()
@@ -101,6 +101,7 @@ test('gold path at phone width', async ({ page, request }) => {
   expect(read.ok()).toBeTruthy()
 
   await page.goto(`/share/${id}`)
+  await expect(page.getByText('我用途灵排了一份杭州1日行程（松弛）。按天写好了时间、吃饭和花费，需要的可以导入查看。')).toBeVisible()
   await expect(page.getByRole('button', { name: '导入到我的攻略' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '页面' })).toHaveCount(0)
   await page.getByRole('button', { name: '导入到我的攻略' }).click()
@@ -117,7 +118,8 @@ test('empty guide and failed generate', async ({ page }) => {
   await expect(page.getByRole('heading', { name: '还没有保存的行程。' })).toBeVisible()
   await expect(page.getByRole('button', { name: '去社区看看' })).toBeVisible()
   await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '社区' }).click()
-  await expect(page.getByRole('heading', { name: '看看别人怎么逛。' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '看看别人怎么排。' })).toBeVisible()
+  await expect(page.getByText('浏览同行行程，留言交流，或导入到自己的攻略。')).toBeVisible()
   await expect(page.getByRole('button', { name: '写点评' })).toBeVisible()
   await page.getByRole('navigation', { name: '页面' }).getByRole('button', { name: '攻略' }).click()
 

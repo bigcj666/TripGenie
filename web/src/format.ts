@@ -81,8 +81,22 @@ export function walkPercent(ratio: number): string {
 }
 
 export function tripKindName(trip: Trip): string {
-  if (trip.preferences.includes('自定义')) return '自定义'
+  if (trip.preferences?.includes('自定义')) return '自定义'
   return STYLE_META[trip.style]?.name ?? trip.style
+}
+
+export function shareLead(trip: Trip): string {
+  if (trip.style === 'compact') return `${trip.city} ${trip.days} 天，紧凑走法，适合想多看几处的同行。`
+  if (trip.style === 'relaxed') return `${trip.city} ${trip.days} 天松弛安排，节奏慢一点，停留更久一点。`
+  return `${trip.city} ${trip.days} 天省钱版，优先免费和低门票景点。`
+}
+
+export function shareSentence(city: string, days: number, style: string): string {
+  return `我用途灵排了一份${city}${days}日行程（${style}）。按天写好了时间、吃饭和花费，需要的可以导入查看。`
+}
+
+export function shareFallback(city: string): string {
+  return `我在途灵排好了${city}的行程，三套走法能直接对比。打开「社区」就能导入。`
 }
 
 export function guideText(trip: Trip): string {

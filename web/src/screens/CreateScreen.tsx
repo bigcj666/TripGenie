@@ -76,10 +76,15 @@ export function CreateScreen({ draft, savedPrefs, homeCity, onBack, onDone }: Cr
           ))}
         </div>
         <div className="split">
-          <Stepper label="天数" value={days} unit="天" min={1} max={5} onChange={setDays} />
-          <Stepper label="人数" value={people} unit="人" min={1} max={10} onChange={setPeople} />
+          <div>
+            <Stepper label="天数" value={days} unit="天" min={1} max={5} onChange={setDays} />
+            <p className="hint">1–5 天的短途更合适。</p>
+          </div>
+          <div>
+            <Stepper label="人数" value={people} unit="人" min={1} max={10} onChange={setPeople} />
+            <p className="hint">费用按出行人数估算。</p>
+          </div>
         </div>
-        <p className="hint">1–5 天的短途更合适。费用按出行人数估算。</p>
         <label htmlFor="date-start">出发日期</label>
         <input id="date-start" type="date" value={dateStart} onChange={(event) => setDateStart(event.target.value)} />
         <p className="hint">填了出发日，遇到闭馆会改到同片区其他地方。</p>

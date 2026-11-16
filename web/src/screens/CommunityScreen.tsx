@@ -111,8 +111,10 @@ export function CommunityScreen({
             </button>
           ))}
         </div>
-        <h2 className="day-theme">看看别人怎么逛。</h2>
-        <p className="hint pad">写下真实感受，照片和行程都可以附上。</p>
+        <div className="community-lead">
+          <h2>看看别人怎么排。</h2>
+          <p>浏览同行行程，留言交流，或导入到自己的攻略。</p>
+        </div>
         {notice ? <p className="banner">{notice}</p> : null}
         {error ? <p className="error pad">{error}</p> : null}
         {loading && posts.length === 0 ? <p className="muted pad">正在加载…</p> : null}
@@ -121,16 +123,13 @@ export function CommunityScreen({
             {city === '全部' ? (
               <>
                 <h2>社区还很安静。</h2>
-                <p>发一条带照片的点评，也可以附上你排好的行程。</p>
+                <p>把你排好的行程发出来，给同行人一个可直接导入的参考。</p>
               </>
             ) : (
-              <>
-                <h2>这个城市还没有点评。</h2>
-                <p>这个城市还没有分享，换个城市，或先发一套你的行程。</p>
-              </>
+              <h2>这个城市还没有分享，换个城市，或先发一套你的行程。</h2>
             )}
             <button type="button" className="primary" onClick={() => setWriting(true)}>
-              写一篇点评
+              分享我的行程
             </button>
           </div>
         ) : (
@@ -154,8 +153,16 @@ export function CommunityScreen({
                       </b>
                       <span>{(post.highlights ?? []).slice(0, 2).join('、') || post.summary}</span>
                     </button>
+                  </div>
+                ) : null}
+                <div className="post-actions">
+                  <button type="button" onClick={() => onOpen(post.id)}>
+                    查看详情
+                  </button>
+                  {post.has_trip ? (
                     <button
                       type="button"
+                      className="primary"
                       onClick={() => {
                         void readCommunity(post.id).then((detail) => {
                           if (!detail.trip) return
@@ -164,10 +171,10 @@ export function CommunityScreen({
                         })
                       }}
                     >
-                      导入
+                      导入到我的攻略
                     </button>
-                  </div>
-                ) : null}
+                  ) : null}
+                </div>
                 <button type="button" className="post-comments" onClick={() => onOpen(post.id)}>
                   {post.comment_count} 条留言
                 </button>
@@ -266,7 +273,7 @@ function Compose({
         </button>
       </header>
       <div className="scroll form">
-        <p className="hint">以「{author}」发布。昵称来自「我的」。</p>
+        <p className="hint">昵称会显示在你分享的行程上。当前是「{author}」。</p>
         <label htmlFor="share-note">这一趟怎么样</label>
         <textarea
           id="share-note"
@@ -307,7 +314,7 @@ function Compose({
         )}
         {showTrips && !attached ? (
           trips.length === 0 ? (
-            <p className="hint">还没有保存的行程。可以先发文字和照片。</p>
+            <p className="hint">还没有保存的行程。</p>
           ) : (
             <div className="set-group">
               {trips.map((item) => (

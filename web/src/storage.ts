@@ -20,6 +20,7 @@ export interface SavedTrip {
   savedAt: number
   engine: string
   trip: Trip
+  notices?: string[]
 }
 
 export function loadTrips(): SavedTrip[] {

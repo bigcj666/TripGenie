@@ -56,13 +56,13 @@ function MainPanel({
         <span />
       </header>
       <div className="scroll">
-        <button type="button" className="profile" onClick={() => onOpen('name')}>
+        <div className="profile">
           <i>{profile.name.slice(0, 1)}</i>
           <span>
             <b>{profile.name}</b>
             <small>{profile.city}</small>
           </span>
-        </button>
+        </div>
 
         <section className="set-group">
           <SettingRow label="昵称" value={profile.name} onClick={() => onOpen('name')} />

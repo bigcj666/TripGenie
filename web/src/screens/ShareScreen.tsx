@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { readSharedTrip } from '../api'
-import { STYLE_META, tripKindName, yuan } from '../format'
+import { shareLead, shareSentence, tripKindName, yuan } from '../format'
 import { loadTrips, saveTrips, type SavedTrip } from '../storage'
 import type { Trip } from '../types'
 
@@ -34,9 +34,9 @@ export function ShareScreen({ id }: ShareScreenProps): React.ReactElement {
       <div className="page">
         <div className="empty">
           <h2>这份分享打不开。</h2>
-          <p>链接可能已失效。可以回到首页，重新生成一套行程。</p>
+          <p>链接可能已失效。可以重新生成一套行程。</p>
           <a className="primary" href="/" style={{ display: 'grid', placeItems: 'center', textDecoration: 'none' }}>
-            回到首页
+            生成行程
           </a>
         </div>
       </div>
@@ -51,7 +51,6 @@ export function ShareScreen({ id }: ShareScreenProps): React.ReactElement {
     )
   }
 
-  const style = STYLE_META[trip.style]
   return (
     <div className="page">
       <header className="nav">
@@ -62,12 +61,9 @@ export function ShareScreen({ id }: ShareScreenProps): React.ReactElement {
         <span />
       </header>
       <div className="scroll with-dock">
-        <p className="hint pad">{style?.line ?? '按天写好了时间、吃饭和花费。'}</p>
-        {/* 分享句按原句接上完整产品名。若 390px 挤掉一行，需推广改一版，不要改短。 */}
-        <p className="pad">
-          我用「途灵 TripGenie」排了一份{trip.city}
-          {trip.days}日行程（{style?.name ?? tripKindName(trip)}）。按天写好了时间、吃饭和花费，需要的可以导入查看。
-        </p>
+        <p className="share-lead">{shareLead(trip)}</p>
+        {/* 复制句按推广原句整句展示。若 430px 挤掉一行，需推广改一版，不要改短。 */}
+        <p className="pad">{shareSentence(trip.city, trip.days, tripKindName(trip))}</p>
         {notice ? <p className="banner">{notice}</p> : null}
         <p className="budget-line">
           门票 {yuan(trip.cost_breakdown.tickets)} · 餐饮 {yuan(trip.cost_breakdown.food)} · 交通 {yuan(trip.cost_breakdown.transport)}

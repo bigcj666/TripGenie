@@ -35,10 +35,12 @@ export function PlansScreen({ result, onBack, onOpen }: PlansScreenProps): React
           return (
             <article key={plan.trip_id} className={`choice ${plan.style}`}>
               <header>
-                <b>{meta?.name ?? plan.style}</b>
+                <span className="choice-name">
+                  <b>{meta?.name ?? plan.style}</b>
+                  {meta ? <span className="tag">{meta.tag}</span> : null}
+                </span>
                 <span>{meta?.line}</span>
               </header>
-              {meta ? <span className="tag">{meta.tag}</span> : null}
               <dl>
                 <div>
                   <dt>行程站点数</dt>

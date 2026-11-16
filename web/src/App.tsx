@@ -4,7 +4,7 @@ import { fetchHealth, type HealthInfo } from './api'
 import { TabBar } from './components/TabBar'
 import { forShare } from './custom/schedule'
 import { PLACES } from './data/places'
-import { PREFERENCE_TAGS } from './format'
+import { PREFERENCE_TAGS, presentWarning, warningsFor } from './format'
 import type { CreateDraft, Tab } from './nav'
 import { CityScreen } from './screens/CityScreen'
 import { CommunityScreen } from './screens/CommunityScreen'
@@ -97,6 +97,7 @@ export function App(): React.ReactElement {
       savedAt: Date.now(),
       engine: result.engine,
       trip,
+      notices: [...new Set(warningsFor(result.warnings, trip.style).map(presentWarning).filter(Boolean))],
     }))
     const next = [...incoming, ...trips.filter((item) => !incoming.some((row) => row.id === item.id))].slice(0, 30)
     setTrips(next)
@@ -357,6 +358,7 @@ function DetailRoute({
   return (
     <DetailScreen
       trip={saved.trip}
+      warnings={saved.notices}
       notice={notice}
       onBack={onBack}
       onShare={() => onShare(saved.trip)}

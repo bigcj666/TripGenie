@@ -117,7 +117,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
               : null}
             <section className="post-talk">
               <h2>留言</h2>
-              {post.comments.length === 0 ? <p className="muted">还没有留言。可以说说哪里值得去，或哪里想避开。</p> : null}
+              {post.comments.length === 0 ? <p className="muted">还没有留言。先说一句这套行程好在哪，或哪里想改。</p> : null}
               {post.comments.map((comment) => (
                 <article key={comment.id} className="comment">
                   <b>{comment.author}</b>
@@ -131,7 +131,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
                 id="comment-body"
                 maxLength={200}
                 value={text}
-                placeholder="写下你的看法"
+                placeholder="这套行程你想怎么走？"
                 onChange={(event) => setText(event.target.value)}
               />
               <button type="button" className="primary" disabled={sending || !text.trim()} onClick={send}>
