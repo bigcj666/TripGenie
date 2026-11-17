@@ -26,6 +26,7 @@ export function DetailScreen({ trip, warnings, notice, onBack, onShare, onSave }
   const [tilesDown, setTilesDown] = useState(false)
   const [mapTry, setMapTry] = useState(0)
   const [savedNote, setSavedNote] = useState<string | null>(null)
+  const [saving, setSaving] = useState(false)
   const [linkNote, setLinkNote] = useState<string | null>(null)
   const day = view.itinerary[dayIndex]
   const items = day?.items ?? []
@@ -166,12 +167,16 @@ export function DetailScreen({ trip, warnings, notice, onBack, onShare, onSave }
         <button
           type="button"
           className="primary"
+          disabled={saving}
           onClick={() => {
+            if (saving) return
+            setSaving(true)
             onSave?.()
             setSavedNote('已保存在攻略。')
+            window.setTimeout(() => setSaving(false), 600)
           }}
         >
-          保存到攻略
+          {saving ? '保存中…' : '保存到攻略'}
         </button>
         {onShare ? (
           <button type="button" className="ghost" onClick={onShare}>

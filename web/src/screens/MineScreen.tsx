@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
 import { PREFERENCE_TAGS } from '../format'
-import { PACK_ITEMS, type Profile } from '../storage'
+import { PACK_ITEMS, type Profile, type ShareRecord } from '../storage'
 
-type Panel = 'main' | 'name' | 'city' | 'prefs' | 'pack'
+type Panel = 'main' | 'name' | 'city' | 'prefs' | 'pack' | 'shares'
 
 interface MineScreenProps {
   profile: Profile
@@ -16,7 +16,10 @@ interface MineScreenProps {
   onTogglePref: (tag: string) => void
   onTogglePack: (item: string) => void
   onClear: () => void
+  shares: ShareRecord[]
   onOpenSaved: () => void
+  onOpenShare: (id: string) => void
+  onWithdrawShare: (id: string, token: string) => Promise<void>
   onCoverChange?: (covered: boolean) => void
 }
 
@@ -33,6 +36,7 @@ export function MineScreen(props: MineScreenProps): React.ReactElement {
   if (panel === 'city') return <CityPanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'prefs') return <PrefsPanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'pack') return <PackPanel {...props} onBack={() => setPanel('main')} />
+  if (panel === 'shares') return <SharesPanel {...props} onBack={() => setPanel('main')} />
   return <MainPanel {...props} onOpen={setPanel} />
 }
 
@@ -42,6 +46,7 @@ function MainPanel({
   savedCount,
   prefs,
   packed,
+  shares,
   service,
   onClear,
   onOpen,
@@ -72,6 +77,7 @@ function MainPanel({
         <section className="set-group">
           <SettingRow label="生成偏好" value={prefs.length ? prefs.join('、') : '未设置'} onClick={() => onOpen('prefs')} />
           <SettingRow label="行前清单" value={`${packed.length}/${PACK_ITEMS.length}`} onClick={() => onOpen('pack')} />
+          <SettingRow label="我分享的" value={String(shares.length)} onClick={() => onOpen('shares')} />
         </section>
 
         <section className="set-group">
@@ -230,6 +236,77 @@ function PackPanel({ packed, onTogglePack, onBack }: MineScreenProps & { onBack:
           })}
         </div>
       </div>
+    </div>
+  )
+}
+
+function SharesPanel({
+  shares,
+  onBack,
+  onOpenShare,
+  onWithdrawShare,
+}: MineScreenProps & { onBack: () => void }): React.ReactElement {
+  const [pending, setPending] = useState<ShareRecord | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  return (
+    <div className="page">
+      <header className="nav">
+        <button type="button" className="nav-btn" onClick={onBack}>
+          返回
+        </button>
+        <h1>我分享的</h1>
+        <span />
+      </header>
+      <div className="scroll">
+        {error ? <p className="error pad">{error}</p> : null}
+        {shares.length === 0 ? (
+          <div className="empty">
+            <h2>还没有从这台设备发出的分享。</h2>
+            <p>分享到社区之后，可以在这里撤回。</p>
+            <button type="button" className="primary" onClick={onBack}>
+              返回
+            </button>
+          </div>
+        ) : (
+          <div className="set-group">
+            {shares.map((item) => (
+              <div key={item.id} className="set-row">
+                <button type="button" className="text-link" onClick={() => onOpenShare(item.id)}>
+                  查看详情
+                </button>
+                <button type="button" className="text-danger" disabled={busy} onClick={() => setPending(item)}>
+                  撤回
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {pending ? (
+        <div className="dialog">
+          <article>
+            <p>撤回后他人将无法再看到这套分享，确定撤回吗？</p>
+            <button
+              type="button"
+              className="primary"
+              disabled={busy}
+              onClick={() => {
+                setBusy(true)
+                void onWithdrawShare(pending.id, pending.token)
+                  .then(() => setPending(null))
+                  .catch(() => setError('没有发出去，请再试一次。'))
+                  .finally(() => setBusy(false))
+              }}
+            >
+              {busy ? '撤回中…' : '撤回'}
+            </button>
+            <button type="button" className="ghost" onClick={() => setPending(null)}>
+              取消
+            </button>
+          </article>
+        </div>
+      ) : null}
     </div>
   )
 }

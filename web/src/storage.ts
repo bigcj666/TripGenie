@@ -21,6 +21,7 @@ export interface SavedTrip {
   engine: string
   trip: Trip
   notices?: string[]
+  sourceId?: string
 }
 
 export function loadTrips(): SavedTrip[] {

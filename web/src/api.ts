@@ -73,7 +73,7 @@ async function readJson<T>(url: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(url, init)
   } catch {
-    throw new Error('社区暂时连不上。请先在 server 目录启动后端，端口 8000。')
+    throw new Error('网络不太稳定，请再试一次。')
   }
   if (!response.ok) throw new Error(await readError(response))
   return response.json() as Promise<T>
@@ -96,7 +96,7 @@ async function tripJson<T>(url: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(url, init)
   } catch {
-    throw new Error('分享链接暂时没有连上。')
+    throw new Error('网络不太稳定，请再试一次。')
   }
   if (!response.ok) throw new Error(await readError(response))
   return response.json() as Promise<T>
@@ -111,7 +111,7 @@ export async function generateTrip(body: GenerateRequest): Promise<GenerateRespo
       body: JSON.stringify(body),
     })
   } catch {
-    throw new Error('连不上生成服务。请先在 server 目录启动后端，端口 8000。')
+    throw new Error('网络不太稳定，请再试一次。')
   }
 
   if (!response.ok) {

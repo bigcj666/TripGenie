@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { fetchHealth, type HealthInfo } from './api'
+import { fetchHealth, removeCommunity, type HealthInfo } from './api'
 import { TabBar } from './components/TabBar'
 import { forShare } from './custom/schedule'
 import { PLACES } from './data/places'
@@ -79,7 +79,7 @@ export function App(): React.ReactElement {
   }, [])
 
   const top = stack[stack.length - 1]
-  const latest = trips[0] ?? null
+  const latest = [...trips].sort((a, b) => b.savedAt - a.savedAt)[0] ?? null
 
   const push = (route: Route): void => setStack((current) => [...current, route])
   const pop = (): void => setStack((current) => current.slice(0, -1))
@@ -108,6 +108,22 @@ export function App(): React.ReactElement {
   const openTrip = (id: string): void => {
     setFlash(null)
     push({ page: 'detail', id })
+  }
+
+  const importCopy = (trip: Trip, sourceId?: string): void => {
+    const existing = sourceId ? trips.find((item) => item.sourceId === sourceId) : undefined
+    if (existing) {
+      setFlash('这套已经在攻略里。')
+      push({ page: 'detail', id: existing.id })
+      return
+    }
+    const copy: Trip = { ...trip, trip_id: `import-${Date.now()}` }
+    const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'community', trip: copy, sourceId }
+    const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
+    setTrips(next)
+    saveTrips(next)
+    setFlash('已导入到「攻略」，可以打开查看或再调整。')
+    push({ page: 'detail', id: copy.trip_id })
   }
 
   if (shareId) {
@@ -218,15 +234,7 @@ export function App(): React.ReactElement {
           author={profile.name}
           token={shares.find((item) => item.id === top.id)?.token}
           onBack={pop}
-          onImport={(trip) => {
-            const copy: Trip = { ...trip, trip_id: `import-${Date.now()}` }
-            const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'community', trip: copy }
-            const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
-            setTrips(next)
-            saveTrips(next)
-            setFlash('已导入到「攻略」，可以打开查看或再调整。')
-            push({ page: 'detail', id: copy.trip_id })
-          }}
+          onImport={(trip) => importCopy(trip, `post:${top.id}`)}
           onRemoved={() => {
             const next = shares.filter((item) => item.id !== top.id)
             setShares(next)
@@ -274,13 +282,7 @@ export function App(): React.ReactElement {
             setShares(next)
             saveShares(next)
           }}
-          onImport={(trip) => {
-            const copy: Trip = { ...trip, trip_id: `import-${Date.now()}` }
-            const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'community', trip: copy }
-            const next = [row, ...trips.filter((item) => item.id !== row.id)].slice(0, 30)
-            setTrips(next)
-            saveTrips(next)
-          }}
+          onImport={(trip, sourceId) => importCopy(trip, sourceId)}
           onCoverChange={setCoverTab}
         />
       ) : null}
@@ -310,7 +312,15 @@ export function App(): React.ReactElement {
             setTrips([])
             saveTrips([])
           }}
+          shares={shares}
           onOpenSaved={() => push({ page: 'saved' })}
+          onOpenShare={(id) => push({ page: 'post', id })}
+          onWithdrawShare={async (id, token) => {
+            await removeCommunity(id, token)
+            const next = shares.filter((item) => item.id !== id)
+            setShares(next)
+            saveShares(next)
+          }}
           onCoverChange={setCoverTab}
         />
       ) : null}

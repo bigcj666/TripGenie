@@ -41,7 +41,7 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
           </div>
         ) : (
           <div className="guide-list">
-          {trips.map((item) => {
+          {[...trips].sort((a, b) => b.savedAt - a.savedAt).map((item) => {
             const first = item.trip.itinerary[0]?.items[0]
             return (
               <div key={item.id} className="trip-row">

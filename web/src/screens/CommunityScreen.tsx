@@ -14,11 +14,13 @@ interface CommunityScreenProps {
   onDraftHandled: () => void
   onOpen: (id: string) => void
   onPublished: (share: ShareRecord) => void
-  onImport: (trip: Trip) => void
+  onImport: (trip: Trip, sourceId?: string) => void
   onCoverChange?: (covered: boolean) => void
 }
 
 const CITIES = ['全部', '杭州', '成都', '西安']
+const feedMemory = { city: '全部', top: 0 }
+let pullStart = 0
 
 export function CommunityScreen({
   author,
@@ -31,13 +33,16 @@ export function CommunityScreen({
   onCoverChange,
 }: CommunityScreenProps): React.ReactElement {
   const [posts, setPosts] = useState<CommunityPost[]>([])
-  const [city, setCity] = useState('全部')
+  const [city, setCity] = useState(feedMemory.city)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [writing, setWriting] = useState(false)
   const [attached, setAttached] = useState<Trip | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
   const [notice, setNotice] = useState<string | null>(null)
+  const [importing, setImporting] = useState<string | null>(null)
+  const [viewer, setViewer] = useState<{ photos: string[]; index: number } | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     onCoverChange?.(writing)
@@ -82,6 +87,9 @@ export function CommunityScreen({
         onBack={() => {
           setWriting(false)
           setAttached(null)
+          window.requestAnimationFrame(() => {
+            if (scrollRef.current) scrollRef.current.scrollTop = feedMemory.top
+          })
         }}
         onDone={(share) => {
           onPublished(share)
@@ -107,7 +115,21 @@ export function CommunityScreen({
         </div>
         <p>浏览同行行程，留言交流，或导入到自己的攻略。</p>
       </header>
-      <div className="scroll">
+      <div
+        className="scroll"
+        ref={scrollRef}
+        onScroll={(event) => {
+          feedMemory.top = event.currentTarget.scrollTop
+          feedMemory.city = city
+        }}
+        onTouchStart={(event) => {
+          pullStart = event.touches[0]?.clientY ?? 0
+        }}
+        onTouchEnd={(event) => {
+          const end = event.changedTouches[0]?.clientY ?? pullStart
+          if ((scrollRef.current?.scrollTop ?? 0) <= 0 && end - pullStart > 72) setReloadKey((value) => value + 1)
+        }}
+      >
         <div className="chips pad-chips">
           {CITIES.map((name) => (
             <button key={name} type="button" className={city === name ? 'chip on' : 'chip'} onClick={() => setCity(name)}>
@@ -116,8 +138,21 @@ export function CommunityScreen({
           ))}
         </div>
         {notice ? <p className="banner">{notice}</p> : null}
-        {error ? <p className="error pad">{error}</p> : null}
-        {loading && posts.length === 0 ? <p className="muted pad">正在加载…</p> : null}
+        {error ? (
+          <div className="empty">
+            <h2>网络不太稳定，请再试一次。</h2>
+            <p>社区暂时没有打开，已填的内容还在这台设备上。</p>
+            <button type="button" className="primary" onClick={() => setReloadKey((value) => value + 1)}>
+              重试
+            </button>
+          </div>
+        ) : null}
+        {loading && posts.length === 0 ? (
+          <div className="post-list">
+            <div className="skeleton" />
+            <div className="skeleton" />
+          </div>
+        ) : null}
         {!loading && !error && posts.length === 0 ? (
           <div className="empty">
             {city === '全部' ? (
@@ -144,7 +179,10 @@ export function CommunityScreen({
                   </span>
                 </div>
                 <ClampText text={post.note || ''} />
-                <PhotoGrid photos={post.photos ?? []} />
+                <PhotoGrid
+                  photos={post.photos ?? []}
+                  onOpen={(index) => setViewer({ photos: post.photos ?? [], index })}
+                />
                 {post.has_trip ? (
                   <div className="trip-attach">
                     <img src={(post.photos ?? [])[0] || cityImage(post.city)} alt="" />
@@ -168,15 +206,20 @@ export function CommunityScreen({
                       <button
                         type="button"
                         className="text-link"
+                        disabled={importing === post.id}
                         onClick={() => {
-                          void readCommunity(post.id).then((detail) => {
-                            if (!detail.trip) return
-                            onImport(detail.trip)
-                            setNotice('已导入到「攻略」，可以打开查看或再调整。')
-                          })
+                          if (importing) return
+                          setImporting(post.id)
+                          void readCommunity(post.id)
+                            .then((detail) => {
+                              if (!detail.trip) return
+                              onImport(detail.trip, `post:${post.id}`)
+                            })
+                            .catch(() => setNotice('导入失败，请再试一次。'))
+                            .finally(() => setImporting(null))
                         }}
                       >
-                        导入到我的攻略
+                        {importing === post.id ? '导入中…' : '导入到我的攻略'}
                       </button>
                     ) : null}
                   </span>
@@ -186,11 +229,12 @@ export function CommunityScreen({
           </div>
         )}
       </div>
+      {viewer ? <Lightbox photos={viewer.photos} index={viewer.index} onClose={() => setViewer(null)} onIndex={(index) => setViewer({ photos: viewer.photos, index })} /> : null}
     </div>
   )
 }
 
-function PhotoGrid({ photos }: { photos: string[] }): React.ReactElement | null {
+function PhotoGrid({ photos, onOpen }: { photos: string[]; onOpen?: (index: number) => void }): React.ReactElement | null {
   const shown = photos.slice(0, 9)
   const [shape, setShape] = useState('')
   if (!shown.length) return null
@@ -200,6 +244,10 @@ function PhotoGrid({ photos }: { photos: string[] }): React.ReactElement | null 
         <img
           src={shown[0]}
           alt=""
+          onClick={(event) => {
+            event.stopPropagation()
+            onOpen?.(0)
+          }}
           onLoad={(event) => {
             const ratio = event.currentTarget.naturalWidth / event.currentTarget.naturalHeight
             if (ratio > 2) setShape('wide')
@@ -211,9 +259,68 @@ function PhotoGrid({ photos }: { photos: string[] }): React.ReactElement | null 
   }
   return (
     <div className="photo-grid">
-      {shown.map((src) => (
-        <img key={src} src={src} alt="" />
+      {shown.map((src, index) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          onClick={(event) => {
+            event.stopPropagation()
+            onOpen?.(index)
+          }}
+        />
       ))}
+    </div>
+  )
+}
+
+function Lightbox({
+  photos,
+  index,
+  onClose,
+  onIndex,
+}: {
+  photos: string[]
+  index: number
+  onClose: () => void
+  onIndex: (index: number) => void
+}): React.ReactElement {
+  const [failed, setFailed] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+  const src = photos[index]
+  useEffect(() => {
+    setFailed(false)
+  }, [index, src])
+  return (
+    <div className="lightbox" onClick={onClose}>
+      {failed ? (
+        <div className="empty" onClick={(event) => event.stopPropagation()}>
+          <h2>网络不太稳定，请再试一次。</h2>
+          <button
+            type="button"
+            className="primary"
+            onClick={() => {
+              setFailed(false)
+              setAttempt((value) => value + 1)
+            }}
+          >
+            重试
+          </button>
+        </div>
+      ) : (
+        <img key={`${src}-${attempt}`} src={src} alt="" onClick={(event) => event.stopPropagation()} onError={() => setFailed(true)} />
+      )}
+      <div className="lightbox-bar" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="text-publish" disabled={index <= 0} onClick={() => onIndex(index - 1)}>
+          上一张
+        </button>
+        <button type="button" className="text-publish" onClick={onClose}>
+          关闭
+        </button>
+        <button type="button" className="text-publish" disabled={index >= photos.length - 1} onClick={() => onIndex(index + 1)}>
+          下一张
+        </button>
+      </div>
     </div>
   )
 }
@@ -269,6 +376,18 @@ function Compose({
   const [error, setError] = useState<string | null>(null)
   const [sending, setSending] = useState(false)
   const [showTrips, setShowTrips] = useState(false)
+  const [leaving, setLeaving] = useState(false)
+
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('tuling.compose')
+      if (!saved) return
+      const parsed = JSON.parse(saved) as { note?: string }
+      if (parsed.note) setNote(parsed.note)
+    } catch {
+      sessionStorage.removeItem('tuling.compose')
+    }
+  }, [])
 
   const publish = (): void => {
     if (!note.trim() && photos.length === 0 && !attached) {
@@ -278,11 +397,22 @@ function Compose({
     setSending(true)
     setError(null)
     void publishCommunity(author, note.trim(), attached, photos)
-      .then((result) => onDone({ id: result.id, token: result.token }))
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : '发布失败')
+      .then((result) => {
+        sessionStorage.removeItem('tuling.compose')
+        onDone({ id: result.id, token: result.token })
+      })
+      .catch(() => {
+        setError('没有发出去，请再试一次。')
         setSending(false)
       })
+  }
+
+  const requestBack = (): void => {
+    if (note.trim() || photos.length > 0 || attached) {
+      setLeaving(true)
+      return
+    }
+    onBack()
   }
 
   const addPhotos = (files: FileList | null): void => {
@@ -314,7 +444,7 @@ function Compose({
   return (
     <div className="page">
       <header className="nav">
-        <button type="button" className="nav-btn" onClick={onBack}>
+        <button type="button" className="nav-btn" onClick={requestBack}>
           取消
         </button>
         <h1>写点评</h1>
@@ -351,7 +481,12 @@ function Compose({
             </label>
           ) : null}
           {photos.map((src) => (
-            <img key={src} src={src} alt="" />
+            <span key={src} className="compose-photo">
+              <img src={src} alt="" />
+              <button type="button" aria-label="移除这张照片" onClick={() => setPhotos((current) => current.filter((item) => item !== src))}>
+                移除
+              </button>
+            </span>
           ))}
         </div>
         {attached ? (
@@ -400,6 +535,26 @@ function Compose({
         ) : null}
         {error ? <p className="error">{error}</p> : null}
         {sending ? <p className="hint">正在发布…</p> : null}
+        {leaving ? (
+          <div className="dialog">
+            <article>
+              <p>还没发布，确定离开吗？</p>
+              <button
+                type="button"
+                className="primary"
+                onClick={() => {
+                  sessionStorage.setItem('tuling.compose', JSON.stringify({ note }))
+                  onBack()
+                }}
+              >
+                离开
+              </button>
+              <button type="button" className="ghost" onClick={() => setLeaving(false)}>
+                继续写
+              </button>
+            </article>
+          </div>
+        ) : null}
       </div>
     </div>
   )

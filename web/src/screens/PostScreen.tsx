@@ -32,6 +32,22 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
   const [confirming, setConfirming] = useState(false)
+  const [lift, setLift] = useState(0)
+
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return
+    const place = (): void => {
+      const gap = window.innerHeight - viewport.height - viewport.offsetTop
+      setLift(gap > 80 ? gap : 0)
+    }
+    viewport.addEventListener('resize', place)
+    viewport.addEventListener('scroll', place)
+    return () => {
+      viewport.removeEventListener('resize', place)
+      viewport.removeEventListener('scroll', place)
+    }
+  }, [])
 
   useEffect(() => {
     let stop = false
@@ -60,8 +76,8 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
         setText('')
         setSending(false)
       })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : '留言失败')
+      .catch(() => {
+        setError('没有发出去，请再试一次。')
         setSending(false)
       })
   }
@@ -174,6 +190,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
       {post ? (
         <form
           className="comment-bar"
+          style={lift ? { transform: `translateY(-${lift}px)` } : undefined}
           onSubmit={(event) => {
             event.preventDefault()
             send()

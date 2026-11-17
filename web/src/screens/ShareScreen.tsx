@@ -89,8 +89,13 @@ export function ShareScreen({ id }: ShareScreenProps): React.ReactElement {
           type="button"
           className="primary"
           onClick={() => {
+            const existing = loadTrips().find((item) => item.sourceId === `share:${id}`)
+            if (existing) {
+              setNotice('这套已经在攻略里。')
+              return
+            }
             const copy: Trip = { ...trip, trip_id: `import-${Date.now()}` }
-            const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'share', trip: copy }
+            const row: SavedTrip = { id: copy.trip_id, savedAt: Date.now(), engine: 'share', trip: copy, sourceId: `share:${id}` }
             const next = [row, ...loadTrips().filter((item) => item.id !== row.id)].slice(0, 30)
             saveTrips(next)
             setNotice('已导入到「攻略」，可以打开查看或再调整。')
