@@ -25,7 +25,9 @@ def db_path() -> Path:
     return Path(__file__).resolve().parents[2] / "data" / "community.sqlite"
 
 
-def list_posts(city: str | None = None) -> list[dict[str, Any]]:
+def list_posts(city: str | None = None, *, limit: int = 20, offset: int = 0) -> tuple[list[dict[str, Any]], bool]:
+    page_size = min(max(int(limit), 1), 50)
+    start = max(int(offset), 0)
     with _LOCK:
         conn = _connect()
         try:
@@ -35,12 +37,15 @@ def list_posts(city: str | None = None) -> list[dict[str, Any]]:
                        (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id) AS comment_count
                 FROM posts p
             """
-            args: list[str] = []
+            args: list[Any] = []
             if city:
                 sql += " WHERE p.city = ?"
                 args.append(city)
-            sql += " ORDER BY p.created_at DESC LIMIT 50"
-            return [_public(row) for row in conn.execute(sql, args)]
+            sql += " ORDER BY p.created_at DESC LIMIT ? OFFSET ?"
+            args.extend([page_size + 1, start])
+            rows = list(conn.execute(sql, args))
+            has_more = len(rows) > page_size
+            return [_public(row) for row in rows[:page_size]], has_more
         finally:
             conn.close()
 

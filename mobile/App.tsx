@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { TOP_INSET } from './src/ui/insets';
+
 import { TabBar, type MobileTab } from './src/components/TabBar';
 import { engineLabel } from './src/format';
 import { CommunityScreen } from './src/screens/CommunityScreen';
@@ -159,13 +161,13 @@ export default function App(): React.ReactElement {
           }}
         />
       ) : null}
-      {!top ? <TabBar tab={tab} onChange={setTab} /> : null}
+      {!top && !(tab === 'community' && communityId) ? <TabBar tab={tab} onChange={setTab} /> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#F8FAFC' },
+  root: { flex: 1, backgroundColor: '#F8FAFC', paddingTop: TOP_INSET },
   missing: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   missingText: { fontSize: 15, color: '#475569' },
   missingAction: { color: '#0F766E', fontWeight: '700', fontSize: 16 },

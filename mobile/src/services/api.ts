@@ -15,10 +15,21 @@ export interface CommunityPost {
   summary: string;
   created_at: string;
   comment_count: number;
+  photos?: string[];
+  highlights?: string[];
+  has_trip?: boolean;
+}
+
+export interface CommunityComment {
+  id: string;
+  author: string;
+  body: string;
+  created_at: string;
 }
 
 export interface CommunityDetail extends CommunityPost {
-  trip: Trip;
+  trip: Trip | null;
+  comments: CommunityComment[];
 }
 
 export interface HealthInfo {
@@ -76,6 +87,19 @@ export async function listCommunity(city?: string): Promise<CommunityPost[]> {
 
 export async function readCommunity(id: string): Promise<CommunityDetail> {
   return readJson<CommunityDetail>(`${API_BASE}/api/community/${id}`);
+}
+
+export async function commentCommunity(id: string, author: string, body: string): Promise<CommunityComment> {
+  return readJson<CommunityComment>(`${API_BASE}/api/community/${id}/comments`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ author, body }),
+  });
+}
+
+export function mediaUrl(src: string): string {
+  if (src.startsWith('http://') || src.startsWith('https://')) return src;
+  return `${API_BASE}${src}`;
 }
 
 function withFallback(data: GenerateResponse, note: string): GenerateResponse {

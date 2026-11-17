@@ -16,6 +16,16 @@ interface TripsScreenProps {
 export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: TripsScreenProps): React.ReactElement {
   const [menuId, setMenuId] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<string | null>(null)
+  const [keyword, setKeyword] = useState('')
+  const ordered = [...trips].sort((a, b) => b.savedAt - a.savedAt)
+  const query = keyword.trim()
+  const visible = query
+    ? ordered.filter((item) => {
+        const titles = item.trip.itinerary.flatMap((day) => day.items.map((stop) => stop.title)).join(' ')
+        const blob = `${item.trip.city} ${tripKindName(item.trip)} ${item.trip.summary} ${titles}`
+        return blob.includes(query)
+      })
+    : ordered
   return (
     <div className="page">
       <header className="nav nav-split">
@@ -26,6 +36,12 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
       </header>
       <div className="scroll">
         <p className="hint pad">打开即可按天查看，不需要的可以删除。</p>
+        {trips.length > 0 ? (
+          <label className="guide-search">
+            <span className="sr">搜索行程</span>
+            <input value={keyword} placeholder="城市、风格或地点" onChange={(event) => setKeyword(event.target.value)} />
+          </label>
+        ) : null}
         {trips.length === 0 ? (
           <div className="empty">
             <h2>还没有保存的行程。</h2>
@@ -41,7 +57,16 @@ export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: 
           </div>
         ) : (
           <div className="guide-list">
-          {[...trips].sort((a, b) => b.savedAt - a.savedAt).map((item) => {
+          {visible.length === 0 ? (
+            <div className="empty">
+              <h2>没有找到匹配的行程。</h2>
+              <p>换个词，或清空后再看全部。</p>
+              <button type="button" className="primary" onClick={() => setKeyword('')}>
+                清空
+              </button>
+            </div>
+          ) : null}
+          {visible.map((item) => {
             const first = item.trip.itinerary[0]?.items[0]
             return (
               <div key={item.id} className="trip-row">

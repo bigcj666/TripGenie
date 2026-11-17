@@ -104,6 +104,17 @@ export interface ShareRecord {
 }
 
 const SHARES_KEY = 'tuling.shares'
+const FLAG_KEY = 'tuling.flags'
+
+export function loadFlags(): string[] {
+  return loadIds(FLAG_KEY)
+}
+
+export function rememberFlag(id: string): string[] {
+  const next = [...new Set([id, ...loadFlags()])].slice(0, 200)
+  localStorage.setItem(FLAG_KEY, JSON.stringify(next))
+  return next
+}
 
 export function loadShares(): ShareRecord[] {
   try {

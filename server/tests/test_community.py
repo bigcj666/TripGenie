@@ -112,6 +112,21 @@ def test_nine_photos_allowed_tenth_rejected(tmp_path, monkeypatch):
     assert over.status_code == 400
 
 
+def test_feed_pages(tmp_path, monkeypatch):
+    monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
+    for index in range(3):
+        created = client.post("/api/community", json={"author": "阿宁", "note": f"第{index}条", "city": "杭州"})
+        assert created.status_code == 201
+    first = client.get("/api/community", params={"limit": 2, "offset": 0})
+    assert first.status_code == 200
+    body = first.json()
+    assert len(body["posts"]) == 2
+    assert body["has_more"] is True
+    rest = client.get("/api/community", params={"limit": 2, "offset": 2}).json()
+    assert len(rest["posts"]) == 1
+    assert rest["has_more"] is False
+
+
 def test_empty_plan_rejected(tmp_path, monkeypatch):
     monkeypatch.setenv("COMMUNITY_DB", str(tmp_path / "community.sqlite"))
     resp = client.post("/api/community", json={"author": "小林", "trip": {"city": "杭州"}})

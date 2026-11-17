@@ -25,9 +25,10 @@ class RemoveBody(BaseModel):
 
 
 @router.get("")
-def feed(city: str | None = None) -> dict:
+def feed(city: str | None = None, limit: int = 20, offset: int = 0) -> dict:
     chosen = city.strip() if city else None
-    return {"posts": store.list_posts(chosen or None)}
+    posts, has_more = store.list_posts(chosen or None, limit=limit, offset=offset)
+    return {"posts": posts, "has_more": has_more}
 
 
 @router.get("/media/{name}")

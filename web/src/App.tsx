@@ -321,6 +321,15 @@ export function App(): React.ReactElement {
             setShares(next)
             saveShares(next)
           }}
+          onExport={() => {
+            const blob = new Blob([JSON.stringify(trips, null, 2)], { type: 'application/json' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = '途灵攻略.json'
+            link.click()
+            URL.revokeObjectURL(url)
+          }}
           onCoverChange={setCoverTab}
         />
       ) : null}

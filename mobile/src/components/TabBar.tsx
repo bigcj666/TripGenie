@@ -1,6 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { BOTTOM_INSET, TAB_BODY } from '../ui/insets';
+
 export type MobileTab = 'plan' | 'trips' | 'community';
 
 const TABS: { id: MobileTab; label: string }[] = [
@@ -30,9 +32,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
-    paddingBottom: 10,
+    height: TAB_BODY + BOTTOM_INSET,
+    paddingBottom: BOTTOM_INSET,
   },
-  item: { flex: 1, alignItems: 'center', paddingVertical: 12 },
+  item: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 44 },
   label: { fontSize: 13, color: '#94A3B8', fontWeight: '600' },
   on: { color: '#0F766E' },
 });

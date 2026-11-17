@@ -164,14 +164,14 @@ function Stepper({
     <div className="stepper">
       <span>{label}</span>
       <div>
-        <button type="button" onClick={() => onChange(Math.max(min, value - 1))} aria-label={`减少${label}`}>
+        <button type="button" onClick={() => onChange(Math.max(min, value - 1))} aria-label={`减少${label}`} disabled={value <= min}>
           −
         </button>
         <b>
           {value}
           {unit}
         </b>
-        <button type="button" onClick={() => onChange(Math.min(max, value + 1))} aria-label={`增加${label}`}>
+        <button type="button" onClick={() => onChange(Math.min(max, value + 1))} aria-label={`增加${label}`} disabled={value >= max}>
           +
         </button>
       </div>

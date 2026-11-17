@@ -63,7 +63,7 @@ export function TripScreen({ trip, engine, onBack, onOpenDay }: TripScreenProps)
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8FAFC' },
   header: {
-    paddingTop: 52,
+    paddingTop: 8,
     paddingHorizontal: 16,
     paddingBottom: 12,
     flexDirection: 'row',

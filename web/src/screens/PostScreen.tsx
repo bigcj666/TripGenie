@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { commentCommunity, readCommunity, removeCommunity, type CommunityDetail } from '../api'
+import { loadFlags, rememberFlag } from '../storage'
 import { cityImage } from '../data/places'
 import { TYPE_LABEL } from '../format'
 import type { Trip } from '../types'
@@ -33,6 +34,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
   const [sending, setSending] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [lift, setLift] = useState(0)
+  const [flagged, setFlagged] = useState(() => loadFlags().includes(id))
 
   useEffect(() => {
     const viewport = window.visualViewport
@@ -77,7 +79,7 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
         setSending(false)
       })
       .catch(() => {
-        setError('没有发出去，请再试一次。')
+        setError('发送失败，请重试')
         setSending(false)
       })
   }
@@ -170,6 +172,17 @@ export function PostScreen({ id, author, token, onBack, onImport, onRemoved }: P
                   撤回
                 </button>
               ) : null}
+              <button
+                type="button"
+                className="text-link"
+                disabled={flagged}
+                onClick={() => {
+                  rememberFlag(id)
+                  setFlagged(true)
+                }}
+              >
+                {flagged ? '已记下' : '不合适'}
+              </button>
             </section>
           </>
         ) : null}

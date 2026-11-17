@@ -37,7 +37,7 @@ export function TripsScreen({ trips, onOpen, onDelete }: TripsScreenProps): Reac
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8FAFC' },
-  content: { padding: 20, paddingTop: 56, paddingBottom: 32 },
+  content: { padding: 20, paddingTop: 16, paddingBottom: 24 },
   title: { fontSize: 28, fontWeight: '800', color: '#0F766E' },
   lead: { marginTop: 6, marginBottom: 16, fontSize: 13, color: '#64748B', lineHeight: 18 },
   empty: { fontSize: 14, color: '#64748B', marginTop: 24 },

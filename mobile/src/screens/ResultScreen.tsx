@@ -47,9 +47,11 @@ export function ResultScreen({ loading, error, data, onBack, onRetry, onOpen }: 
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.mockBanner}>
-            <Text style={styles.mockBannerText}>{engineLine(data?.engine)}</Text>
-          </View>
+          {offlineFallback(data?.warnings) ? (
+            <View style={styles.mockBanner}>
+              <Text style={styles.mockBannerText}>暂时连不上，已改用备用方案</Text>
+            </View>
+          ) : null}
           <Text style={styles.meta}>
             {activeTrip.city} · {activeTrip.days} 天 · {activeTrip.people} 人 · 预算 {yuan(activeTrip.budget_total)}
           </Text>
@@ -125,17 +127,14 @@ function styleLabel(style: TravelStyle): string {
   return STYLE_META[style]?.name ?? style;
 }
 
-function engineLine(engine: string | undefined): string {
-  if (engine === 'deepseek') return '由 DeepSeek 写成';
-  if (engine === 'glm') return '由智谱写成';
-  if (engine === 'mock') return '和网页一样按城市目录排行程；若连不上后端，则是手机里的备份';
-  return '行程已生成';
+function offlineFallback(warnings: string[] | undefined): boolean {
+  return (warnings ?? []).some((warning) => warning.startsWith('offline_fallback'));
 }
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8FAFC' },
   header: {
-    paddingTop: 52,
+    paddingTop: 8,
     paddingHorizontal: 16,
     paddingBottom: 12,
     flexDirection: 'row',

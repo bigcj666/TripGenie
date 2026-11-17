@@ -176,7 +176,7 @@ export function HomeScreen({ onSubmit, loading, service }: HomeScreenProps): Rea
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#F8FAFC' },
-  content: { padding: 20, paddingTop: 56, paddingBottom: 40 },
+  content: { padding: 20, paddingTop: 16, paddingBottom: 24 },
   brand: { fontSize: 28, fontWeight: '800', color: '#0F766E' },
   tagline: { fontSize: 14, color: '#64748B', marginTop: 6, marginBottom: 20 },
   card: {
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
   },
   stepperRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   stepBtn: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: 10,
     backgroundColor: '#E6F4F1',
     alignItems: 'center',

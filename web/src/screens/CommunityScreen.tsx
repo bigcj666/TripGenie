@@ -36,6 +36,8 @@ export function CommunityScreen({
   const [city, setCity] = useState(feedMemory.city)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [writing, setWriting] = useState(false)
   const [attached, setAttached] = useState<Trip | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
@@ -52,16 +54,17 @@ export function CommunityScreen({
     let stop = false
     setLoading(true)
     void listCommunity(city === '全部' ? undefined : city).then(
-      (rows) => {
+      (page) => {
         if (stop) return
-        setPosts(rows)
+        setPosts(page.posts)
+        setHasMore(page.hasMore)
         setError(null)
         setLoading(false)
       },
-      (err: unknown) => {
+      () => {
         if (stop) return
         setPosts([])
-        setError(err instanceof Error ? err.message : '社区暂时连不上')
+        setError('网络不太稳定，请再试一次。')
         setLoading(false)
       },
     )
@@ -69,6 +72,21 @@ export function CommunityScreen({
       stop = true
     }
   }, [city, reloadKey])
+
+  const loadMore = (): void => {
+    if (!hasMore || loadingMore) return
+    setLoadingMore(true)
+    void listCommunity(city === '全部' ? undefined : city, posts.length)
+      .then((page) => {
+        setPosts((current) => {
+          const seen = new Set(current.map((item) => item.id))
+          return [...current, ...page.posts.filter((item) => !seen.has(item.id))]
+        })
+        setHasMore(page.hasMore)
+      })
+      .catch(() => setNotice('网络不太稳定，请再试一次。'))
+      .finally(() => setLoadingMore(false))
+  }
 
   useEffect(() => {
     if (!draft) return
@@ -215,7 +233,7 @@ export function CommunityScreen({
                               if (!detail.trip) return
                               onImport(detail.trip, `post:${post.id}`)
                             })
-                            .catch(() => setNotice('导入失败，请再试一次。'))
+                            .catch(() => setNotice('导入失败，请重试'))
                             .finally(() => setImporting(null))
                         }}
                       >
@@ -226,6 +244,11 @@ export function CommunityScreen({
                 </div>
               </article>
             ))}
+            {hasMore ? (
+              <button type="button" className="ghost load-more" disabled={loadingMore} onClick={() => loadMore()}>
+                {loadingMore ? '正在加载…' : '加载更多'}
+              </button>
+            ) : null}
           </div>
         )}
       </div>
@@ -248,6 +271,8 @@ function PhotoGrid({ photos, onOpen }: { photos: string[]; onOpen?: (index: numb
             event.stopPropagation()
             onOpen?.(0)
           }}
+          loading="lazy"
+          decoding="async"
           onLoad={(event) => {
             const ratio = event.currentTarget.naturalWidth / event.currentTarget.naturalHeight
             if (ratio > 2) setShape('wide')
@@ -264,6 +289,8 @@ function PhotoGrid({ photos, onOpen }: { photos: string[]; onOpen?: (index: numb
           key={src}
           src={src}
           alt=""
+          loading="lazy"
+          decoding="async"
           onClick={(event) => {
             event.stopPropagation()
             onOpen?.(index)
@@ -288,11 +315,23 @@ function Lightbox({
   const [failed, setFailed] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const src = photos[index]
+  const startX = useRef(0)
   useEffect(() => {
     setFailed(false)
   }, [index, src])
   return (
-    <div className="lightbox" onClick={onClose}>
+    <div
+      className="lightbox"
+      onClick={onClose}
+      onTouchStart={(event) => {
+        startX.current = event.changedTouches[0]?.clientX ?? 0
+      }}
+      onTouchEnd={(event) => {
+        const dx = (event.changedTouches[0]?.clientX ?? 0) - startX.current
+        if (dx <= -48 && index < photos.length - 1) onIndex(index + 1)
+        if (dx >= 48 && index > 0) onIndex(index - 1)
+      }}
+    >
       {failed ? (
         <div className="empty" onClick={(event) => event.stopPropagation()}>
           <h2>网络不太稳定，请再试一次。</h2>
@@ -402,7 +441,7 @@ function Compose({
         onDone({ id: result.id, token: result.token })
       })
       .catch(() => {
-        setError('没有发出去，请再试一次。')
+        setError('发布失败，请重试')
         setSending(false)
       })
   }

@@ -28,10 +28,13 @@ export interface CommunityDetail extends CommunityPost {
   comments: CommunityComment[]
 }
 
-export async function listCommunity(city?: string): Promise<CommunityPost[]> {
-  const query = city ? `?city=${encodeURIComponent(city)}` : ''
-  const data = await readJson<{ posts: CommunityPost[] }>(`/api/community${query}`)
-  return data.posts
+export async function listCommunity(city?: string, offset = 0): Promise<{ posts: CommunityPost[]; hasMore: boolean }> {
+  const params = new URLSearchParams()
+  if (city) params.set('city', city)
+  params.set('limit', '20')
+  params.set('offset', String(offset))
+  const data = await readJson<{ posts: CommunityPost[]; has_more?: boolean }>(`/api/community?${params}`)
+  return { posts: data.posts, hasMore: Boolean(data.has_more) }
 }
 
 export async function readCommunity(id: string): Promise<CommunityDetail> {

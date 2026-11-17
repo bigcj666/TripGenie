@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { PREFERENCE_TAGS } from '../format'
 import { PACK_ITEMS, type Profile, type ShareRecord } from '../storage'
 
-type Panel = 'main' | 'name' | 'city' | 'prefs' | 'pack' | 'shares'
+type Panel = 'main' | 'name' | 'city' | 'prefs' | 'pack' | 'shares' | 'privacy'
 
 interface MineScreenProps {
   profile: Profile
@@ -20,6 +20,7 @@ interface MineScreenProps {
   onOpenSaved: () => void
   onOpenShare: (id: string) => void
   onWithdrawShare: (id: string, token: string) => Promise<void>
+  onExport: () => void
   onCoverChange?: (covered: boolean) => void
 }
 
@@ -37,6 +38,7 @@ export function MineScreen(props: MineScreenProps): React.ReactElement {
   if (panel === 'prefs') return <PrefsPanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'pack') return <PackPanel {...props} onBack={() => setPanel('main')} />
   if (panel === 'shares') return <SharesPanel {...props} onBack={() => setPanel('main')} />
+  if (panel === 'privacy') return <PrivacyPanel onBack={() => setPanel('main')} />
   return <MainPanel {...props} onOpen={setPanel} />
 }
 
@@ -51,6 +53,7 @@ function MainPanel({
   onClear,
   onOpen,
   onOpenSaved,
+  onExport,
 }: MineScreenProps & { onOpen: (panel: Panel) => void }): React.ReactElement {
   const [confirming, setConfirming] = useState(false)
   return (
@@ -78,6 +81,8 @@ function MainPanel({
           <SettingRow label="生成偏好" value={prefs.length ? prefs.join('、') : '未设置'} onClick={() => onOpen('prefs')} />
           <SettingRow label="行前清单" value={`${packed.length}/${PACK_ITEMS.length}`} onClick={() => onOpen('pack')} />
           <SettingRow label="我分享的" value={String(shares.length)} onClick={() => onOpen('shares')} />
+          <SettingRow label="导出攻略" value={tripCount ? `${tripCount} 套` : '0'} onClick={onExport} />
+          <SettingRow label="隐私说明" value="" onClick={() => onOpen('privacy')} />
         </section>
 
         <section className="set-group">
@@ -235,6 +240,27 @@ function PackPanel({ packed, onTogglePack, onBack }: MineScreenProps & { onBack:
             )
           })}
         </div>
+      </div>
+    </div>
+  )
+}
+
+function PrivacyPanel({ onBack }: { onBack: () => void }): React.ReactElement {
+  return (
+    <div className="page">
+      <header className="nav">
+        <button type="button" className="nav-btn" onClick={onBack}>
+          返回
+        </button>
+        <h1>隐私说明</h1>
+        <span />
+      </header>
+      <div className="scroll form">
+        <p>昵称、行程和未发布的草稿只留在这台设备上。</p>
+        <p className="hint">没有账号。社区里能看到的，只有你从这台设备发出的分享。撤回也只能在这台设备上完成。</p>
+        <button type="button" className="primary" onClick={onBack}>
+          返回
+        </button>
       </div>
     </div>
   )
