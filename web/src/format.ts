@@ -2,10 +2,10 @@ import type { CostBreakdown, TravelStyle, Trip, TripMetrics } from './types'
 
 export const STYLE_ORDER: TravelStyle[] = ['compact', 'relaxed', 'economy']
 
-export const STYLE_META: Record<TravelStyle, { name: string; line: string }> = {
-  compact: { name: '紧凑', line: '一天多看几处' },
-  relaxed: { name: '松弛', line: '少换地方，停留更久' },
-  economy: { name: '省钱', line: '把门票压下去' },
+export const STYLE_META: Record<TravelStyle, { name: string; line: string; tag: string }> = {
+  compact: { name: '紧凑', line: '多看几处，同一片区连着走。', tag: '适合想多打卡' },
+  relaxed: { name: '松弛', line: '少换地方，每处停留更久。', tag: '适合慢慢逛' },
+  economy: { name: '省钱', line: '优先免费景点，把门票压下来。', tag: '门票更低' },
 }
 
 export const TYPE_LABEL = {
@@ -50,12 +50,22 @@ export function deriveMetrics(trip: Trip): TripMetrics {
   }
 }
 
+const WARNING_COPY: Array<[string, string]> = [
+  ['over_budget', '这套已计入费用高于预算，可改看省钱方案，或减少安排。'],
+  ['under_budget', '这套还低于预算，可改看更从容的方案，或加入必去地点。'],
+  ['style_rule', '该片区可排的点有限，已尽量按当前风格安排。'],
+  ['must_visit_unmatched', '有的必去地点还匹配不到目录，未写入行程。'],
+  ['closed_day', ''],
+]
+
 export function presentWarning(raw: string): string {
-  return raw
-    .replace(/^\[(compact|relaxed|economy)\]\s*/, '')
-    .replace(/^over_budget\s+/, '')
-    .replace(/^under_budget\s+/, '')
-    .replace(/^style_rule\s+/, '')
+  const body = raw.replace(/^\[(compact|relaxed|economy)\]\s*/, '')
+  for (const [code, sentence] of WARNING_COPY) {
+    if (!body.startsWith(code)) continue
+    if (code === 'closed_day') return body.slice(code.length).trim()
+    return sentence
+  }
+  return body
 }
 
 export function warningsFor(warnings: string[] | undefined, style: TravelStyle): string[] {
@@ -71,8 +81,22 @@ export function walkPercent(ratio: number): string {
 }
 
 export function tripKindName(trip: Trip): string {
-  if (trip.preferences.includes('自定义')) return '自定义'
+  if (trip.preferences?.includes('自定义')) return '自定义'
   return STYLE_META[trip.style]?.name ?? trip.style
+}
+
+export function shareLead(trip: Trip): string {
+  if (trip.style === 'compact') return `${trip.city} ${trip.days} 天，紧凑走法，适合想多看几处的同行。`
+  if (trip.style === 'relaxed') return `${trip.city} ${trip.days} 天松弛安排，节奏慢一点，停留更久一点。`
+  return `${trip.city} ${trip.days} 天省钱版，优先免费和低门票景点。`
+}
+
+export function shareSentence(city: string, days: number, style: string): string {
+  return `我用途灵排了一份${city}${days}日行程（${style}）。按天写好了时间、吃饭和花费，需要的可以导入查看。`
+}
+
+export function shareFallback(city: string): string {
+  return `我在途灵排好了${city}的行程，三套走法能直接对比。打开「社区」就能导入。`
 }
 
 export function guideText(trip: Trip): string {

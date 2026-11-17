@@ -1,0 +1,1045 @@
+{
+  "city": "成都",
+  "city_slug": "chengdu",
+  "updated": "2026-11-10",
+  "timezone": "Asia/Shanghai",
+  "zones": [
+    {
+      "id": "wuhou-jinli",
+      "name": "武侯锦里",
+      "suburban": false
+    },
+    {
+      "id": "shaocheng",
+      "name": "少城宽窄",
+      "suburban": false
+    },
+    {
+      "id": "caotang",
+      "name": "草堂青羊",
+      "suburban": false
+    },
+    {
+      "id": "chunxi",
+      "name": "春熙太古里",
+      "suburban": false
+    },
+    {
+      "id": "panda",
+      "name": "熊猫基地",
+      "suburban": true,
+      "note": "远郊，单独一天，建议上午票，晚上返回城区住宿"
+    }
+  ],
+  "places": [
+    {
+      "id": "wuhou",
+      "city": "成都",
+      "name": "武侯祠",
+      "type": "attraction",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.646,
+      "lng": 104.047,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 100,
+      "ticket_price": 50,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "9:00–18:00（17:00 停止入馆），夏季或庙会可能延时。门票 14 天预售，须经官网或「成都武侯祠」公众号实名预约。",
+      "blurb": "纪念诸葛亮的君臣合祀祠庙，惠陵也在同一票里。和锦里只隔一墙，适合把武侯放上午、锦里放傍晚，不要拆成两天。",
+      "description": "纪念诸葛亮的君臣合祀祠庙，惠陵也在同一票里。和锦里只隔一墙，适合把武侯放上午、锦里放傍晚，不要拆成两天。",
+      "tips": "全价 50 元，半价 25 元。不要在非官方渠道买票。与锦里步行即到。",
+      "image": "/places/wuhou.jpg",
+      "sources": [
+        {
+          "title": "成都武侯祠博物馆官网·开放与票价",
+          "url": "https://whpwm.cdwuhouci.cn/index"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "jinli",
+      "city": "成都",
+      "name": "锦里古街",
+      "type": "attraction",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.645,
+      "lng": 104.045,
+      "tags": [
+        "美食",
+        "购物"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "街区全天开放，晚上灯笼亮起后更有气氛，店铺通常到夜间。",
+      "blurb": "武侯祠西侧的仿古街，小吃、纪念品和夜间灯笼是主要体验。短、密、好逛，但价格和味道都偏游客区。",
+      "description": "武侯祠西侧的仿古街，小吃、纪念品和夜间灯笼是主要体验。短、密、好逛，但价格和味道都偏游客区。",
+      "tips": "免费进入。三大炮、钵钵鸡可以尝尝，不要被拉客进店。晚饭可就在街上解决，但别指望这是成都最地道的一餐。",
+      "image": "/places/jinli.jpg",
+      "sources": [
+        {
+          "title": "成都武侯祠博物馆官网·开放与票价",
+          "url": "https://whpwm.cdwuhouci.cn/index"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "nanjiao",
+      "city": "成都",
+      "name": "南郊公园",
+      "type": "attraction",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.6408,
+      "lng": 104.0462,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "城市公园，白天至傍晚可进入，以园方公示为准。",
+      "blurb": "武侯祠南边的公园，树多、路平，适合在祠庙和锦里之间留一段户外休息，尤其带小孩时。",
+      "description": "武侯祠南边的公园，树多、路平，适合在祠庙和锦里之间留一段户外休息，尤其带小孩时。",
+      "tips": "免费。和武侯祠步行可到，不要另排到别的片区。",
+      "image": "/places/wuhou.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huaxiba",
+      "city": "成都",
+      "name": "华西坝",
+      "type": "attraction",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.6438,
+      "lng": 104.0655,
+      "tags": [
+        "人文",
+        "网红打卡"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "校园公共区域可步行参观，请遵守学校管理，考试或封闭时段可能限制进入。",
+      "blurb": "四川大学华西校园一带的林荫道和早期建筑，被叫做华西坝，适合作为武侯、锦里之后往城东方向的一段散步。",
+      "description": "四川大学华西校园一带的林荫道和早期建筑，被叫做华西坝，适合作为武侯、锦里之后往城东方向的一段散步。",
+      "tips": "免费。距武侯祠约 1.8 公里，按市内公交或较长步行衔接。不要闯入教学区或妨碍就医人流。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "jinli-food",
+      "city": "成都",
+      "name": "锦里小吃",
+      "type": "restaurant",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.6452,
+      "lng": 104.0448,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 50,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "街区全天有摊，正餐以午晚为主。",
+      "blurb": "锦里街上的三大炮、钵钵鸡、冰粉和现做小吃，用来把武侯当天的一餐留在片区内。",
+      "description": "锦里街上的三大炮、钵钵鸡、冰粉和现做小吃，用来把武侯当天的一餐留在片区内。",
+      "tips": "人均按 50 元估，景区溢价明显。点完就走，少进劝客的「特色宴席」。想吃正经川菜，需在武侯祠附近另选馆子。",
+      "image": "/places/jinli.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-wh",
+      "city": "成都",
+      "name": "全季酒店（成都武侯祠店）",
+      "type": "hotel",
+      "zone": "武侯锦里",
+      "suburban": false,
+      "lat": 30.6475,
+      "lng": 104.049,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 400,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "按武侯祠、浆洗街一带中档商务酒店估算，方便走祠庙和锦里。",
+      "description": "按武侯祠、浆洗街一带中档商务酒店估算，方便走祠庙和锦里。",
+      "tips": "400 元/间夜为同城全季价格外推，写入前核对门店。也可统一住长顺街或盐市口，当天往返本片区。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "kuanzhai",
+      "city": "成都",
+      "name": "宽窄巷子",
+      "type": "attraction",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.672,
+      "lng": 104.055,
+      "tags": [
+        "美食",
+        "网红打卡",
+        "购物"
+      ],
+      "duration_min": 100,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "街区全天开放，店铺多在 10:00 后开门，晚上最拥挤。",
+      "blurb": "少城留下的宽巷、窄巷、井巷三条街，茶馆、院落和照相铺混在一起，是成都最常见的城市名片，也是人最多的地方之一。",
+      "description": "少城留下的宽巷、窄巷、井巷三条街，茶馆、院落和照相铺混在一起，是成都最常见的城市名片，也是人最多的地方之一。",
+      "tips": "免费。人多，看好随身物品。想体验喝茶，不如把时间留给人民公园鹤鸣茶社。巷子里餐饮偏贵。",
+      "image": "/places/kuanzhai.jpg",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "renmin-park",
+      "city": "成都",
+      "name": "人民公园",
+      "type": "attraction",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.6608,
+      "lng": 104.0619,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "城市公园，大致 6:30–22:00 可进入，以园方为准。鹤鸣茶社另计茶钱。",
+      "blurb": "少城南边的市井公园，茶座、鹤鸣茶社和周末的相亲角比任何购物街都更像成都日常生活。",
+      "description": "少城南边的市井公园，茶座、鹤鸣茶社和周末的相亲角比任何购物街都更像成都日常生活。",
+      "tips": "进园免费，茶钱另付。适合上午或午饭前后，和宽窄巷子、钟水饺都在步行或短公交范围内。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "pingan-church",
+      "city": "成都",
+      "name": "平安桥天主堂",
+      "type": "attraction",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.67,
+      "lng": 104.0622,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "教堂对外开放时段以堂方公告为准，弥撒时间勿打扰。",
+      "blurb": "少城平安桥附近的天主教堂，砖石立面很安静，是宽窄巷子和人民公园之间一段不拥挤的路过点。",
+      "description": "少城平安桥附近的天主教堂，砖石立面很安静，是宽窄巷子和人民公园之间一段不拥挤的路过点。",
+      "tips": "免费。请保持安静，不要在礼拜时穿行拍摄。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "wenshu",
+      "city": "成都",
+      "name": "文殊院",
+      "type": "attraction",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.6775,
+      "lng": 104.0742,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "约 8:00–17:00，16:30 停止入场。寺院免费；素餐需另付。",
+      "blurb": "成都城里最完整的汉传寺院之一，庭院和禅林比宽窄巷子清静，也常被用来吃一顿寺内素餐。",
+      "description": "成都城里最完整的汉传寺院之一，庭院和禅林比宽窄巷子清静，也常被用来吃一顿寺内素餐。",
+      "tips": "进院免费。距宽窄巷子约 2 公里，按市内公交衔接。素餐常见十几到二十元，以现场为准；与门票无关。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都本地宝·文殊院",
+          "url": "https://cd.bendibao.com/jingdian/wenshuyuancdeee/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "mapo",
+      "city": "成都",
+      "name": "陈麻婆豆腐（西玉龙街）",
+      "type": "restaurant",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.6715,
+      "lng": 104.0722,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 55,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以西玉龙街店营业时间为准，午晚高峰排队。",
+      "blurb": "麻婆豆腐的老字号门店，西玉龙街这一家更常被当成「来成都要吃一次」的坐标，菜不多，关键就是那一碗豆腐。",
+      "description": "麻婆豆腐的老字号门店，西玉龙街这一家更常被当成「来成都要吃一次」的坐标，菜不多，关键就是那一碗豆腐。",
+      "tips": "人均按 50–80 元区间估 55 元。不要点一桌子；豆腐、牛肉和素菜就够。这是少城片区的正餐首选之一。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都本地饮食指南对陈麻婆的整理",
+          "url": "https://meetlocalchengdu.com/blog-chengdu-food-guide"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "zhongshuijiao",
+      "city": "成都",
+      "name": "钟水饺（人民公园总店）",
+      "type": "restaurant",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.661,
+      "lng": 104.062,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": 35,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "总店以白天和早午市为主，具体以门店为准。",
+      "blurb": "人民公园边上的钟水饺总店，红油饺子和抄手是成都老字号快餐的代表，适合早餐或简单午餐。",
+      "description": "人民公园边上的钟水饺总店，红油饺子和抄手是成都老字号快餐的代表，适合早餐或简单午餐。",
+      "tips": "人均约 30–37 元，按 35 元计。不要和火锅抢同一顿；省钱日或亲子午市很合适。",
+      "image": "",
+      "sources": [
+        {
+          "title": "去哪儿·钟水饺人民公园总店",
+          "url": "https://touch.go.qunar.com/poi/3292995"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "shudaxia",
+      "city": "成都",
+      "name": "蜀大侠火锅（宽窄附近）",
+      "type": "restaurant",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.6698,
+      "lng": 104.0536,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": 110,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "晚餐更合适，需排队。",
+      "blurb": "宽窄巷子附近的中档火锅，适合把晚饭放在少城，不过它是连锁品牌，不是老字号。",
+      "description": "宽窄巷子附近的中档火锅，适合把晚饭放在少城，不过它是连锁品牌，不是老字号。",
+      "tips": "人均按目录 110 元。可以作火锅选项，但不要只靠它代表成都；想更本地可改串串或其他川菜馆。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-cd",
+      "city": "成都",
+      "name": "全季酒店（长顺街店）",
+      "type": "hotel",
+      "zone": "少城宽窄",
+      "suburban": false,
+      "lat": 30.6742,
+      "lng": 104.0528,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 380,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "长顺街的全季酒店，离宽窄巷子近，双床房适合两人一间，也适合作为成都市区的默认住宿。",
+      "description": "长顺街的全季酒店，离宽窄巷子近，双床房适合两人一间，也适合作为成都市区的默认住宿。",
+      "tips": "房价按目录 380 元/间夜。熊猫基地当天建议仍返回此店或盐市口亚朵，不必在基地过夜。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "dufu",
+      "city": "成都",
+      "name": "杜甫草堂",
+      "type": "attraction",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.665,
+      "lng": 104.023,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 100,
+      "ticket_price": 50,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常规 9:00–18:00（17:00 停止售票）；暑期可能延时（如 8:30–18:30）。须提前 14 日在「杜甫草堂博物馆」服务号实名购票。",
+      "blurb": "杜甫留居成都时的故居园林，亭阁、溪水和碑刻比想象中更像一座安静的公园，适合把上午留给这里。",
+      "description": "杜甫留居成都时的故居园林，亭阁、溪水和碑刻比想象中更像一座安静的公园，适合把上午留给这里。",
+      "tips": "全价 50 元，半价 25 元。凭身份证刷证入馆。与浣花溪、四川博物院、青羊宫同片区，不要和熊猫基地排一天。",
+      "image": "/places/dufu.jpg",
+      "sources": [
+        {
+          "title": "成都杜甫草堂博物馆·开放时间",
+          "url": "https://www.cddfct.cn/go-c18.htm"
+        },
+        {
+          "title": "成都杜甫草堂博物馆·预约参观",
+          "url": "https://www.cddfct.cn/go-c19.htm"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huanhuaxi",
+      "city": "成都",
+      "name": "浣花溪公园",
+      "type": "attraction",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.6628,
+      "lng": 104.0247,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "城市公园，白天至傍晚可进入。",
+      "blurb": "草堂和四川博物院之间的大面积绿地，沿溪步道适合放风、拍照，把两座收费或预约场馆连起来。",
+      "description": "草堂和四川博物院之间的大面积绿地，沿溪步道适合放风、拍照，把两座收费或预约场馆连起来。",
+      "tips": "免费。亲子日可在这里多留一会儿，不必赶去远的商圈。",
+      "image": "/places/dufu.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "sc-museum",
+      "city": "成都",
+      "name": "四川博物院",
+      "type": "attraction",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.6614,
+      "lng": 104.0322,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 100,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "周二至周日 9:00–17:00，16:00 停止入馆；周一闭馆（法定节假日除外）。须在「四川博物院」公众号实名预约。",
+      "blurb": "青华路 5 号，张大千、巴蜀青铜和汉唐文物都在这里，是草堂片区最值得预留的室内馆，也与浣花溪步行可及。",
+      "description": "青华路 5 号，张大千、巴蜀青铜和汉唐文物都在这里，是草堂片区最值得预留的室内馆，也与浣花溪步行可及。",
+      "tips": "基本陈列免费，部分临展收费。必须预约。6 岁及以下、60 岁及以上可刷身份证直接入馆。金沙遗址博物馆 2025-12-05 至 2027-04-30 闭馆，不要用金沙替代本馆。",
+      "image": "",
+      "sources": [
+        {
+          "title": "四川博物院·参观指南",
+          "url": "https://www.scmuseum.cn/Visit/Guide"
+        },
+        {
+          "title": "成都金沙遗址博物馆·闭馆提升公告",
+          "url": "https://www.jinshasitemuseum.com/node/175"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "qingyang",
+      "city": "成都",
+      "name": "青羊宫",
+      "type": "attraction",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.6603,
+      "lng": 104.0283,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 60,
+      "ticket_price": 10,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常见全年 8:00–17:00，部分信息称夏季可至 18:00，以宫观当日为准。",
+      "blurb": "成都最重要的道教宫观之一，三清殿和铜羊是标志。规模不大，和草堂、川博排在同一天下午刚刚好。",
+      "description": "成都最重要的道教宫观之一，三清殿和铜羊是标志。规模不大，和草堂、川博排在同一天下午刚刚好。",
+      "tips": "门票 10 元。与四川博物院、浣花溪距离很近，按步行衔接。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都本地宝·青羊宫",
+          "url": "http://cd.bendibao.com/jingdian/qingyanggong/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "hongxing-qy",
+      "city": "成都",
+      "name": "红杏酒家（送仙桥一带）",
+      "type": "restaurant",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.6626,
+      "lng": 104.0335,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 70,
+      "ticket_price": 0,
+      "price": 80,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以门店当日时间为准，建议午市错峰。",
+      "blurb": "草堂、青羊宫附近可选的成都本地中档川菜品牌，宫保、沸腾类家常菜比较稳，用来把午餐留在片区内。",
+      "description": "草堂、青羊宫附近可选的成都本地中档川菜品牌，宫保、沸腾类家常菜比较稳，用来把午餐留在片区内。",
+      "tips": "人均按 80 元估。请在写入前核对送仙桥/青羊附近是否仍有门店；若无，改用同片区评分稳定的川菜馆，不要跨到春熙吃饭。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "atour-caotang",
+      "city": "成都",
+      "name": "亚朵酒店（成都青羊宫/浣花溪）",
+      "type": "hotel",
+      "zone": "草堂青羊",
+      "suburban": false,
+      "lat": 30.666,
+      "lng": 104.0285,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 400,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "按青羊宫、草堂路一带中档酒店估算，方便早看草堂。",
+      "description": "按青羊宫、草堂路一带中档酒店估算，方便早看草堂。",
+      "tips": "400 元/间夜为估算，需核对门店。全程也可住长顺街全季，当天来回本片区。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "cd-museum",
+      "city": "成都",
+      "name": "成都博物馆",
+      "type": "attraction",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.658,
+      "lng": 104.0635,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 100,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "周二–周四、周日 9:00–17:00（16:30 停止入馆）；周五、周六 9:00–20:30（20:00 停止入馆）。周一闭馆（法定节假日除外）。通常可提前 14 天预约。",
+      "blurb": "天府广场西侧的市博，影雕、展陈和亲子区域都很完整，适合把春熙这一天的上午放在室内，下午再去太古里。",
+      "description": "天府广场西侧的市博，影雕、展陈和亲子区域都很完整，适合把春熙这一天的上午放在室内，下午再去太古里。",
+      "tips": "免费需预约。每日限流 2 万人。与太古里约 1.5–2 公里，按市内公交计。不要和金沙搞混：金沙目前闭馆。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都博物馆·参观指南",
+          "url": "https://www.cdmuseum.com/zhinan/"
+        },
+        {
+          "title": "成都本地宝·2026热门景区预约与门票",
+          "url": "http://cd.bendibao.com/tour/2026922/214197.shtm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "tianfu",
+      "city": "成都",
+      "name": "天府广场",
+      "type": "attraction",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.6572,
+      "lng": 104.0658,
+      "tags": [
+        "网红打卡"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "城市广场全天开放。",
+      "blurb": "成都地理中心，毛泽东像和地铁枢纽都在这里，本身不必停留太久，但和成都博物馆是同一组点。",
+      "description": "成都地理中心，毛泽东像和地铁枢纽都在这里，本身不必停留太久，但和成都博物馆是同一组点。",
+      "tips": "免费。拍照后即可转向春熙路。人流和阳光都强，夏天避开正午久站。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都博物馆·参观指南",
+          "url": "https://www.cdmuseum.com/zhinan/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "chunxi",
+      "city": "成都",
+      "name": "春熙路",
+      "type": "attraction",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.652,
+      "lng": 104.076,
+      "tags": [
+        "购物",
+        "网红打卡"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "步行街全天开放，商场按各自时间。",
+      "blurb": "成都最密的商业步行街，从地铁口走到 IFS 和太古里只是一段路，适合傍晚把购物和晚饭放在一起。",
+      "description": "成都最密的商业步行街，从地铁口走到 IFS 和太古里只是一段路，适合傍晚把购物和晚饭放在一起。",
+      "tips": "免费。和太古里、IFS 拆开写，避免再出现「春熙路·太古里」这种合并点。",
+      "image": "/places/chunxi.jpg",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "ifs-panda",
+      "city": "成都",
+      "name": "IFS 爬墙熊猫",
+      "type": "attraction",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.656,
+      "lng": 104.0788,
+      "tags": [
+        "网红打卡",
+        "亲子"
+      ],
+      "duration_min": 30,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "建筑外立面全天可看，晚上灯光更好拍。",
+      "blurb": "国际金融中心墙上的大熊猫雕塑，是春熙路最明确的打卡坐标，几分钟就能拍完，但值得单独标出来。",
+      "description": "国际金融中心墙上的大熊猫雕塑，是春熙路最明确的打卡坐标，几分钟就能拍完，但值得单独标出来。",
+      "tips": "免费。不要为了拍照停在马路当中。和太古里步行即到。",
+      "image": "/places/chunxi.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "taikooli",
+      "city": "成都",
+      "name": "成都太古里",
+      "type": "attraction",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.6547,
+      "lng": 104.0815,
+      "tags": [
+        "购物",
+        "网红打卡"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "开放式街区，店铺通常 10:00 后至夜间。",
+      "blurb": "大慈寺旁的开放式购物街区，和春熙路相邻却更整齐，也是晚饭后散步的常用收尾。",
+      "description": "大慈寺旁的开放式购物街区，和春熙路相邻却更整齐，也是晚饭后散步的常用收尾。",
+      "tips": "免费进入。大慈寺本身另算，若开放可顺便进寺（以寺院公告为准）。",
+      "image": "/places/chunxi.jpg",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "laitangyuan",
+      "city": "成都",
+      "name": "赖汤圆（总府路）",
+      "type": "restaurant",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.655,
+      "lng": 104.077,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 35,
+      "ticket_price": 0,
+      "price": 25,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以总店/总府路店营业时间为准，更适合早餐或点心。",
+      "blurb": "总府路一带的赖汤圆老字号，黑芝麻馅和豆花是更日常的成都甜食，适合当作春熙日的早餐或饭后点心。",
+      "description": "总府路一带的赖汤圆老字号，黑芝麻馅和豆花是更日常的成都甜食，适合当作春熙日的早餐或饭后点心。",
+      "tips": "人均约 15–28 元，按 25 元计。不能当正餐唯一一顿，午饭请另安排盘飧市或川菜。",
+      "image": "",
+      "sources": [
+        {
+          "title": "携程点评·赖汤圆总店",
+          "url": "https://you.ctrip.com/food/chengdu104/347038-dianping.html"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "pansunshi",
+      "city": "成都",
+      "name": "盘飧市（春熙/总府一带）",
+      "type": "restaurant",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.6555,
+      "lng": 104.0745,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 60,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以门店当日时间为准。",
+      "blurb": "成都老字号食堂风格的便餐，钟水饺、甜皮鸭和各种小菜可以一次点齐，比商场餐厅更能代表本地午餐。",
+      "description": "成都老字号食堂风格的便餐，钟水饺、甜皮鸭和各种小菜可以一次点齐，比商场餐厅更能代表本地午餐。",
+      "tips": "人均按 60 元估。写入前核对春熙、总府路附近门店；它比小龙坎更适合作为城市代表。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xiaolongkan",
+      "city": "成都",
+      "name": "小龙坎火锅（春熙路店）",
+      "type": "restaurant",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.6542,
+      "lng": 104.0785,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": 100,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "人多要排队，晚饭更明显。",
+      "blurb": "春熙路的连锁火锅店，方便、好找，但全国门店很多，不能当作成都饮食的代表。",
+      "description": "春熙路的连锁火锅店，方便、好找，但全国门店很多，不能当作成都饮食的代表。",
+      "tips": "人均按目录 100 元。目录保留作备选，优先盘飧市、赖汤圆等本地选项。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "atour-cd",
+      "city": "成都",
+      "name": "亚朵酒店（盐市口店）",
+      "type": "hotel",
+      "zone": "春熙太古里",
+      "suburban": false,
+      "lat": 30.6536,
+      "lng": 104.0794,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 520,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "春熙路、太古里旁边的亚朵，逛完可以走回酒店，适合把市区住宿放在东大街一侧。",
+      "description": "春熙路、太古里旁边的亚朵，逛完可以走回酒店，适合把市区住宿放在东大街一侧。",
+      "tips": "房价按目录 520 元/间夜。熊猫基地当天建议返回此店或长顺街全季。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "panda",
+      "city": "成都",
+      "name": "成都大熊猫繁育研究基地",
+      "type": "attraction",
+      "zone": "熊猫基地",
+      "suburban": true,
+      "lat": 30.735,
+      "lng": 104.147,
+      "tags": [
+        "亲子",
+        "自然"
+      ],
+      "duration_min": 90,
+      "ticket_price": 55,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "11月–次年2月：上午票 8:00–12:00 入园，下午票 12:00–16:30 入园，17:30 清园。3月–10月：上午 7:30–12:00，下午 12:00–17:00，18:00 清园。须线上实名预约，可提前 14 日。",
+      "blurb": "看大熊猫最稳妥的一处，园区大、要走路。务必把这一天单独留给基地，不要再混排宽窄或武侯。",
+      "description": "看大熊猫最稳妥的一处，园区大、要走路。务必把这一天单独留给基地，不要再混排宽窄或武侯。",
+      "tips": "成人 55 元，学生 27 元；60 岁及以上、6 岁或 1.3 米以下儿童免票且免预约。建议约上午票，8–10 点更活跃。六号别墅区域通常周一闭馆（不含法定假日）。只走官方渠道。进出城按远郊：至少 60 分钟、每人 40 元。",
+      "image": "/places/panda.jpg",
+      "sources": [
+        {
+          "title": "成都大熊猫繁育研究基地·票务服务",
+          "url": "https://www.panda.org.cn/cn/service/ticket/"
+        },
+        {
+          "title": "成都大熊猫繁育研究基地·开放时间",
+          "url": "https://www.panda.org.cn/cn/service/opentime/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "panda-moon",
+      "city": "成都",
+      "name": "月亮产房",
+      "type": "attraction",
+      "zone": "熊猫基地",
+      "suburban": true,
+      "lat": 30.7382,
+      "lng": 104.1455,
+      "tags": [
+        "亲子",
+        "自然"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "在基地园内，随开园时间；个别场馆可能因饲养或天气关闭。",
+      "blurb": "园区里较常看到幼年熊猫的区域之一，和太阳产房、熊猫博物馆一起构成基地当天的步行主线。",
+      "description": "园区里较常看到幼年熊猫的区域之一，和太阳产房、熊猫博物馆一起构成基地当天的步行主线。",
+      "tips": "无需另购门票，但须先持当日基地票入园。以园内导览为准，场馆名称和开放可能调整。",
+      "image": "/places/panda.jpg",
+      "sources": [
+        {
+          "title": "成都大熊猫繁育研究基地·开放时间",
+          "url": "https://www.panda.org.cn/cn/service/opentime/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "panda-sun",
+      "city": "成都",
+      "name": "太阳产房",
+      "type": "attraction",
+      "zone": "熊猫基地",
+      "suburban": true,
+      "lat": 30.733,
+      "lng": 104.1492,
+      "tags": [
+        "亲子",
+        "自然"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "在基地园内，随开园时间。",
+      "blurb": "另一处主要的大熊猫活动场，建议按园内指示与月亮产房错开路线，避免来回走。",
+      "description": "另一处主要的大熊猫活动场，建议按园内指示与月亮产房错开路线，避免来回走。",
+      "tips": "含在 55 元门票内。热天或雨天部分外场可能关闭，改看室内。",
+      "image": "/places/panda.jpg",
+      "sources": [
+        {
+          "title": "成都大熊猫繁育研究基地·开放时间",
+          "url": "https://www.panda.org.cn/cn/service/opentime/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "panda-museum",
+      "city": "成都",
+      "name": "熊猫博物馆",
+      "type": "attraction",
+      "zone": "熊猫基地",
+      "suburban": true,
+      "lat": 30.736,
+      "lng": 104.148,
+      "tags": [
+        "亲子",
+        "人文"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "园内场馆，通常 与园区同步；个别展示区可能周一维护，以当日公示为准。",
+      "blurb": "把熊猫保护和繁殖说明白的室内馆，适合中午前后避阳，也适合给小孩补一点背景。",
+      "description": "把熊猫保护和繁殖说明白的室内馆，适合中午前后避阳，也适合给小孩补一点背景。",
+      "tips": "含在门票内。若六号别墅或部分展馆周一关闭，仍可看其他区域，不必取消整天。",
+      "image": "/places/panda.jpg",
+      "sources": [
+        {
+          "title": "成都大熊猫繁育研究基地·开放时间",
+          "url": "https://www.panda.org.cn/cn/service/opentime/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "panda-canteen",
+      "city": "成都",
+      "name": "熊猫基地园区食堂",
+      "type": "restaurant",
+      "zone": "熊猫基地",
+      "suburban": true,
+      "lat": 30.7352,
+      "lng": 104.1468,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": 40,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "午餐时段供应，以园内食堂当日为准。",
+      "blurb": "基地园内的简单食堂和快餐，用来把熊猫当天的午餐留在片区内，不必中途回城。",
+      "description": "基地园内的简单食堂和快餐，用来把熊猫当天的午餐留在片区内，不必中途回城。",
+      "tips": "人均按 40 元估，选择有限、价格略高，图的是省时间。可提前看官方订餐电话，但普通参观够用。",
+      "image": "",
+      "sources": [
+        {
+          "title": "成都大熊猫繁育研究基地·票务服务",
+          "url": "https://www.panda.org.cn/cn/service/ticket/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    }
+  ]
+}

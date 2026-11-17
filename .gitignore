@@ -26,6 +26,12 @@ npm-debug.log*
 ## 社区数据
 server/data/*.sqlite
 server/data/*.sqlite-*
+server/data/community-media/
+
+## 测试产物
+web/test-results/
+web/playwright-report/
+web/blob-report/
 
 ## 构建产物
 android/

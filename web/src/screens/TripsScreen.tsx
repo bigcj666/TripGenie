@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { Photo } from '../components/Photo'
 import { cityImage, photoFor } from '../data/places'
 import { tripKindName } from '../format'
@@ -6,30 +8,65 @@ import type { SavedTrip } from '../storage'
 interface TripsScreenProps {
   trips: SavedTrip[]
   onCreate: () => void
+  onCommunity: () => void
   onOpen: (id: string) => void
   onDelete: (id: string) => void
 }
 
-export function TripsScreen({ trips, onCreate, onOpen, onDelete }: TripsScreenProps): React.ReactElement {
+export function TripsScreen({ trips, onCreate, onCommunity, onOpen, onDelete }: TripsScreenProps): React.ReactElement {
+  const [menuId, setMenuId] = useState<string | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null)
+  const [keyword, setKeyword] = useState('')
+  const ordered = [...trips].sort((a, b) => b.savedAt - a.savedAt)
+  const query = keyword.trim()
+  const visible = query
+    ? ordered.filter((item) => {
+        const titles = item.trip.itinerary.flatMap((day) => day.items.map((stop) => stop.title)).join(' ')
+        const blob = `${item.trip.city} ${tripKindName(item.trip)} ${item.trip.summary} ${titles}`
+        return blob.includes(query)
+      })
+    : ordered
   return (
     <div className="page">
-      <header className="nav">
-        <span />
+      <header className="nav nav-split">
         <h1>攻略</h1>
-        <button type="button" className="nav-btn" onClick={onCreate}>
-          新建
+        <button type="button" className="nav-action" onClick={onCreate}>
+          生成行程
         </button>
       </header>
       <div className="scroll">
+        <p className="hint pad">打开即可按天查看，不需要的可以删除。</p>
+        {trips.length > 0 ? (
+          <label className="guide-search">
+            <span className="sr">搜索行程</span>
+            <input value={keyword} placeholder="城市、风格或地点" onChange={(event) => setKeyword(event.target.value)} />
+          </label>
+        ) : null}
         {trips.length === 0 ? (
           <div className="empty">
-            <p>还没有攻略</p>
-            <button type="button" className="primary" onClick={onCreate}>
-              生成攻略
-            </button>
+            <h2>还没有保存的行程。</h2>
+            <p>生成一套，或从社区导入别人的安排，就会出现在这里。</p>
+            <div className="empty-actions">
+              <button type="button" className="primary" onClick={onCreate}>
+                生成行程
+              </button>
+              <button type="button" className="ghost" onClick={onCommunity}>
+                去社区看看
+              </button>
+            </div>
           </div>
         ) : (
-          trips.map((item) => {
+          <div className="guide-list">
+          {visible.length === 0 ? (
+            <div className="empty">
+              <h2>没有找到匹配的行程。</h2>
+              <p>换个词，或清空后再看全部。</p>
+              <button type="button" className="primary" onClick={() => setKeyword('')}>
+                清空
+              </button>
+            </div>
+          ) : null}
+          {visible.map((item) => {
             const first = item.trip.itinerary[0]?.items[0]
             return (
               <div key={item.id} className="trip-row">
@@ -40,23 +77,45 @@ export function TripsScreen({ trips, onCreate, onOpen, onDelete }: TripsScreenPr
                       {item.trip.city} · {tripKindName(item.trip)}
                     </b>
                     <small>
-                      {item.trip.days}天 · {item.trip.people}人 · {formatDay(item.savedAt)}
+                      {item.trip.days}天 · {tripKindName(item.trip)}
                     </small>
                   </span>
                 </button>
-                <button type="button" className="text-danger" onClick={() => onDelete(item.id)}>
-                  删除
+                <button type="button" className="nav-btn" aria-label="更多" onClick={() => setMenuId(menuId === item.id ? null : item.id)}>
+                  ···
                 </button>
+                {menuId === item.id ? (
+                  <button type="button" className="text-danger" onClick={() => setPendingDelete(item.id)}>
+                    删除
+                  </button>
+                ) : null}
               </div>
             )
-          })
+          })}
+          </div>
         )}
       </div>
+      {pendingDelete ? (
+        <div className="dialog">
+          <article>
+            <p>删除后不可恢复，确定删除这套行程吗？</p>
+            <button
+              type="button"
+              className="primary"
+              onClick={() => {
+                onDelete(pendingDelete)
+                setPendingDelete(null)
+                setMenuId(null)
+              }}
+            >
+              删除
+            </button>
+            <button type="button" className="ghost" onClick={() => setPendingDelete(null)}>
+              取消
+            </button>
+          </article>
+        </div>
+      ) : null}
     </div>
   )
-}
-
-function formatDay(stamp: number): string {
-  const date = new Date(stamp)
-  return `${date.getMonth() + 1}月${date.getDate()}日`
 }

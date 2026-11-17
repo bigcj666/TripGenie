@@ -41,7 +41,14 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
   const today = isoShift(new Date(), 0)
   const latest = addISO(today, 14)
   const current = plan[dayIndex]
-  const picked = plan.reduce((sum, day) => sum + day.slots.filter((slot) => slot.placeId && slot.kind !== 'breakfast' && slot.kind !== 'lunch' && slot.kind !== 'dinner' && slot.kind !== 'hotel').length, 0)
+  const suggested = plan.reduce(
+    (sum, day) => sum + day.slots.filter((slot) => slot.kind !== 'breakfast' && slot.kind !== 'lunch' && slot.kind !== 'dinner' && slot.kind !== 'hotel').length,
+    0,
+  )
+  const picked = plan.reduce(
+    (sum, day) => sum + day.slots.filter((slot) => slot.placeId && slot.kind !== 'breakfast' && slot.kind !== 'lunch' && slot.kind !== 'dinner' && slot.kind !== 'hotel').length,
+    0,
+  )
 
   const start = (): void => {
     if (!city.trim()) return
@@ -85,7 +92,7 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
             start()
           }}
         >
-          <p className="hint">先按出发日的天气排好时间、三餐和住宿。景点先空着，下一步由你自己选。</p>
+          <p className="hint">按出发日天气排好时间段，景点留给你自己选；饭馆和住宿也可以随时更换。</p>
           <label htmlFor="custom-city">城市</label>
           <input id="custom-city" value={city} maxLength={20} onChange={(event) => setCity(event.target.value)} />
           <div className="chips">
@@ -108,7 +115,12 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
       ) : (
         <>
           <div className="scroll with-dock">
-            {warning ? <p className="hint pad">{warning}</p> : null}
+            <p className="hint pad">按出发日天气排好时间段，景点留给你自己选；饭馆和住宿也可以随时更换。</p>
+            <p className="hint pad">已选 {picked} / 建议 {suggested}</p>
+            <div className="progress" aria-hidden="true">
+              <i style={{ width: `${suggested === 0 ? 0 : Math.round((picked / suggested) * 100)}%` }} />
+            </div>
+            {warning ? <p className="banner">{warning}</p> : null}
             <div className="day-line">
               {plan.map((day, index) => (
                 <button key={day.date} type="button" className={index === dayIndex ? 'on' : ''} onClick={() => setDayIndex(index)}>
@@ -132,15 +144,15 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
                     {current.weather.pace}。{current.weather.carry}。
                   </p>
                 </section>
-                {current.slots.map((slot) => (
-                  <SlotRow key={slot.id} slot={slot} hint={pickHint(slot.kind, current.weather)} onPick={() => setPicker({ dayIndex, slotId: slot.id })} />
+                {current.slots.map((slot, index) => (
+                  <SlotRow key={slot.id} index={index + 1} slot={slot} hint={pickHint(slot.kind, current.weather)} onPick={() => setPicker({ dayIndex, slotId: slot.id })} />
                 ))}
               </>
             ) : null}
           </div>
           <div className="dock">
             <button type="button" className="primary" onClick={() => onDone(composeTrip(city.trim(), people, plan))}>
-              保存攻略{picked > 0 ? ` · 已选 ${picked} 个景点` : ''}
+              保存到攻略
             </button>
           </div>
         </>
@@ -159,23 +171,24 @@ export function CustomScreen({ city: initialCity, savedIds, onBack, onDone }: Cu
   )
 }
 
-function SlotRow({ slot, hint, onPick }: { slot: TimeSlot; hint: string; onPick: () => void }): React.ReactElement {
+function SlotRow({ index, slot, hint, onPick }: { index: number; slot: TimeSlot; hint: string; onPick: () => void }): React.ReactElement {
   const place = slot.placeId ? PLACES.find((item) => item.id === slot.placeId) : undefined
   const meal = slot.kind === 'breakfast' || slot.kind === 'lunch' || slot.kind === 'dinner'
   const stay = slot.kind === 'hotel'
   const priceNote = place?.price ? `约 ${place.price} 元${stay ? '/间' : meal ? '/人' : ''} · ` : ''
   return (
-    <button type="button" className="slot" onClick={onPick}>
+    <button type="button" className={place ? 'slot filled' : 'slot empty-slot'} onClick={onPick}>
       <em>
-        {slot.start}–{slot.end} · {SLOT_LABEL[slot.kind]}
+        {stay ? `${slot.start}–当晚` : `${slot.start}–${slot.end}`} · {SLOT_LABEL[slot.kind]}
       </em>
       {place ? (
         <span className="slot-place">
+          <span className="num-badge">{index}</span>
           <Photo src={place.image} alt={place.name} />
           <b>{place.name}</b>
         </span>
       ) : (
-        <b>{meal ? '附近吃' : stay ? '选一家酒店' : '选择景点'}</b>
+        <b>{meal ? '+添加饭馆' : stay ? '+添加住宿' : '+添加景点'}</b>
       )}
       <small>{place ? `${priceNote}点这里更换` : hint}</small>
     </button>

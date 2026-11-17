@@ -1,3 +1,1 @@
-from .generate import generate_trips
-
-__all__ = ["generate_trips"]
+"""生成与排程。从子模块导入，避免包初始化时的循环依赖。"""

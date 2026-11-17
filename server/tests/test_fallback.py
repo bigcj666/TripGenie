@@ -28,7 +28,7 @@ def test_llm_failure_falls_back_to_mock(monkeypatch):
                                        request_timeout=5))
     assert resp.engine == "mock"
     assert len(resp.plans) == 1
-    assert any("降级 Mock" in w for w in resp.warnings)
+    assert any("沿用目录里的说明" in w for w in resp.warnings)
 
 
 def test_mixed_engine_any_mock_wins(monkeypatch):
@@ -55,14 +55,23 @@ def test_mixed_engine_any_mock_wins(monkeypatch):
     assert len(resp.plans) == 3
 
 
-def test_mock_cost_tracks_budget():
-    """mock 成本应随预算缩放：偏差 ≤20%（否则触发 over_budget 告警）；明细与汇总一致。"""
-    for budget, people in [(1500, 3), (800, 2), (5000, 4)]:
-        trip = generate_mock_trip("杭州", 3, budget, people, ["亲子"], TravelStyle.COMPACT)
-        drift = abs(trip.cost_breakdown.total - budget) / budget
-        assert drift <= 0.2, f"budget={budget} drift={drift:.0%}"
-        item_tickets = sum(it.cost_estimate for d in trip.itinerary for it in d.items) * people
-        assert abs(item_tickets - trip.cost_breakdown.tickets) <= 1.0, "明细门票与汇总不一致"
+def test_mock_cost_is_not_scaled_to_budget():
+    """费用按单价、餐标和交通公式加总，不随预算改写成约 95%。"""
+    trips = [
+        generate_mock_trip("杭州", 3, budget, 3, ["亲子"], TravelStyle.COMPACT)
+        for budget in (800, 1500, 5000)
+    ]
+    totals = [trip.cost_breakdown.total for trip in trips]
+    assert totals[0] == totals[1] == totals[2]
+    assert len({round(0.95 * budget, 1) for budget in (800, 1500, 5000)} & set(totals)) <= 1
+    trip = trips[1]
+    ticket_units = sum(
+        item.ticket_price for day in trip.itinerary for item in day.items if item.type.value == "attraction"
+    )
+    meal_units = sum(item.cost_estimate for day in trip.itinerary for item in day.items if item.type.value == "meal")
+    assert abs(ticket_units * trip.people - trip.cost_breakdown.tickets) <= 0.2
+    assert abs(meal_units * trip.people - trip.cost_breakdown.food) <= 0.2
+    assert trip.cost_breakdown.hotel == 0
 
 
 def test_mock_preferences_reflected():

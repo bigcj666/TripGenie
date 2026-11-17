@@ -1,0 +1,1292 @@
+{
+  "city": "杭州",
+  "city_slug": "hangzhou",
+  "updated": "2026-11-10",
+  "timezone": "Asia/Shanghai",
+  "zones": [
+    {
+      "id": "xihu",
+      "name": "西湖",
+      "suburban": false,
+      "note": "湖滨到南岸、孤山北山，可独立成日"
+    },
+    {
+      "id": "hubin-wushan",
+      "name": "湖滨吴山",
+      "suburban": false,
+      "note": "河坊、南宋御街、吴山、湖滨住宿"
+    },
+    {
+      "id": "lingyin",
+      "name": "灵隐",
+      "suburban": false,
+      "note": "飞来峰至韬光、植物园，须预约"
+    },
+    {
+      "id": "xixi",
+      "name": "西溪",
+      "suburban": true,
+      "note": "远郊，单独一天，不与西湖或灵隐混排"
+    },
+    {
+      "id": "canal",
+      "name": "运河",
+      "suburban": false,
+      "note": "拱宸桥博物馆群，可独立成日"
+    }
+  ],
+  "places": [
+    {
+      "id": "duanqiao",
+      "city": "杭州",
+      "name": "断桥残雪",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2593,
+      "lng": 120.1477,
+      "tags": [
+        "人文",
+        "网红打卡"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "全天开放的湖岸公共空间，无门票、无闭馆日。",
+      "blurb": "白堤东端的西湖十景之一，桥面和远山同框，是大多数人第一张西湖照片的地方。清晨人少，雪后或烟雨天更有气氛。",
+      "description": "白堤东端的西湖十景之一，桥面和远山同框，是大多数人第一张西湖照片的地方。清晨人少，雪后或烟雨天更有气氛。",
+      "tips": "免费开放。周末上午易拥挤，拍「断桥残雪」碑建议7:30前到。不要被桥头服装租赁和强制合影拉客影响节奏。",
+      "image": "/places/duanqiao.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "gushan",
+      "city": "杭州",
+      "name": "孤山公园",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.254,
+      "lng": 120.144,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "公园全天可逛；园中浙江省博物馆、西泠印社等按各自开放时间。",
+      "blurb": "西湖中最大的天然岛屿，东接白堤、西通西泠桥，里面是林间步行道、秋瑾墓和文人故迹，适合放慢脚步。",
+      "description": "西湖中最大的天然岛屿，东接白堤、西通西泠桥，里面是林间步行道、秋瑾墓和文人故迹，适合放慢脚步。",
+      "tips": "免费。可与浙江省博物馆孤山馆区连看。周末北山路单双号限行，尽量坐公交或从白堤走入。",
+      "image": "/places/westlake.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        },
+        {
+          "title": "浙江省博物馆官网·开放与参观",
+          "url": "https://www.zjmuseum.com.cn/cn/"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "zjmuseum",
+      "city": "杭州",
+      "name": "浙江省博物馆（孤山馆区）",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2536,
+      "lng": 120.1398,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "周二至周日 9:00–17:00，16:30 停止入场；周一闭馆，法定节假日正常开放，闭馆顺延至节后第一天。个人参观免预约，凭实体身份证刷证入馆；团队需官网预约。",
+      "blurb": "就在孤山南麓，馆藏以浙江考古、青瓷和书画见长。不用另找一天，从孤山散步就能进门。",
+      "description": "就在孤山南麓，馆藏以浙江考古、青瓷和书画见长。不用另找一天，从孤山散步就能进门。",
+      "tips": "免费。周一不要排。未带身份证可在入口咨询或用「云上浙博」小程序处理。收费临展不在免费范围内。",
+      "image": "/places/westlake.jpg",
+      "sources": [
+        {
+          "title": "浙江省博物馆官网·开放与参观",
+          "url": "https://www.zjmuseum.com.cn/cn/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "yuewang",
+      "city": "杭州",
+      "name": "岳王庙",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2545,
+      "lng": 120.1375,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 75,
+      "ticket_price": 25,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "每日约 7:30–17:30，17:00 停止入园；以景区当日公示为准。",
+      "blurb": "北山路旁纪念岳飞的祠庙，忠烈祠、墓园和秦桧跪像是最常被记住的几处，参观节奏比湖滨轻松。",
+      "description": "北山路旁纪念岳飞的祠庙，忠烈祠、墓园和秦桧跪像是最常被记住的几处，参观节奏比湖滨轻松。",
+      "tips": "成人 25 元。与孤山、楼外楼同在北段，适合上午连走，不必单独跑一次。",
+      "image": "/places/westlake.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·岳王庙景区",
+          "url": "https://hz.bendibao.com/jingdian/yuewangmiao/"
+        },
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "cruise",
+      "city": "杭州",
+      "name": "西湖游船",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2489,
+      "lng": 120.154,
+      "tags": [
+        "亲子",
+        "自然"
+      ],
+      "duration_min": 90,
+      "ticket_price": 55,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "日间上岛游船常见末班约 16:30，以码头当日公告为准；夜游多在 5–10 月。",
+      "blurb": "从湖滨一公园或中山公园码头上船，环湖看三潭印月，上岛线路的船票含三潭印月门票，是把湖面走通的最省事办法。",
+      "description": "从湖滨一公园或中山公园码头上船，环湖看三潭印月，上岛线路的船票含三潭印月门票，是把湖面走通的最省事办法。",
+      "tips": "上岛休闲船 55 元/人（含登岛），二公园等地豪华船约 70 元；只环湖不上岛的普通画舫约 50 元。手划船按小时计（约 150–180 元/小时·船），不按人头。建议在中山公园码头上船，下船选花港，方便接着逛雷峰塔。",
+      "image": "/places/westlake.jpg",
+      "sources": [
+        {
+          "title": "杭州市文化广电旅游局·西湖游船说明",
+          "url": "https://wgly.hangzhou.gov.cn/art/2022/12/6/art_1229695828_58943255.html"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huagang",
+      "city": "杭州",
+      "name": "花港观鱼",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2298,
+      "lng": 120.136,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "西湖公园免费开放，全天可进入。",
+      "blurb": "苏堤南端的免费公园，红鱼池、牡丹园和大草坪适合带小孩停留，也常作为游船在花港码头下船后的第一站。",
+      "description": "苏堤南端的免费公园，红鱼池、牡丹园和大草坪适合带小孩停留，也常作为游船在花港码头下船后的第一站。",
+      "tips": "免费。从花港码头下船后步行即可入园，再往东不远就是雷峰塔。",
+      "image": "/places/westlake.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        },
+        {
+          "title": "杭州市文化广电旅游局·西湖游船说明",
+          "url": "https://wgly.hangzhou.gov.cn/art/2022/12/6/art_1229695828_58943255.html"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "leifeng",
+      "city": "杭州",
+      "name": "雷峰塔",
+      "type": "attraction",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.232,
+      "lng": 120.149,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 90,
+      "ticket_price": 40,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "11月1日–3月15日 8:00–17:30（17:00 停止入园）；3月16日–4月30日 8:00–19:00；5月1日–10月31日 8:00–20:00。",
+      "blurb": "南岸的重建塔，登塔能把南湖、苏堤和三潭印月收进同一视野。遗址和《白蛇传》展览在塔内，不一定非要赶上日落。",
+      "description": "南岸的重建塔，登塔能把南湖、苏堤和三潭印月收进同一视野。遗址和《白蛇传》展览在塔内，不一定非要赶上日落。",
+      "tips": "成人 40 元，学生及部分优待 20 元。11 月起按冬令时间，不要按夏日晚场来排晚上。公园年卡不适用。",
+      "image": "/places/leifeng.jpg",
+      "sources": [
+        {
+          "title": "杭州雷峰塔文化旅游发展有限公司·门票与开放时间",
+          "url": "http://jing.leifengta.com/about.aspx?c_kind=7&c_kind2=42"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "louwailou",
+      "city": "杭州",
+      "name": "楼外楼（孤山路店）",
+      "type": "restaurant",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2533,
+      "lng": 120.1428,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": 180,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "正餐时段营业，建议午市提前取号；以门店当日时间为准。",
+      "blurb": "孤山路百年杭帮菜，西湖醋鱼和东坡肉是招牌，窗口正对湖面，味道和位置都在卖「老字号场景」。",
+      "description": "孤山路百年杭帮菜，西湖醋鱼和东坡肉是招牌，窗口正对湖面，味道和位置都在卖「老字号场景」。",
+      "tips": "人均按 160–260 元区间估 180 元，明显高于普通杭帮菜，属于景区价。想吃招牌可以点，但不要默认它是性价比之选；赶时间或卡 1500 元预算时改去北山路天外天或湖滨知味观。",
+      "image": "/places/louwailou.jpg",
+      "sources": [
+        {
+          "title": "公开美食指南对楼外楼人均区间的整理",
+          "url": "https://k.sina.cn/article_7879923679_1d5ae17df06801j02s.html"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "tianwaitian",
+      "city": "杭州",
+      "name": "天外天（北山路）",
+      "type": "restaurant",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.254,
+      "lng": 120.1362,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 70,
+      "ticket_price": 0,
+      "price": 120,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以门店当日营业时间为准。",
+      "blurb": "岳王庙附近的老杭帮菜馆，东坡肉、叫化童鸡常被本地人点，位置比楼外楼稍离核心拍照点，用餐氛围更日常一些。",
+      "description": "岳王庙附近的老杭帮菜馆，东坡肉、叫化童鸡常被本地人点，位置比楼外楼稍离核心拍照点，用餐氛围更日常一些。",
+      "tips": "人均按攻略常见区间估 120 元，仍属中高，但通常比楼外楼好控预算。出发前核对北山路店是否开门。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "westlake-hotel",
+      "city": "杭州",
+      "name": "西湖国宾馆",
+      "type": "hotel",
+      "zone": "西湖",
+      "suburban": false,
+      "lat": 30.2478,
+      "lng": 120.1375,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 900,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "酒店住宿，全天可入住离店，以订单为准。",
+      "blurb": "杨公堤一侧的园林式宾馆，出门就是西湖，适合想把住宿也算进湖景体验的人。",
+      "description": "杨公堤一侧的园林式宾馆，出门就是西湖，适合想把住宿也算进湖景体验的人。",
+      "tips": "双床/标间按目录原价 900 元/间夜估算，偏高。默认住宿不计入总预算；若要控制房价，改住湖滨全季。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huxueyan",
+      "city": "杭州",
+      "name": "胡雪岩故居",
+      "type": "attraction",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2394,
+      "lng": 120.1736,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 90,
+      "ticket_price": 20,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "11月–次年4月约 8:00–17:00；5月–10月约 8:00–17:30。以当日公示为准。",
+      "blurb": "清河坊东侧的晚清红顶商人宅院，木雕、水池和厅堂保存完整，是河坊街一带少有的「真正进门看历史」的点。",
+      "description": "清河坊东侧的晚清红顶商人宅院，木雕、水池和厅堂保存完整，是河坊街一带少有的「真正进门看历史」的点。",
+      "tips": "成人 20 元。和河坊街、南宋御街步行可连，建议放在上午，逛小吃之前先看完房子。",
+      "image": "/places/hefang.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "hefang",
+      "city": "杭州",
+      "name": "河坊街",
+      "type": "attraction",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2405,
+      "lng": 120.169,
+      "tags": [
+        "美食",
+        "购物"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "街区全天开放，店铺多在 10:00 后陆续开门，晚上更热闹。",
+      "blurb": "清河坊历史街区，北接吴山、东连南宋御街，是杭州城南最集中的小吃、药铺和手作街，适合把午餐或晚饭放在这里。",
+      "description": "清河坊历史街区，北接吴山、东连南宋御街，是杭州城南最集中的小吃、药铺和手作街，适合把午餐或晚饭放在这里。",
+      "tips": "街区免费。店铺价格偏旅游区，药铺和「老字号」要看清楚再买。想正经吃杭帮菜，优先皇饭儿高银街店，而不是只买街头小吃。",
+      "image": "/places/hefang.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "nansong-street",
+      "city": "杭州",
+      "name": "南宋御街",
+      "type": "attraction",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.243,
+      "lng": 120.1695,
+      "tags": [
+        "人文",
+        "购物"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "中山中路步行街全天开放。",
+      "blurb": "中山中路这一段保留了南宋都城的街道走向，石板路、骑楼和小型博物馆连在一起，比河坊街主街安静，适合饭后慢慢走。",
+      "description": "中山中路这一段保留了南宋都城的街道走向，石板路、骑楼和小型博物馆连在一起，比河坊街主街安静，适合饭后慢慢走。",
+      "tips": "免费。与河坊街相接，不必另坐车。可以进中国财税博物馆或南方酒业博物馆看看，是否预约以场馆公告为准。",
+      "image": "/places/hefang.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "chenghuangge",
+      "city": "杭州",
+      "name": "吴山城隍阁",
+      "type": "attraction",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2378,
+      "lng": 120.1661,
+      "tags": [
+        "人文",
+        "网红打卡"
+      ],
+      "duration_min": 75,
+      "ticket_price": 30,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常见开放 8:00–20:00，以景区当日为准。",
+      "blurb": "吴山顶上的城隍阁，登阁能看钱塘江方向和上城区屋脊。山下十五奎巷、河坊街，爬一段石阶就能到。",
+      "description": "吴山顶上的城隍阁，登阁能看钱塘江方向和上城区屋脊。山下十五奎巷、河坊街，爬一段石阶就能到。",
+      "tips": "登阁 30 元。只想来吴山走走、看城隍庙外围，登山本身不收费。省钱方案可只爬山、不登阁。",
+      "image": "/places/hefang.jpg",
+      "sources": [
+        {
+          "title": "杭州本地宝·2026西湖景区门票汇总",
+          "url": "http://hz.bendibao.com/tour/2023426/145270.shtm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "wulin",
+      "city": "杭州",
+      "name": "武林夜市",
+      "type": "attraction",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.279,
+      "lng": 120.162,
+      "tags": [
+        "美食",
+        "购物"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "夜市通常傍晚至夜间出摊，以现场和属地管理公告为准。",
+      "blurb": "杭州传统的市区夜市，小吃和日用摊比较集中，适合把晚上留给市井而不是湖景。",
+      "description": "杭州传统的市区夜市，小吃和日用摊比较集中，适合把晚上留给市井而不是湖景。",
+      "tips": "免费进入。距河坊街约 4 公里，需坐公交或地铁，不要按步行排。夜市档口和位置近年有调整，出发前确认仍在营业；若临时取消，改逛湖滨步行街夜景。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "zhiweiguan",
+      "city": "杭州",
+      "name": "知味观（仁和路店）",
+      "type": "restaurant",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2565,
+      "lng": 120.1705,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 80,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "早市到晚市都有，早餐和点心更适合赶时间。",
+      "blurb": "仁和路老店，片儿川、小笼和猫耳朵是更日常的杭州味道，早午餐都合适，不必非要进景区饭馆。",
+      "description": "仁和路老店，片儿川、小笼和猫耳朵是更日常的杭州味道，早午餐都合适，不必非要进景区饭馆。",
+      "tips": "正餐人均按 80 元估，早餐/点心可落到 30–50 元。比楼外楼实在，也更适合金标预算里的「美食」需求。",
+      "image": "",
+      "sources": [
+        {
+          "title": "公开指南对知味观人均的整理",
+          "url": "https://k.sina.cn/article_7879923679_1d5ae17df06801j02s.html"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "kuiyuanguan",
+      "city": "杭州",
+      "name": "奎元馆（解放路店）",
+      "type": "restaurant",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2532,
+      "lng": 120.168,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 50,
+      "ticket_price": 0,
+      "price": 50,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以面馆当日营业时间为准，午晚高峰要等位。",
+      "blurb": "以虾爆鳝面、片儿川出名的杭州面馆老字号，解放路店离湖滨和河坊都不远，一餐就能吃到本地午餐的节奏。",
+      "description": "以虾爆鳝面、片儿川出名的杭州面馆老字号，解放路店离湖滨和河坊都不远，一餐就能吃到本地午餐的节奏。",
+      "tips": "人均约 45–60 元，按 50 元计。点面为主，不要按正餐宴席预期。这是省钱和紧凑日里更合适的选择。",
+      "image": "",
+      "sources": [
+        {
+          "title": "去哪儿·奎元馆解放路店",
+          "url": "https://touch.go.qunar.com/poi/3309464"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "huangfaner",
+      "city": "杭州",
+      "name": "皇饭儿（高银街总店）",
+      "type": "restaurant",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2415,
+      "lng": 120.1708,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 70,
+      "ticket_price": 0,
+      "price": 75,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "以高银街总店当日时间为准。",
+      "blurb": "河坊街旁边的杭帮菜老字号，乾隆御题「皇饭儿」的故事常被提起，东坡肉是最常点的招牌，比湖滨连锁店更有本地正餐的样子。",
+      "description": "河坊街旁边的杭帮菜老字号，乾隆御题「皇饭儿」的故事常被提起，东坡肉是最常点的招牌，比湖滨连锁店更有本地正餐的样子。",
+      "tips": "人均约 70–80 元，按 75 元计。位置适合河坊、胡雪岩一条线的午餐或晚餐。",
+      "image": "",
+      "sources": [
+        {
+          "title": "去哪儿·皇饭儿高银街总店",
+          "url": "http://touch.go.qunar.com/poi/3314589"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xinbailu",
+      "city": "杭州",
+      "name": "新白鹿（湖滨店）",
+      "type": "restaurant",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2548,
+      "lng": 120.1638,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 65,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "商圈店，出餐较快，以门店时间为准。",
+      "blurb": "湖滨的杭帮家常连锁，菜品稳定、出菜快，适合赶行程的晚饭，但不是老字号体验。",
+      "description": "湖滨的杭帮家常连锁，菜品稳定、出菜快，适合赶行程的晚饭，但不是老字号体验。",
+      "tips": "人均按目录 65 元。可以留作备选，优先安排知味观、奎元馆、皇饭儿。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "waipojia",
+      "city": "杭州",
+      "name": "外婆家（西湖银泰店）",
+      "type": "restaurant",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2588,
+      "lng": 120.1655,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 55,
+      "ticket_price": 0,
+      "price": 60,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "商场店，出菜快，高峰需排队。",
+      "blurb": "浙江起源的连锁杭帮菜，银泰店离湖滨近，出菜快，适合赶时间，代表性不如老字号。",
+      "description": "浙江起源的连锁杭帮菜，银泰店离湖滨近，出菜快，适合赶时间，代表性不如老字号。",
+      "tips": "人均 60 元。请勿把外婆家当成杭州饮食的唯一门面，目录里只作备选。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-hz",
+      "city": "杭州",
+      "name": "全季酒店（湖滨店）",
+      "type": "hotel",
+      "zone": "湖滨吴山",
+      "suburban": false,
+      "lat": 30.2556,
+      "lng": 120.1612,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 420,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "湖滨一带的中档商务酒店，走路能到西湖东岸和湖滨商圈，双床房适合两人一间。",
+      "description": "湖滨一带的中档商务酒店，走路能到西湖东岸和湖滨商圈，双床房适合两人一间。",
+      "tips": "房价按目录 420 元/间夜估算。金标 3 天行程默认住这里，住宿不计入 1500 元预算；西溪、灵隐当日也可返回此店。",
+      "image": "",
+      "sources": [],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "feilaifeng",
+      "city": "杭州",
+      "name": "飞来峰",
+      "type": "attraction",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.2408,
+      "lng": 120.1,
+      "tags": [
+        "人文",
+        "自然"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "与灵隐寺同景区：每日 7:30–17:30，17:00 停止入园。分上午场 7:30–12:00、下午场 12:00–17:00。须提前 1–7 天在「杭州灵隐飞来峰」小程序实名预约，不接受当日预约。",
+      "blurb": "进灵隐寺之前的那座石灰岩山，溪边布满五代到宋元的石刻造像，冷泉溪一走，才是这条线真正的开始。",
+      "description": "进灵隐寺之前的那座石灰岩山，溪边布满五代到宋元的石刻造像，冷泉溪一走，才是这条线真正的开始。",
+      "tips": "2025-12-01 起与灵隐寺、永福寺、韬光寺一并免票，但预约是硬门槛。70 岁及以上等优待人群无需预约。爽约会计入信用记录。飞来峰与灵隐寺不要写成两张门票。",
+      "image": "/places/lingyin.jpg",
+      "sources": [
+        {
+          "title": "杭州西湖风景名胜区·灵隐飞来峰免票通告",
+          "url": "https://www.hzzx.gov.cn/cshz/content/2025-11/19/content_9126907.htm"
+        },
+        {
+          "title": "杭州灵隐飞来峰景区·预约机制优化通告（2026-01-26）",
+          "url": "https://www.hzfjxh.com/art/260128/31555548"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "lingyin",
+      "city": "杭州",
+      "name": "灵隐寺",
+      "type": "attraction",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.241,
+      "lng": 120.101,
+      "tags": [
+        "人文"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "同飞来峰：7:30–17:30（17:00 停止入园），须在「杭州灵隐飞来峰」小程序按上/下午场预约，至少提前 1 天，最多提前 7 天，不接受当日约。",
+      "blurb": "江南禅宗名刹，天王殿到大雄宝殿的中轴线很完整。现在与飞来峰实行「双免+预约」，不再分开买寺票和山门票。",
+      "description": "江南禅宗名刹，天王殿到大雄宝殿的中轴线很完整。现在与飞来峰实行「双免+预约」，不再分开买寺票和山门票。",
+      "tips": "旧目录里的 75 元（含飞来峰）已失效。务必提前预约并带证件原件；上午场最晚入园 13:00，下午场最早 11:00。寺院内请遵守清静和着装习惯。",
+      "image": "/places/lingyin.jpg",
+      "sources": [
+        {
+          "title": "杭州西湖风景名胜区·灵隐飞来峰免票通告",
+          "url": "https://www.hzzx.gov.cn/cshz/content/2025-11/19/content_9126907.htm"
+        },
+        {
+          "title": "杭州灵隐飞来峰景区·预约机制优化通告（2026-01-26）",
+          "url": "https://www.hzfjxh.com/art/260128/31555548"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "yongfu",
+      "city": "杭州",
+      "name": "永福寺",
+      "type": "attraction",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.2433,
+      "lng": 120.0958,
+      "tags": [
+        "人文",
+        "自然"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "纳入灵隐飞来峰免票预约范围，开放时间同景区。",
+      "blurb": "灵隐寺西侧的寺院，庭院和坡地比大寺安静，适合在灵隐主殿看完后继续往里走，不必再另买票。",
+      "description": "灵隐寺西侧的寺院，庭院和坡地比大寺安静，适合在灵隐主殿看完后继续往里走，不必再另买票。",
+      "tips": "免票，但须持当日灵隐飞来峰预约入园。时间紧可舍永福、留韬光，或相反。",
+      "image": "/places/lingyin.jpg",
+      "sources": [
+        {
+          "title": "杭州西湖风景名胜区·灵隐飞来峰免票通告",
+          "url": "https://www.hzzx.gov.cn/cshz/content/2025-11/19/content_9126907.htm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "taoguang",
+      "city": "杭州",
+      "name": "韬光寺",
+      "type": "attraction",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.2475,
+      "lng": 120.0961,
+      "tags": [
+        "人文",
+        "自然"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "纳入灵隐飞来峰免票预约范围；需登山，留出往返体力。",
+      "blurb": "从灵隐继续上山的寺院，「韬光观海」说的就是这里。台阶不少，到了以后比山下清静，能看见远处的城市和湖谷。",
+      "description": "从灵隐继续上山的寺院，「韬光观海」说的就是这里。台阶不少，到了以后比山下清静，能看见远处的城市和湖谷。",
+      "tips": "免票但要预约入园。亲子或松弛日要评估爬坡，走不完可以在半途折返。穿防滑鞋。",
+      "image": "/places/lingyin.jpg",
+      "sources": [
+        {
+          "title": "杭州西湖风景名胜区·灵隐飞来峰免票通告",
+          "url": "https://www.hzzx.gov.cn/cshz/content/2025-11/19/content_9126907.htm"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "botanical",
+      "city": "杭州",
+      "name": "杭州植物园",
+      "type": "attraction",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.255,
+      "lng": 120.1183,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 10,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "常见售票和入园 8:30–16:30；另有来源写 7:00–17:00。以园区当日公示为准。可提前约 3 天购票。",
+      "blurb": "桃源岭上的植物园，分类区和灵峰探梅都在园里，和灵隐同在西湖西北，适合把下午留给开敞绿地，尤其带小孩时。",
+      "description": "桃源岭上的植物园，分类区和灵峰探梅都在园里，和灵隐同在西湖西北，适合把下午留给开敞绿地，尤其带小孩时。",
+      "tips": "成人 10 元，优待/学生 5 元。距灵隐寺约 2 公里，按市内公交衔接，不要按步行 10 分钟估。开放时间不同来源略有出入，出发前看西湖旅游预约页。",
+      "image": "",
+      "sources": [
+        {
+          "title": "杭州本地宝·杭州植物园门票与开放时间",
+          "url": "https://hz.bendibao.com/jingdian/hangzhouzhiwuyuan/"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "lingyin-zhai",
+      "city": "杭州",
+      "name": "灵隐寺随喜食堂",
+      "type": "restaurant",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.2416,
+      "lng": 120.099,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": 40,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "一般随寺院午餐时段开放，过午可能停供，以现场为准。",
+      "blurb": "寺院一带的素面和素斋，味道朴素，胜在就近，能把灵隐当天的午餐留在片区内，不必折回湖滨。",
+      "description": "寺院一带的素面和素斋，味道朴素，胜在就近，能把灵隐当天的午餐留在片区内，不必折回湖滨。",
+      "tips": "人均按 40 元估。不是精致素宴；若食堂未开，可改法云古村茶餐，价格会上去。请勿期待和杭帮菜馆同一水准。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-lingyin",
+      "city": "杭州",
+      "name": "全季酒店（杭州灵隐天竺店）",
+      "type": "hotel",
+      "zone": "灵隐",
+      "suburban": false,
+      "lat": 30.2485,
+      "lng": 120.1085,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 450,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "按灵隐、天竺路一带中档商务酒店估算的住宿点，方便第二天继续向西或返回湖滨。",
+      "description": "按灵隐、天竺路一带中档商务酒店估算的住宿点，方便第二天继续向西或返回湖滨。",
+      "tips": "450 元/间夜为同城全季价格外推，写入系统前请核对具体门店名称和是否仍营业。也可当日返回湖滨全季，不必在灵隐过夜。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xixi",
+      "city": "杭州",
+      "name": "西溪湿地（周家村）",
+      "type": "attraction",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.268,
+      "lng": 120.07,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 120,
+      "ticket_price": 80,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "4月1日–10月31日 7:30–18:30（16:30 停售门船票）；11月1日–次年3月31日 8:00–17:30（16:00 停售门船票）。",
+      "blurb": "城市西边的国家湿地公园，芦苇、港汊和摇櫓船是主要印象。周家村是一期主入口，适合把这一天单独留给湿地，不要和西湖、灵隐挤在同一天。",
+      "description": "城市西边的国家湿地公园，芦苇、港汊和摇櫓船是主要印象。周家村是一期主入口，适合把这一天单独留给湿地，不要和西湖、灵隐挤在同一天。",
+      "tips": "公园门票 80 元，电瓶船另计 60 元/人，摇櫓船约 100 元/小时/船（限 6 人）。与市区直线距离虽不算极端，但按远郊规则进出城各至少 60 分钟、每人 40 元。11 月按冬令时间。",
+      "image": "/places/xixi.jpg",
+      "sources": [
+        {
+          "title": "西溪国家湿地公园·购票须知",
+          "url": "http://xxgy.shidicn.com/coohome/coserver.aspx?clid=66309FB786F94961B15CB0A7E3FC112D&t=17&uid=xxgy"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "xixi-boat",
+      "city": "杭州",
+      "name": "西溪电瓶船",
+      "type": "attraction",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.2682,
+      "lng": 120.069,
+      "tags": [
+        "自然",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 60,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "需先入园；冬令 16:00 前停售船票。全程约 1 小时，可中途上岸。",
+      "blurb": "周家村到深潭口一线的公交式电瓶船，把港汊里的烟水渔庄、秋雪庵串起来，比全程步行更适合亲子。",
+      "description": "周家村到深潭口一线的公交式电瓶船，把港汊里的烟水渔庄、秋雪庵串起来，比全程步行更适合亲子。",
+      "tips": "60 元/人，与 80 元门票分开买。各码头通常只能上下一次、顺时针一周。省钱日可不上船，改走福堤。",
+      "image": "/places/xixi.jpg",
+      "sources": [
+        {
+          "title": "西溪国家湿地公园·购票须知",
+          "url": "http://xxgy.shidicn.com/coohome/coserver.aspx?clid=66309FB786F94961B15CB0A7E3FC112D&t=17&uid=xxgy"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "shentan",
+      "city": "杭州",
+      "name": "深潭口",
+      "type": "attraction",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.271,
+      "lng": 120.0645,
+      "tags": [
+        "自然",
+        "网红打卡"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "在园区内，随公园开闭园。",
+      "blurb": "一期游线东端的水埠，常作为电瓶船或摇櫓船的折返点，也是改步行去河渚街的交接处。",
+      "description": "一期游线东端的水埠，常作为电瓶船或摇櫓船的折返点，也是改步行去河渚街的交接处。",
+      "tips": "无需另购门票。从这里走到河渚街很近，适合把水上段和街区段接起来。",
+      "image": "/places/xixi.jpg",
+      "sources": [
+        {
+          "title": "西溪国家湿地公园·购票须知",
+          "url": "http://xxgy.shidicn.com/coohome/coserver.aspx?clid=66309FB786F94961B15CB0A7E3FC112D&t=17&uid=xxgy"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "hezhu",
+      "city": "杭州",
+      "name": "河渚街",
+      "type": "attraction",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.2747,
+      "lng": 120.0628,
+      "tags": [
+        "美食",
+        "购物",
+        "亲子"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "园区二期街区，随公园开放；店铺下午更齐。",
+      "blurb": "西溪二期的水乡街巷，蒋村集市和商铺集中在这里，适合下船后走走、吃点心，再从北门方向离开。",
+      "description": "西溪二期的水乡街巷，蒋村集市和商铺集中在这里，适合下船后走走、吃点心，再从北门方向离开。",
+      "tips": "已含在公园门票内。一、二期摇櫓船不互通，不要计划坐同一条船贯穿。",
+      "image": "/places/xixi.jpg",
+      "sources": [
+        {
+          "title": "西溪国家湿地公园·购票须知",
+          "url": "http://xxgy.shidicn.com/coohome/coserver.aspx?clid=66309FB786F94961B15CB0A7E3FC112D&t=17&uid=xxgy"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "hezhu-food",
+      "city": "杭州",
+      "name": "河渚街小吃",
+      "type": "restaurant",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.2745,
+      "lng": 120.0626,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 45,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "街区餐饮随园内店铺营业，最稳妥是午餐前后到达。",
+      "blurb": "河渚街和蒋村集市一带的点心、鱼鲜和茶饮，用来解决西溪当天的午餐，而不必折回市区。",
+      "description": "河渚街和蒋村集市一带的点心、鱼鲜和茶饮，用来解决西溪当天的午餐，而不必折回市区。",
+      "tips": "人均按 45 元估，园内价格略高。想吃得像样可提前看西溪天堂或园内餐厅是否需预订。",
+      "image": "",
+      "sources": [
+        {
+          "title": "西溪国家湿地公园·购票须知",
+          "url": "http://xxgy.shidicn.com/coohome/coserver.aspx?clid=66309FB786F94961B15CB0A7E3FC112D&t=17&uid=xxgy"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-xixi",
+      "city": "杭州",
+      "name": "全季酒店（杭州西溪湿地店）",
+      "type": "hotel",
+      "zone": "西溪",
+      "suburban": true,
+      "lat": 30.2755,
+      "lng": 120.0705,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 420,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "按西溪园区外围中档商务酒店估算，方便早入园，但更建议当天返回湖滨住宿。",
+      "description": "按西溪园区外围中档商务酒店估算，方便早入园，但更建议当天返回湖滨住宿。",
+      "tips": "420 元/间夜为估算，写入前核对门店。远郊日推荐仍回湖滨全季，本条仅作西溪过夜备选。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "gongchen",
+      "city": "杭州",
+      "name": "拱宸桥",
+      "type": "attraction",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.32,
+      "lng": 120.142,
+      "tags": [
+        "人文",
+        "自然"
+      ],
+      "duration_min": 45,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "桥和河岸全天可走，夜景灯光在傍晚后更好看。",
+      "blurb": "京杭大运河南端的标志性石桥，桥西是博物馆群和直街，适合把一天留在运河，而不是和西湖上午连排。",
+      "description": "京杭大运河南端的标志性石桥，桥西是博物馆群和直街，适合把一天留在运河，而不是和西湖上午连排。",
+      "tips": "免费。日落前后灯光较好。与湖滨距离较远，按市内公交计时计费，不要和断桥排进同一上午。",
+      "image": "/places/gongchen.jpg",
+      "sources": [
+        {
+          "title": "拱墅区公共文化场馆免费开放信息·京杭大运河博物馆",
+          "url": "https://www.gongshu.gov.cn/col/col1229602407/art/2026/art_2f47a4d80f32445697c655d7eaa9224e.html"
+        }
+      ],
+      "existing": true,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "canal-museum",
+      "city": "杭州",
+      "name": "杭州京杭大运河博物馆",
+      "type": "attraction",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.3219,
+      "lng": 120.1447,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 90,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "周二至周日 9:00–16:30，16:00 停止入馆；周一闭馆，法定节假日除外。目前多见免费、无需预约，出发前再确认。",
+      "blurb": "拱宸桥旁的运河专题馆，把漕运、桥梁和沿岸生活说明白，是这一片区最适合亲子的室内点。",
+      "description": "拱宸桥旁的运河专题馆，把漕运、桥梁和沿岸生活说明白，是这一片区最适合亲子的室内点。",
+      "tips": "免费。周一不要排。若临时恢复预约，以场馆公告为准。",
+      "image": "/places/gongchen.jpg",
+      "sources": [
+        {
+          "title": "拱墅区公共文化场馆免费开放信息·京杭大运河博物馆",
+          "url": "https://www.gongshu.gov.cn/col/col1229602407/art/2026/art_2f47a4d80f32445697c655d7eaa9224e.html"
+        },
+        {
+          "title": "杭州京杭大运河博物馆参观页",
+          "url": "https://www.canal-museum.cn/info/vistor_info"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "qiaoxi",
+      "city": "杭州",
+      "name": "桥西直街",
+      "type": "attraction",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.3194,
+      "lng": 120.139,
+      "tags": [
+        "人文",
+        "购物"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [],
+      "hours_note": "历史街区全天可逛，小店下午和傍晚更齐。",
+      "blurb": "拱宸桥西的沿河直街，民居、小店和博物馆入口混在一起，比河坊街生活气更重，适合饭前饭后散步。",
+      "description": "拱宸桥西的沿河直街，民居、小店和博物馆入口混在一起，比河坊街生活气更重，适合饭前饭后散步。",
+      "tips": "免费。可与工艺美术博物馆、运河博物馆连走，不必打车。",
+      "image": "/places/gongchen.jpg",
+      "sources": [
+        {
+          "title": "拱墅区公共文化场馆免费开放信息·京杭大运河博物馆",
+          "url": "https://www.gongshu.gov.cn/col/col1229602407/art/2026/art_2f47a4d80f32445697c655d7eaa9224e.html"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "gongmei",
+      "city": "杭州",
+      "name": "杭州工艺美术博物馆",
+      "type": "attraction",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.3169,
+      "lng": 120.1375,
+      "tags": [
+        "人文",
+        "亲子"
+      ],
+      "duration_min": 75,
+      "ticket_price": 0,
+      "price": null,
+      "price_status": "sourced",
+      "closed_weekdays": [
+        0
+      ],
+      "hours_note": "与桥西博物馆群相近，通常周二至周日开放、周一闭馆，免费；以馆方公告为准。",
+      "blurb": "小河路一带的博物馆群之一，展出刀剪、伞、扇等杭作工艺，比单纯走桥更适合带小孩停下来看。",
+      "description": "小河路一带的博物馆群之一，展出刀剪、伞、扇等杭作工艺，比单纯走桥更适合带小孩停下来看。",
+      "tips": "免费，周一多闭馆。和桥西直街、运河博物馆同片区，不要拆到别的一天。",
+      "image": "/places/gongchen.jpg",
+      "sources": [
+        {
+          "title": "拱墅区公共文化场馆免费开放信息·京杭大运河博物馆",
+          "url": "https://www.gongshu.gov.cn/col/col1229602407/art/2026/art_2f47a4d80f32445697c655d7eaa9224e.html"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "qiaoxi-food",
+      "city": "杭州",
+      "name": "桥西直街运河菜",
+      "type": "restaurant",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.3196,
+      "lng": 120.1393,
+      "tags": [
+        "饭馆",
+        "美食"
+      ],
+      "duration_min": 60,
+      "ticket_price": 0,
+      "price": 55,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "街区馆子午餐、晚餐均有，以门店时间为准。",
+      "blurb": "桥西直街、小河直街一带的运河边家常菜和点心，用来把运河当天的午餐留在片区内。",
+      "description": "桥西直街、小河直街一带的运河边家常菜和点心，用来把运河当天的午餐留在片区内。",
+      "tips": "人均按 55 元估。不必专门找连锁店；若想更稳可提前选一家评分稳定的运河边杭帮菜。",
+      "image": "",
+      "sources": [],
+      "existing": false,
+      "fact_status": "sourced"
+    },
+    {
+      "id": "quanji-gongchen",
+      "city": "杭州",
+      "name": "全季酒店（杭州运河拱宸桥店）",
+      "type": "hotel",
+      "zone": "运河",
+      "suburban": false,
+      "lat": 30.3282,
+      "lng": 120.1354,
+      "tags": [
+        "酒店"
+      ],
+      "duration_min": 0,
+      "ticket_price": 0,
+      "price": 400,
+      "price_status": "estimate",
+      "closed_weekdays": [],
+      "hours_note": "",
+      "blurb": "拱墅花园岗街附近的全季酒店，去拱宸桥和运河博物馆方便，适合把住宿放在运河南端。",
+      "description": "拱墅花园岗街附近的全季酒店，去拱宸桥和运河博物馆方便，适合把住宿放在运河南端。",
+      "tips": "门店可核对到全季杭州运河拱宸桥店；房价按 400 元/间夜估。若全程只住一家，仍可统一住湖滨全季，当天来回运河。",
+      "image": "",
+      "sources": [
+        {
+          "title": "高德·全季酒店杭州运河拱宸桥店",
+          "url": "https://www.amap.com/place/B0JG2H7ON2"
+        }
+      ],
+      "existing": false,
+      "fact_status": "sourced"
+    }
+  ]
+}
